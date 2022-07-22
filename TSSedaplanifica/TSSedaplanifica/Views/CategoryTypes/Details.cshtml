@@ -1,13 +1,13 @@
 ﻿@model TSSedaplanifica.Data.Entities.CategoryType
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Ver";
 }
 
-<h1>Details</h1>
+<h1>Ver</h1>
 
 <div>
-    <h4>CategoryType</h4>
+    <h4>Clase de categoría</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -19,6 +19,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> | 
+    <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
 </div>
