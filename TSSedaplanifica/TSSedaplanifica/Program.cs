@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(cfg =>
     cfg.Password.RequireNonAlphanumeric = false;
     cfg.Password.RequireUppercase = false;
 }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddScoped<ICategoryTypeHelper, CategoryTypeHelper>();
+builder.Services.AddScoped<ICategoryHelper, CategoryHelper>();
+builder.Services.AddScoped<IMeasureUnitHelper, MeasureUnitHelper>();
+builder.Services.AddScoped<IZoneHelper, ZoneHelper>();
+builder.Services.AddScoped<ISolicitStateHelper, SolicitStateHelper>();
 
 builder.Services.AddRazorPages();
 

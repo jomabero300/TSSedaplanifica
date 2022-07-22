@@ -1,28 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Common;
-using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Helpers;
 
 namespace TSSedaplanifica.Controllers
 {
-    public class CategoryTypesController : Controller
+    public class MeasureUnitsController : Controller
     {
-        private readonly ICategoryTypeHelper _categoryType;
+        private readonly IMeasureUnitHelper _measureUnitHelper;
 
-        public CategoryTypesController(ICategoryTypeHelper categoryType)
+        public MeasureUnitsController(IMeasureUnitHelper measureUnitHelper)
         {
-            _categoryType = categoryType;
+            _measureUnitHelper = measureUnitHelper;
         }
 
-        // GET: CategoryTypes
         public async Task<IActionResult> Index()
         {
-              return View(await _categoryType.ListAsync());
+            return View(await _measureUnitHelper.ListAsync());
         }
 
-        // GET: CategoryTypes/Details/5
+        // GET: MeasureUnits/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -30,48 +27,48 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            CategoryType categoryType = await _categoryType.ByIdAsync((int)id);
+            MeasureUnit measureUnit = await _measureUnitHelper.ByIdAsync((int)id);
 
-            if (categoryType == null)
+            if (measureUnit == null)
             {
                 return NotFound();
             }
 
-            return View(categoryType);
+            return View(measureUnit);
         }
 
-        // GET: CategoryTypes/Create
+        // GET: MeasureUnits/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: CategoryTypes/Create
+        // POST: MeasureUnits/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] CategoryType categoryType)
+        public async Task<IActionResult> Create([Bind("Id,Name,NameShort")] MeasureUnit measureUnit)
         {
             if (ModelState.IsValid)
             {
-                Response response =await _categoryType.AddUpdateAsync(categoryType);
+                Response response = await _measureUnitHelper.AddUpdateAsync(measureUnit);
 
 
                 if (response.IsSuccess)
-                {                    
+                {
                     TempData["AlertMessage"] = response.Message;
-                    return RedirectToAction(nameof(Index));    
+                    return RedirectToAction(nameof(Index));
                 }
 
                 ModelState.AddModelError(string.Empty, response.Message);
 
             }
 
-            return View(categoryType);
+            return View(measureUnit);
         }
 
-        // GET: CategoryTypes/Edit/5
+        // GET: MeasureUnits/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,31 +76,31 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            CategoryType categoryType = await _categoryType.ByIdAsync((int)id);
+            MeasureUnit measureUnit = await _measureUnitHelper.ByIdAsync((int)id);
 
-            if (categoryType == null)
+            if (measureUnit == null)
             {
                 return NotFound();
             }
 
-            return View(categoryType);
+            return View(measureUnit);
         }
 
-        // POST: CategoryTypes/Edit/5
+        // POST: MeasureUnits/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] CategoryType categoryType)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,NameShort")] MeasureUnit measureUnit)
         {
-            if (id != categoryType.Id)
+            if (id != measureUnit.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                Response response = await _categoryType.AddUpdateAsync(categoryType);
+                Response response = await _measureUnitHelper.AddUpdateAsync(measureUnit);
 
                 TempData["AlertMessage"] = response.Message;
 
@@ -115,10 +112,10 @@ namespace TSSedaplanifica.Controllers
                 ModelState.AddModelError(string.Empty, response.Message);
 
             }
-            return View(categoryType);
+            return View(measureUnit);
         }
 
-        // GET: CategoryTypes/Delete/5
+        // GET: MeasureUnits/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,17 +123,17 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            CategoryType model=await _categoryType.ByIdAsync((int)id);
+            MeasureUnit model = await _measureUnitHelper.ByIdAsync((int)id);
 
             return View(model);
         }
 
-        // POST: CategoryTypes/Delete/5
+        // POST: MeasureUnits/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Response response = await _categoryType.DeleteAsync((int)id);
+            Response response = await _measureUnitHelper.DeleteAsync((int)id);
 
 
             if (response.IsSuccess)
@@ -145,7 +142,7 @@ namespace TSSedaplanifica.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            CategoryType model = await _categoryType.ByIdAsync((int)id);
+            MeasureUnit model = await _measureUnitHelper.ByIdAsync((int)id);
 
             ModelState.AddModelError(string.Empty, response.Message);
 

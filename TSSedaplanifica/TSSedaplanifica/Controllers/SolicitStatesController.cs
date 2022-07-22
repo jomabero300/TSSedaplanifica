@@ -1,25 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Common;
-using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Helpers;
 
 namespace TSSedaplanifica.Controllers
 {
-    public class CategoryTypesController : Controller
+    public class SolicitStatesController : Controller
     {
-        private readonly ICategoryTypeHelper _categoryType;
+        private readonly ISolicitStateHelper _solicitStateHelper;
 
-        public CategoryTypesController(ICategoryTypeHelper categoryType)
+        public SolicitStatesController(ISolicitStateHelper solicitStateHelper)
         {
-            _categoryType = categoryType;
+            _solicitStateHelper = solicitStateHelper;
         }
 
-        // GET: CategoryTypes
         public async Task<IActionResult> Index()
         {
-              return View(await _categoryType.ListAsync());
+            return View(await _solicitStateHelper.ListAsync());
         }
 
         // GET: CategoryTypes/Details/5
@@ -30,14 +27,14 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            CategoryType categoryType = await _categoryType.ByIdAsync((int)id);
+            SolicitState model = await _solicitStateHelper.ByIdAsync((int)id);
 
-            if (categoryType == null)
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return View(categoryType);
+            return View(model);
         }
 
         // GET: CategoryTypes/Create
@@ -51,24 +48,24 @@ namespace TSSedaplanifica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] CategoryType categoryType)
+        public async Task<IActionResult> Create([Bind("Id,Name")] SolicitState model)
         {
             if (ModelState.IsValid)
             {
-                Response response =await _categoryType.AddUpdateAsync(categoryType);
+                Response response = await _solicitStateHelper.AddUpdateAsync(model);
 
 
                 if (response.IsSuccess)
-                {                    
+                {
                     TempData["AlertMessage"] = response.Message;
-                    return RedirectToAction(nameof(Index));    
+                    return RedirectToAction(nameof(Index));
                 }
 
                 ModelState.AddModelError(string.Empty, response.Message);
 
             }
 
-            return View(categoryType);
+            return View(model);
         }
 
         // GET: CategoryTypes/Edit/5
@@ -79,7 +76,7 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            CategoryType categoryType = await _categoryType.ByIdAsync((int)id);
+            SolicitState categoryType = await _solicitStateHelper.ByIdAsync((int)id);
 
             if (categoryType == null)
             {
@@ -94,16 +91,16 @@ namespace TSSedaplanifica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] CategoryType categoryType)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] SolicitState model)
         {
-            if (id != categoryType.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                Response response = await _categoryType.AddUpdateAsync(categoryType);
+                Response response = await _solicitStateHelper.AddUpdateAsync(model);
 
                 TempData["AlertMessage"] = response.Message;
 
@@ -115,7 +112,7 @@ namespace TSSedaplanifica.Controllers
                 ModelState.AddModelError(string.Empty, response.Message);
 
             }
-            return View(categoryType);
+            return View(model);
         }
 
         // GET: CategoryTypes/Delete/5
@@ -126,7 +123,7 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            CategoryType model=await _categoryType.ByIdAsync((int)id);
+            SolicitState model = await _solicitStateHelper.ByIdAsync((int)id);
 
             return View(model);
         }
@@ -136,7 +133,7 @@ namespace TSSedaplanifica.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Response response = await _categoryType.DeleteAsync((int)id);
+            Response response = await _solicitStateHelper.DeleteAsync((int)id);
 
 
             if (response.IsSuccess)
@@ -145,7 +142,7 @@ namespace TSSedaplanifica.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            CategoryType model = await _categoryType.ByIdAsync((int)id);
+            SolicitState model = await _solicitStateHelper.ByIdAsync((int)id);
 
             ModelState.AddModelError(string.Empty, response.Message);
 

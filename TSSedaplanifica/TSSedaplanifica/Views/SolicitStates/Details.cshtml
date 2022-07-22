@@ -1,0 +1,24 @@
+﻿@model TSSedaplanifica.Data.Entities.SolicitState
+
+@{
+    ViewData["Title"] = "Ver";
+}
+
+<h1>Ver</h1>
+
+<div>
+    <h4>Estado de solicitud</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> | 
+    <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+</div>

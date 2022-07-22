@@ -1,4 +1,4 @@
-﻿@model TSSedaplanifica.Data.Entities.CategoryType
+﻿@model TSSedaplanifica.Data.Entities.MeasureUnit
 
 @{
     ViewData["Title"] = "Borrar";
@@ -6,9 +6,9 @@
 
 <h1>Borrar</h1>
 
-<h3>¿Está seguro de querer borrar Clase de categoría?</h3>
+<h3>¿Está seguro de querer borrar la unidad de medida?</h3>
 <div>
-    <h4>Clase de categoría</h4>
+    <h4>Unidad de medida</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -16,6 +16,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NameShort)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NameShort)
         </dd>
     </dl>
     
