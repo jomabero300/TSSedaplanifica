@@ -27,12 +27,26 @@ builder.Services.AddScoped<ICategoryHelper, CategoryHelper>();
 builder.Services.AddScoped<IMeasureUnitHelper, MeasureUnitHelper>();
 builder.Services.AddScoped<IZoneHelper, ZoneHelper>();
 builder.Services.AddScoped<ISolicitStateHelper, SolicitStateHelper>();
-
+builder.Services.AddScoped<IApiService, ApiService>();
+builder.Services.AddTransient<SeedDb>();
 builder.Services.AddRazorPages();
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+SeedData(app);
+
+void SeedData(WebApplication app)
+{
+    IServiceScopeFactory scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (IServiceScope scope = scopedFactory.CreateScope())
+    {
+        SeedDb service = scope.ServiceProvider.GetService<SeedDb>();
+        service.SeedAsync().Wait();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
