@@ -1,0 +1,63 @@
+﻿@model IEnumerable<TSSedaplanifica.Data.Entities.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Elementos</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
+</p>
+
+@if(TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MeasureUnit.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoriesNumber)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MeasureUnit.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoriesNumber)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

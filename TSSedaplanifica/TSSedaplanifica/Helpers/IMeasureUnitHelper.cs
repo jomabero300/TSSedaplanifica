@@ -1,4 +1,5 @@
-﻿using TSSedaplanifica.Common;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 
 namespace TSSedaplanifica.Helpers
@@ -7,7 +8,7 @@ namespace TSSedaplanifica.Helpers
     {
         Task<Response> AddUpdateAsync(MeasureUnit model);
         Task<MeasureUnit> ByIdAsync(int id);
-        Task<List<MeasureUnit>> ComboAsync();
+        Task<IEnumerable<SelectListItem>> ComboAsync();
         Task<Response> DeleteAsync(int id);
         Task<List<MeasureUnit>> ListAsync();
 

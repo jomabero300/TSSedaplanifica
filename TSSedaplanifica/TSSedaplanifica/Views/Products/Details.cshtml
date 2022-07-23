@@ -1,0 +1,61 @@
+﻿@model TSSedaplanifica.Data.Entities.Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4>Producto</h4>
+<hr />
+<dl class="row">
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Description)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Description)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.MeasureUnit.Name)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.MeasureUnit.Name)
+    </dd>
+</dl>
+
+
+<div>
+    <a asp-action="Index" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-arrow-rotate-left"></i> Regresar</a>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="container-fluid">
+            <div class="card mt-2">
+                <div class="card-header text-danger">
+                    <i class="fa fa-object-group"></i>  <strong>Categoría</strong>
+                </div>
+                <div class="card-body">
+                    <div id="view-all">
+                        @await Html.PartialAsync("_ViewAllCategories", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<partial name="_AddOrEditDialog" />
+
+<partial name="_DeleteDialog" />
+*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

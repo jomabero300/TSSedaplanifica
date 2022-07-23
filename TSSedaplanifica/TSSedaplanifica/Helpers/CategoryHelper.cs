@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
@@ -112,6 +113,27 @@ namespace TSSedaplanifica.Helpers
         public async Task<List<Category>> ListAsync()
         {
             List<Category> model = await _context.Categories.ToListAsync();
+            return model.OrderBy(m => m.Name).ToList();
+        }
+
+        public async Task<List<Category>> ListAsync(int id)
+        {
+            List<ProductCategory> pc=await _context.ProductCategories.Include(P=>P.Category).Where(P=>P.Product.Id==id).ToListAsync();
+            //List<Category> filter = new List<Category>();
+            //foreach (var item in pc)
+            //{
+            //    filter.Add(new Category { Id = item.Category.Id, Name = item.Category.Name });
+            //}
+            List<Category> filter = pc.Select(p => new Category
+            {
+                Id = p.Category.Id,
+                Name = p.Category.Name
+            }).ToList();
+
+
+            List<Category> model = await _context.Categories.Where(c=> !filter.Contains(c)).ToListAsync();
+
+            model.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
 
             return model.OrderBy(m => m.Name).ToList();
         }

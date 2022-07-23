@@ -16,6 +16,10 @@ namespace TSSedaplanifica.Data.Entities
         public string Name { get; set; }
 
         [Display(Name = "Tipo")]
+        [NotMapped]       
         public ICollection<CategoryTypeDer> CategoryTypeDers { get; set; }
+
+        [NotMapped]       
+        public ICollection<ProductCategory> ProductCategories { get; set; }
     }
 }

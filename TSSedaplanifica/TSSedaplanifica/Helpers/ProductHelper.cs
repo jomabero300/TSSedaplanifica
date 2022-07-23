@@ -1,36 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
 
 namespace TSSedaplanifica.Helpers
 {
-    public class MeasureUnitHelper : IMeasureUnitHelper
+    public class ProductHelper : IProductHelper
     {
+        private const string _name = "Producto";
+
         private readonly ApplicationDbContext _context;
 
-        private const string _name = "Unidad de medida";
-
-        public MeasureUnitHelper(ApplicationDbContext context)
+        public ProductHelper(ApplicationDbContext context)
         {
             _context = context;
         }
 
-
-        public async Task<Response> AddUpdateAsync(MeasureUnit model)
+        public async Task<Response> AddUpdateAsync(Product model)
         {
             Response response = new Response() { IsSuccess = true };
 
             if (model.Id == 0)
             {
-                _context.MeasureUnits.Add(model);
+                _context.Products.Add(model);
 
                 response.Message = $"{_name} guardado satisfactoriamente.!!!";
             }
             else
             {
-                _context.MeasureUnits.Update(model);
+                _context.Products.Update(model);
 
                 response.Message = $"{_name} actualizado satisfactoriamente.!!!";
             }
@@ -64,48 +62,38 @@ namespace TSSedaplanifica.Helpers
             return response;
         }
 
-        public async Task<MeasureUnit> ByIdAsync(int id)
+        public async Task<Product> ByIdAsync(int id)
         {
-            MeasureUnit model = await _context.MeasureUnits.FindAsync(id);
+            Product model = await _context.Products
+                                    .Include(m=>m.MeasureUnit)
+                                    .Include(p=>p.ProductCategories)
+                                    .ThenInclude(c=>c.Category)
+                                    .Where(p=>p.Id==id)
+                                    .FirstOrDefaultAsync();
 
             return model;
         }
 
-        public async Task<IEnumerable<SelectListItem>> ComboAsync()
+        public async Task<List<Product>> ComboAsync()
         {
-            //List<MeasureUnit> model = await _context.MeasureUnits.ToListAsync();
+            List<Product> model = await _context.Products.ToListAsync();
 
-            //model.Add(new MeasureUnit { Id = 0, Name = "[Seleccione una Categoría..]" });
+            model.Add(new Product { Id = 0, Name = "[Seleccione una Categoría..]" });
 
-            //return model.OrderBy(m => m.Name).ToList();
-            List<SelectListItem> list = await _context.MeasureUnits.Select(x => new SelectListItem
-            {
-                Text = x.Name,
-                Value = $"{x.Id}"
-            })
-                 .OrderBy(x => x.Text)
-                 .ToListAsync();
-
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Seleccione unidad de medida...]",
-                Value = "0"
-            });
-
-            return list;
+            return model.OrderBy(m => m.Name).ToList();
         }
 
         public async Task<Response> DeleteAsync(int id)
         {
             Response response = new Response() { IsSuccess = true };
 
-            MeasureUnit model = await _context.MeasureUnits.FindAsync(id);
+            Product model = await _context.Products.FindAsync(id);
 
             try
             {
                 response.Message = $"{_name} borrado(a) satisfactoriamente!!!";
 
-                _context.MeasureUnits.Remove(model);
+                _context.Products.Remove(model);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -126,11 +114,12 @@ namespace TSSedaplanifica.Helpers
             return response;
         }
 
-        public async Task<List<MeasureUnit>> ListAsync()
+        public async Task<List<Product>> ListAsync()
         {
-            List<MeasureUnit> model = await _context.MeasureUnits.ToListAsync();
+            List<Product> model = await _context.Products.Include(p=>p.MeasureUnit).ToListAsync();
 
             return model.OrderBy(m => m.Name).ToList();
         }
+
     }
 }

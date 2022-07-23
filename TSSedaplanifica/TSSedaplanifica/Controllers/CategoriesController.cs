@@ -28,14 +28,14 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            Category categoryType = await _category.ByIdAsync((int)id);
+            Category model = await _category.ByIdAsync((int)id);
 
-            if (categoryType == null)
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return View(categoryType);
+            return View(model);
         }
 
         // GET: CategoryTypes/Create

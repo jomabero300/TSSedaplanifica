@@ -27,7 +27,10 @@ builder.Services.AddScoped<ICategoryHelper, CategoryHelper>();
 builder.Services.AddScoped<IMeasureUnitHelper, MeasureUnitHelper>();
 builder.Services.AddScoped<IZoneHelper, ZoneHelper>();
 builder.Services.AddScoped<ISolicitStateHelper, SolicitStateHelper>();
+builder.Services.AddScoped<IProductHelper, ProductHelper>();
+builder.Services.AddScoped<IProductCategoryHelper, ProductCategoryHelper>();
 builder.Services.AddScoped<IApiService, ApiService>();
+
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddRazorPages();
 

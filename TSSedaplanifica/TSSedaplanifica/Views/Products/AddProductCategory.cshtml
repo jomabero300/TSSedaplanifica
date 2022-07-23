@@ -1,0 +1,29 @@
+﻿@model TSSedaplanifica.Models.ProductAddCategoryViewModel
+@{
+    ViewData["Title"] = "Category";
+}
+
+<h1>Category</h1>
+
+<div class="container smfont">
+    <form asp-action="AddProductCategory" autocomplete="off" asp-route-id="@Model.ProductId">
+        <div class="box-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductId" />
+            <input type="hidden" asp-for="Categories" />
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Guardar</button>
+            <a asp-action="Details" asp-route-ProductId="@Model.ProductId" asp-route-CategoryId="@Model.CategoryId" class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
