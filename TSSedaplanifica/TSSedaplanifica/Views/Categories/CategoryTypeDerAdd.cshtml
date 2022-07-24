@@ -1,0 +1,40 @@
+﻿@model TSSedaplanifica.Models.CategoryViewModel
+@{
+    ViewData["Title"] = "Clase de categoría";
+}
+
+<h1>Clase de categoría</h1>
+
+
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container smfont">
+    <form asp-action="CategoryTypeDerAdd" autocomplete="off" asp-route-id="@Model.Id">
+        <div class="box-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="CategoryTypeId" class="control-label"></label>
+                <select id="categoryTypeId"  asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-control"></select>
+                <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+            </div>
+            
+         </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Guardar</button>
+            <a asp-action="Details" asp-route-id="@Model.Id"class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

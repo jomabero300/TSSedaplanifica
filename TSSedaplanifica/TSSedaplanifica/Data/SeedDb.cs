@@ -20,22 +20,10 @@ namespace TSSedaplanifica.Data
         {
             await _context.Database.EnsureCreatedAsync();
             await CheckCountriesAsync();
-            //await CheckCategoriesAsync();
+            await CheckCategoryTypeAsync();
+            await CheckCategoriesAsync();
         }
 
-        private async Task CheckCategoriesAsync()
-        {
-            if (!_context.Categories.Any())
-            {
-                _context.Categories.Add(new Category { Name = "Tecnología" });
-                _context.Categories.Add(new Category { Name = "Ropa" });
-                _context.Categories.Add(new Category { Name = "Gamer" });
-                _context.Categories.Add(new Category { Name = "Belleza" });
-                _context.Categories.Add(new Category { Name = "Nutrición" });
-            }
-
-            await _context.SaveChangesAsync();
-        }
 
         private async Task CheckCountriesAsync()
         {
@@ -107,6 +95,63 @@ namespace TSSedaplanifica.Data
                 }
             }
 
+        }
+
+        private async Task CheckCategoryTypeAsync()
+        {
+            if (!_context.CategoryTypes.Any())
+            {
+                _context.CategoryTypes.Add(new CategoryType { Name = "Infraestructura" });
+                _context.CategoryTypes.Add(new CategoryType { Name = "Dotación" });
+                _context.CategoryTypes.Add(new CategoryType { Name = "Bioseguridad" });
+                await _context.SaveChangesAsync();
+            }
+
+        }
+
+        private async Task CheckCategoriesAsync()
+        {
+            if(!_context.Categories.Any())
+            {
+                _context.Categories.Add(new Category { Name = "Agropecuario" });
+                _context.Categories.Add(new Category { Name = "Ambiente" });
+                _context.Categories.Add(new Category { Name = "Arte" });
+                _context.Categories.Add(new Category { Name = "Biblioteca" });
+                _context.Categories.Add(new Category { Name = "Conjunto" });
+                _context.Categories.Add(new Category { Name = "Construcción" });
+                _context.Categories.Add(new Category { Name = "Deportes" });
+                _context.Categories.Add(new Category { Name = "Herramientas Pedagógicas" });
+                _context.Categories.Add(new Category { Name = "Laboratorios" });
+                _context.Categories.Add(new Category { Name = "Mejoramiento" });
+                _context.Categories.Add(new Category { Name = "Menaje" });
+                _context.Categories.Add(new Category { Name = "Mobiliario" });
+                _context.Categories.Add(new Category { Name = "Salud" });
+                _context.Categories.Add(new Category { Name = "Tecnología" });
+
+                await _context.SaveChangesAsync();
+
+                CategoryType ct = await _context.CategoryTypes.Where(c => c.Name == "Infraestructura").FirstOrDefaultAsync();
+
+                if(ct != null)
+                {
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Agropecuario").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Ambiente").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Arte").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Biblioteca").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Conjunto").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Construcción").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Deportes").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Herramientas Pedagógicas").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Laboratorios").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Mejoramiento").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Menaje").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Mobiliario").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Salud").FirstOrDefaultAsync() });
+                    _context.CategoryTypeDers.Add(new CategoryTypeDer { CategoryType = ct, Category = await _context.Categories.Where(c => c.Name == "Tecnología").FirstOrDefaultAsync() });
+
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

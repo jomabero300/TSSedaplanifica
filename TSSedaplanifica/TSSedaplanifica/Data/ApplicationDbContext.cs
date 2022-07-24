@@ -27,7 +27,13 @@ namespace TSSedaplanifica.Data
                 .IsUnique();
 
             builder.Entity<CategoryTypeDer>()
-                .HasKey("CategoryId", "CategoryTypeId");
+                .HasIndex("CategoryId", "CategoryTypeId")
+                .HasDatabaseName("IX_CategoryTypeDer_ CategoryIdCategoryTypeId")
+                .IsUnique();
+
+            //builder.Entity<CategoryTypeDer>()
+            //    .HasKey("CategoryId", "CategoryTypeId");
+
 
             builder.Entity<City>()
                 .HasIndex("StateId", "Name")
@@ -50,7 +56,11 @@ namespace TSSedaplanifica.Data
                 .IsUnique();
 
             builder.Entity<ProductCategory>()
-                .HasKey("CategoryId", "ProductId");
+                .HasIndex("CategoryId", "ProductId")
+                .HasDatabaseName("IX_ProductCategory_CategoryIdProductId")
+                .IsUnique();
+            //builder.Entity<ProductCategory>()
+            //    .HasKey("CategoryId", "ProductId");
 
             builder.Entity<School>()
                 .HasIndex("CityId", "ZoneId", "Name")

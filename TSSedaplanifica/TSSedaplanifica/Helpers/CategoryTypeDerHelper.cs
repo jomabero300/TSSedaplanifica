@@ -5,25 +5,25 @@ using TSSedaplanifica.Data.Entities;
 
 namespace TSSedaplanifica.Helpers
 {
-    public class ProductCategoryHelper : IProductCategoryHelper
+    public class CategoryTypeDerHelper : ICategoryTypeDerHelper
     {
-        private const string _name = "Producto";
+        private const string _name = "Categoría en este clase de categoría";
 
         private readonly ApplicationDbContext _context;
 
-        public ProductCategoryHelper(ApplicationDbContext context)
+        public CategoryTypeDerHelper(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Response> AddUpdateAsync(ProductCategory model)
+        public async Task<Response> AddUpdateAsync(CategoryTypeDer model)
         {
             Response response = new Response() { IsSuccess = true };
 
             try
             {
 
-                _context.ProductCategories.Add(model);
+                _context.CategoryTypeDers.Add(model);
 
                 response.Message = $"{_name} guardado satisfactoriamente.!!!";
 
@@ -52,26 +52,29 @@ namespace TSSedaplanifica.Helpers
             return response;
         }
 
-        public async Task<ProductCategory> ByIdAsync(int id)
+        public async Task<CategoryTypeDer> ByIdAsync(int id)
         {
-            ProductCategory model = await _context.ProductCategories.FindAsync(id);
+            CategoryTypeDer model = await _context.CategoryTypeDers.Include(c=>c.Category).Where(d=>d.Id== id).FirstOrDefaultAsync();
 
             return model;
         }
 
-//        public async Task<Response> DeleteAsync(int ProductId, int CategoryId)
-        public async Task<Response> DeleteAsync(int Id)
+        public async Task<Response> DeleteAsync(int id)
         {
-            Response response = new Response() { IsSuccess = true };
+            Response response = new Response() 
+            { 
+                Message = $"Clases de categoría borrado(a) satisfactoriamente",
+                
+                IsSuccess = true 
+            };
 
-            //ProductCategory model = await _context.ProductCategories.Where(pc=>pc.Product.Id==ProductId && pc.Category.Id==CategoryId).FirstOrDefaultAsync();
-            ProductCategory model = await _context.ProductCategories.FindAsync(Id);
+            CategoryTypeDer model = await _context.CategoryTypeDers.Where(pc => pc.Id == id).FirstOrDefaultAsync();
 
             try
             {
                 response.Message = $"{_name} borrado(a) satisfactoriamente!!!";
 
-                _context.ProductCategories.Remove(model);
+                _context.CategoryTypeDers.Remove(model);
 
                 await _context.SaveChangesAsync();
             }
@@ -91,16 +94,6 @@ namespace TSSedaplanifica.Helpers
             }
 
             return response;
-        }
-
-        public async Task<List<ProductCategory>> ListAsync(int id)
-        {
-            List<ProductCategory> model = await _context.ProductCategories
-                                        .Include(p => p.Category)
-                                        .Where(p=>p.Product.Id==id)
-                                        .ToListAsync();
-
-            return model.OrderBy(m => m.Category.Name).ToList();
         }
 
     }

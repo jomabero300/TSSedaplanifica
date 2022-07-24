@@ -73,7 +73,34 @@ namespace TSSedaplanifica.Helpers
         {
             List<CategoryType> model = await _context.CategoryTypes.ToListAsync();
 
-            model.Add(new CategoryType { Id = 0, Name = "[Seleccione una Categoría..]" });
+            model.Add(new CategoryType { Id = 0, Name = "[Seleccione una clase de categoría..]" });
+
+            return model.OrderBy(m => m.Name).ToList();
+        }
+        public async Task<List<CategoryType>> ComboAsync(int categoryid)
+        {
+            //List<CategoryType> model = await _context.CategoryTypeDers
+            //                                            .Include(c=>c.CategoryType)
+            //                                            .Where(c=>c.Category.Id== categoryid)
+            //                                            .Select(s=>s.CategoryType)
+            //                                            .ToListAsync();
+
+            List<CategoryTypeDer> ctd = await _context.CategoryTypeDers
+                                                        .Include(c => c.Category)
+                                                        .Include(s=>s.CategoryType)
+                                                        .Where(c => c.Category.Id == categoryid)
+                                                        .ToListAsync();
+
+            List<CategoryType> ct = new List<CategoryType>();
+
+            foreach (var c in ctd)
+            {
+                ct.Add(new CategoryType { Id = c.CategoryType.Id, Name = c.CategoryType.Name });
+            }
+
+            List<CategoryType> model = await _context.CategoryTypes.Where(c => !ct.Contains(c)).ToListAsync();
+
+            model.Add(new CategoryType { Id = 0, Name = "[Seleccione una clase de categoría..]" });
 
             return model.OrderBy(m => m.Name).ToList();
         }

@@ -13,14 +13,20 @@ namespace TSSedaplanifica.Controllers
 
         private readonly IMeasureUnitHelper _measureUnitHelper;
         private readonly ICategoryHelper _categoryHelper;
+        private readonly ICategoryTypeHelper _categoryTypeHelper;
         private readonly IProductCategoryHelper _productCategoryHelper;
 
-        public ProductsController(IProductHelper prodcutHelper, IMeasureUnitHelper measureUnitHelper, ICategoryHelper categoryHelper, IProductCategoryHelper productCategoryHelper)
+        public ProductsController(IProductHelper prodcutHelper, 
+            IMeasureUnitHelper measureUnitHelper, 
+            ICategoryHelper categoryHelper, 
+            IProductCategoryHelper productCategoryHelper, 
+            ICategoryTypeHelper categoryTypeHelper)
         {
             _prodcutHelper = prodcutHelper;
             _measureUnitHelper = measureUnitHelper;
             _categoryHelper = categoryHelper;
             _productCategoryHelper = productCategoryHelper;
+            _categoryTypeHelper = categoryTypeHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -177,11 +183,12 @@ namespace TSSedaplanifica.Controllers
                 ProductId = id,
             };
 
-            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ListAsync(id), "Id", "Name");
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name");
+
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0,0), "Id", "Name");
 
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProductCategory(ProductAddCategoryViewModel model)
@@ -207,14 +214,27 @@ namespace TSSedaplanifica.Controllers
 
             }
 
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name",model.CategoryTypeId);
+
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(model.CategoryTypeId), "Id", "Name",model.CategoryId);
+
             return View(model);
         }
 
+        //public async Task<IActionResult> DeleteProductCategory(int ProductId, int CategoryId)
         public async Task<IActionResult> DeleteProductCategory(int ProductId, int CategoryId)
         {
-            Response response = await _productCategoryHelper.DeleteAsync(1, 1);
+            Response response = await _productCategoryHelper.DeleteAsync(CategoryId);
 
             return RedirectToAction(nameof(Details), new { id = ProductId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GeneListById(int categoryTypeId, int ProductId)
+        {
+            List<Category> lista = await _categoryHelper.ComboAsync(categoryTypeId, ProductId);
+
+            return Json(lista);
         }
     }
 }

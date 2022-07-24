@@ -65,19 +65,64 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<Category> ByIdAsync(int id)
         {
-            Category model = await _context.Categories.FindAsync(id);
+            Category model = await _context.Categories
+                                            .Include(c=>c.CategoryTypeDers)
+                                            .ThenInclude(d=>d.CategoryType)
+                                            .Where(c=>c.Id==id).FirstOrDefaultAsync();
 
             return model;
         }
 
-        public async Task<List<Category>> ComboAsync()
+        public async Task<List<Category>> ComboAsync(int id)
         {
-            List<Category> model = await _context.Categories.ToListAsync();
+            List<CategoryTypeDer> ct = await _context.CategoryTypeDers
+                                 .Include(c => c.Category)
+                                 .Include(d => d.CategoryType)
+                                 .Where(x => x.CategoryType.Id == id).ToListAsync();
+
+
+            List<Category> model = ct.Select(c => new Category
+            {
+                Id = c.Category.Id,
+                Name = c.Category.Name
+            }).ToList();
 
             model.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
 
             return model.OrderBy(m => m.Name).ToList();
         }
+
+        public async Task<List<Category>> ComboAsync(int id, int prodcutId)
+        {
+
+            List<ProductCategory> pc = await _context.ProductCategories
+                                .Include(c => c.Category)
+                                .Include(c => c.Product)
+                                .Where(x => x.Product.Id == prodcutId)
+                                .ToListAsync();
+            List<Category> category = pc.Select(d => new Category
+            {
+                Id = d.Category.Id,
+                Name = d.Category.Name
+            }).ToList();
+
+            List<CategoryTypeDer> ct = await _context.CategoryTypeDers
+                                 .Include(c => c.Category)
+                                 .Include(d => d.CategoryType)
+                                 .Where(x => x.CategoryType.Id == id && !category.Contains(x.Category)).ToListAsync();
+
+
+            List<Category> model = ct.Select(c => new Category
+            {
+                Id = c.Category.Id,
+                Name = c.Category.Name
+            }).ToList();
+
+            model.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
+
+            return model.OrderBy(m => m.Name).ToList();
+        }
+
 
         public async Task<Response> DeleteAsync(int id)
         {
@@ -90,13 +135,14 @@ namespace TSSedaplanifica.Helpers
                 response.Message = $"{_name} borrado(a) satisfactoriamente.!!!";
 
                 _context.Categories.Remove(model);
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 response.IsSuccess = false;
 
-                if (ex.Message.Contains("REFERENCE"))
+                if (ex.InnerException.Message.Contains("REFERENCE"))
                 {
                     response.Message = $"{_name} no se puede eliminar porque tiene registros relacionados";
                 }
@@ -104,7 +150,6 @@ namespace TSSedaplanifica.Helpers
                 {
                     response.Message = ex.Message;
                 }
-
             }
 
             return response;
@@ -116,27 +161,27 @@ namespace TSSedaplanifica.Helpers
             return model.OrderBy(m => m.Name).ToList();
         }
 
-        public async Task<List<Category>> ListAsync(int id)
-        {
-            List<ProductCategory> pc=await _context.ProductCategories.Include(P=>P.Category).Where(P=>P.Product.Id==id).ToListAsync();
-            //List<Category> filter = new List<Category>();
-            //foreach (var item in pc)
-            //{
-            //    filter.Add(new Category { Id = item.Category.Id, Name = item.Category.Name });
-            //}
-            List<Category> filter = pc.Select(p => new Category
-            {
-                Id = p.Category.Id,
-                Name = p.Category.Name
-            }).ToList();
+        //public async Task<List<Category>> ListAsync(int id)
+        //{
+        //    List<ProductCategory> pc=await _context.ProductCategories.Include(P=>P.Category).Where(P=>P.Product.Id==id).ToListAsync();
+        //    //List<Category> filter = new List<Category>();
+        //    //foreach (var item in pc)
+        //    //{
+        //    //    filter.Add(new Category { Id = item.Category.Id, Name = item.Category.Name });
+        //    //}
+        //    List<Category> filter = pc.Select(p => new Category
+        //    {
+        //        Id = p.Category.Id,
+        //        Name = p.Category.Name
+        //    }).ToList();
 
 
-            List<Category> model = await _context.Categories.Where(c=> !filter.Contains(c)).ToListAsync();
+        //    List<Category> model = await _context.Categories.Where(c=> !filter.Contains(c)).ToListAsync();
 
-            model.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
+        //    model.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
 
-            return model.OrderBy(m => m.Name).ToList();
-        }
+        //    return model.OrderBy(m => m.Name).ToList();
+        //}
 
     }
 }

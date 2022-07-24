@@ -11,7 +11,7 @@
                 @Html.DisplayNameFor(model => model.ProductCategories.FirstOrDefault().Category.Name)
             </th>
             <th>
-                <a asp-action="AddProductCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-warning"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
+                <a asp-action="AddProductCategory" asp-route-id="@Model.Id" class="btn btn-sm btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
             </th>
         </tr>
     </thead>
@@ -25,7 +25,9 @@
                     @Html.DisplayFor(modelItem => item.Category.Name)
                 </td>
                 <td>
-                    <a asp-action="DeleteProductCategory" asp-route-id="@item.Category.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+                    @*<a asp-action="DeleteProductCategory" asp-route-id="@item.Category.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>*@
+                    @Html.ActionLink("Borrar", "DeleteProductCategory",new { ProductId=item.Product.Id, CategoryId=item.Category.Id },new { @class = "btn btn-sm btn-danger bi bi-trash-fill" })
+
                 </td>
             </tr>
             }

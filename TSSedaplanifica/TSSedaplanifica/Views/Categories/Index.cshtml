@@ -33,11 +33,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @*@Html.DisplayFor(modelItem => item.Name)*@
+                <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn bn-sm btn-info"><i class="bi bi-eye-fill"></i> Ver</a> |
+                @*<a asp-action="Details" asp-route-id="@item.Id" class="btn bn-sm btn-info"><i class="bi bi-eye-fill"></i> Ver</a> |*@
                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
             </td>
         </tr>

@@ -1,9 +1,9 @@
 ﻿@model TSSedaplanifica.Models.ProductAddCategoryViewModel
 @{
-    ViewData["Title"] = "Category";
+    ViewData["Title"] = "Categoría";
 }
 
-<h1>Category</h1>
+<h1>Clase y Categoría</h1>
 
 <div class="container smfont">
     <form asp-action="AddProductCategory" autocomplete="off" asp-route-id="@Model.ProductId">
@@ -12,18 +12,25 @@
             <input type="hidden" asp-for="ProductId" />
             <input type="hidden" asp-for="Categories" />
             <div class="form-group">
+                <label asp-for="CategoryTypeId" class="control-label"></label>
+                <select id="categoryTypeId"  asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-control"></select>
+                <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
+                <select id="categoryId" asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-        </div>
+         </div>
         <div class="modal-footer">
             <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Guardar</button>
-            <a asp-action="Details" asp-route-ProductId="@Model.ProductId" asp-route-CategoryId="@Model.CategoryId" class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+            <a asp-action="Details" asp-route-ProductId="@Model.ProductId"class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
         </div>
     </form>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        <script src="~/js/productCategory.js"></script>
 }

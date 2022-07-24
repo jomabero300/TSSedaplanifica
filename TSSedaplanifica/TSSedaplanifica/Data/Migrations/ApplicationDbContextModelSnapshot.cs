@@ -285,23 +285,25 @@ namespace TSSedaplanifica.Data.Migrations
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.CategoryTypeDer", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoryId", "CategoryTypeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryTypeId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("CategoryId", "CategoryTypeId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_CategoryTypeDer_ CategoryIdCategoryTypeId");
 
                     b.ToTable("CategoryTypeDers", "Seda");
                 });
@@ -414,15 +416,25 @@ namespace TSSedaplanifica.Data.Migrations
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.ProductCategory", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("CategoryId", "ProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("CategoryId", "ProductId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_ProductCategory_CategoryIdProductId");
 
                     b.ToTable("ProductCategories", "Seda");
                 });
@@ -713,7 +725,7 @@ namespace TSSedaplanifica.Data.Migrations
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.CategoryTypeDer", b =>
                 {
                     b.HasOne("TSSedaplanifica.Data.Entities.Category", "Category")
-                        .WithMany("CategoryTypeDers")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -723,10 +735,6 @@ namespace TSSedaplanifica.Data.Migrations
                         .HasForeignKey("CategoryTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("TSSedaplanifica.Data.Entities.Product", null)
-                        .WithMany("CategoryTypeDers")
-                        .HasForeignKey("ProductId");
 
                     b.Navigation("Category");
 
@@ -762,7 +770,7 @@ namespace TSSedaplanifica.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("TSSedaplanifica.Data.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("ProductCategories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -866,11 +874,6 @@ namespace TSSedaplanifica.Data.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("TSSedaplanifica.Data.Entities.Category", b =>
-                {
-                    b.Navigation("CategoryTypeDers");
-                });
-
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.CategoryType", b =>
                 {
                     b.Navigation("CategoryTypeDers");
@@ -883,7 +886,7 @@ namespace TSSedaplanifica.Data.Migrations
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.Product", b =>
                 {
-                    b.Navigation("CategoryTypeDers");
+                    b.Navigation("ProductCategories");
                 });
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.School", b =>

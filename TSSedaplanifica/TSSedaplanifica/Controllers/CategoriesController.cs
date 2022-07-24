@@ -1,17 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Models;
 
 namespace TSSedaplanifica.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ICategoryHelper _category;
+        private readonly ICategoryTypeHelper _categoryTypeHelper;
+        private readonly ICategoryTypeDerHelper _categoryTypeDerHelper;
 
-        public CategoriesController(ICategoryHelper category)
+        public CategoriesController(ICategoryHelper category,
+            ICategoryTypeHelper categoryTypeHelper,
+            ICategoryTypeDerHelper categoryTypeDerHelper)
         {
             _category = category;
+            _categoryTypeHelper = categoryTypeHelper;
+            _categoryTypeDerHelper = categoryTypeDerHelper;
         }
 
         // GET: CategoryTypes
@@ -39,8 +47,10 @@ namespace TSSedaplanifica.Controllers
         }
 
         // GET: CategoryTypes/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name");
+
             return View();
         }
 
@@ -49,16 +59,33 @@ namespace TSSedaplanifica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,CategoryTypeId")] CategoryViewModel model)
         {
             if (ModelState.IsValid)
             {
-                Response response = await _category.AddUpdateAsync(category);
 
+                Category category = new Category()
+                {
+                    Id=model.Id,
+                    Name=model.Name
+                };
+
+                Response response = await _category.AddUpdateAsync(category);
 
                 if (response.IsSuccess)
                 {
+                    CategoryType ct = await _categoryTypeHelper.ByIdAsync(model.CategoryTypeId);
+
+                    CategoryTypeDer ctd = new CategoryTypeDer()
+                    {
+                        Category = category,
+                        CategoryType=ct,
+                    };
+                    
+                    response = await _categoryTypeDerHelper.AddUpdateAsync(ctd);
+
                     TempData["AlertMessage"] = response.Message;
+                    
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -66,7 +93,9 @@ namespace TSSedaplanifica.Controllers
 
             }
 
-            return View(category);
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name",model.CategoryTypeId);
+
+            return View(model);
         }
 
         // GET: CategoryTypes/Edit/5
@@ -134,8 +163,8 @@ namespace TSSedaplanifica.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Response response = await _category.DeleteAsync((int)id);
 
+            Response response = await _category.DeleteAsync((int)id);
 
             if (response.IsSuccess)
             {
@@ -150,5 +179,56 @@ namespace TSSedaplanifica.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> CategoryTypeDerAdd(int categoryid)
+        {
+            CategoryViewModel c = new CategoryViewModel() 
+            {
+                Id = categoryid,
+                Name="xx"
+            };
+
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(categoryid), "Id", "Name");
+
+            return View(c);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CategoryTypeDerAdd(CategoryViewModel model)
+        {
+            CategoryTypeDer ct = new CategoryTypeDer()
+            {
+                Category=await _category.ByIdAsync(model.Id),
+                CategoryType=await _categoryTypeHelper.ByIdAsync(model.CategoryTypeId)
+            };
+
+            Response response = await _categoryTypeDerHelper.AddUpdateAsync(ct);
+            
+            TempData["AlertMessage"] = response.Message;
+            
+            if(response.IsSuccess)
+            {
+
+                return RedirectToAction(nameof(Details),new {id=model.Id});
+            }
+
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(model.Id), "Id", "Name",model.CategoryTypeId);
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> CategoryTypeDerDelete(int id)
+        {
+            CategoryTypeDer ctd = await _categoryTypeDerHelper.ByIdAsync(id);
+
+            Response response = await _categoryTypeDerHelper.DeleteAsync(ctd.Id);
+
+            TempData["AlertMessage"] = response.Message;
+            
+            return RedirectToAction(nameof(Details), new { id = ctd.Category.Id });
+
+        }
+
     }
 }

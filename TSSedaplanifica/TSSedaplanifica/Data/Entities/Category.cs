@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TSSedaplanifica.Data.Entities
@@ -16,10 +17,10 @@ namespace TSSedaplanifica.Data.Entities
         public string Name { get; set; }
 
         [Display(Name = "Tipo")]
-        [NotMapped]       
+        [JsonIgnore]
         public ICollection<CategoryTypeDer> CategoryTypeDers { get; set; }
 
-        [NotMapped]       
+        [JsonIgnore]
         public ICollection<ProductCategory> ProductCategories { get; set; }
     }
 }

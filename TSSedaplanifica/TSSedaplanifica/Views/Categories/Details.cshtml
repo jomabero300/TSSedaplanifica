@@ -22,3 +22,22 @@
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> | 
     <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
 </div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="container-fluid">
+            <div class="card mt-2">
+                <div class="card-header text-danger">
+                    <i class="fa fa-object-group"></i>  <strong>Clases de categoría</strong>
+                </div>
+                <div class="card-body">
+                    <div id="view-all">
+                        @await Html.PartialAsync("_CategoriesViewAll", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
