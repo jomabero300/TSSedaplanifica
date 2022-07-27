@@ -80,12 +80,11 @@ namespace TSSedaplanifica.Controllers
         // POST: States/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            Response response = await _userHelper.DeleteAsync(id);
+            Response response = await _userHelper.DeleteUserRoleAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

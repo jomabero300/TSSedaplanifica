@@ -32,20 +32,37 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<RoleUserModelView> ByIdRoleUserAsync(string id)
         {
-            var user = await (from U in _context.Users
+            RoleUserModelView user;
+
+            var use = await (from U in _context.Users
                               join E in _context.UserRoles on U.Id equals E.UserId
                               join R in _context.Roles on E.RoleId equals R.Id
                               where U.Id == id
                               select new { U.Id, U.FullName,RoleId= R.Id }).FirstOrDefaultAsync();
-
-            var users = new RoleUserModelView()
+            if(use == null)
             {
-                UserId = user.Id,
-                FullName = user.FullName,
-                RoleId = user.RoleId
-            };
+                var useNu = await (from U in _context.Users
+                                  where U.Id == id
+                                  select new { U.Id, U.FullName, RoleId = "" }).FirstOrDefaultAsync();
 
-            return users;
+                user = new RoleUserModelView()
+                {
+                    UserId = useNu.Id,
+                    FullName = useNu.FullName,
+                    RoleId = useNu.RoleId
+                };
+            }
+            else
+            {
+                user = new RoleUserModelView()
+                {
+                    UserId = use.Id,
+                    FullName = use.FullName,
+                    RoleId = use.RoleId
+                };
+            }
+
+            return user;
         }
 
         public async Task CheckRoleAsync(string roleName)
@@ -67,7 +84,31 @@ namespace TSSedaplanifica.Helpers
             try
             {
                 var user = await _context.Users.FindAsync(id);
+
                 _context.Users.Remove(user);
+
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<Response> DeleteUserRoleAsync(string id)
+        {
+            Response response = new Response { IsSuccess = true, Message = "Usiario borrado.." };
+
+            try
+            {
+
+                var userRole = await _context.UserRoles.Where(u=> u.UserId == id).FirstOrDefaultAsync();
+
+                _context.UserRoles.Remove(userRole);
+
                 await _context.SaveChangesAsync();
 
             }
@@ -108,16 +149,33 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<List<RoleUserModelView>> ListRoleUserAsync()
         {
-            var user = await (from U in _context.Users
-                              join E in _context.UserRoles on U.Id equals E.UserId
-                              join R in _context.Roles on E.RoleId equals R.Id
-                              select new { U.Id, U.FullName, R.Name }).ToListAsync();
+
+            var user =await (from U in _context.Users
+                        join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
+                        from UR in userRroleRela.DefaultIfEmpty()
+                        select new { Id = U.Id, FullName = U.FullName, Name = UR.RoleId ?? string.Empty }).ToListAsync();
+
+            //var user0 = await (from U in _context.Users
+            //                  join E in _context.UserRoles on U.Id equals E.UserId
+            //                  join R in _context.Roles on E.RoleId equals R.Id 
+            //                  select new { Id = U.Id, FullName = U.FullName, Name = R.Name ?? string.Empty }).ToListAsync();
+
+            //var users = user.Select(u => new RoleUserModelView()
+            //{
+            //    UserId = u.Id,
+            //    FullName = u.FullName,
+            //    RoleId = u.Name
+            //});
+            //var userRole = await (from U in _context.Users
+            //                  join E in _context.UserRoles on U.Id equals E.UserId into userRoles
+            //                  from UR in userRoles.DefaultIfEmpty()
+            //                  select new { Id = U.Id, FullName=U.FullName, Name= UR.UserId ?? string.Empty  }).ToListAsync();
 
             var users = user.Select(u => new RoleUserModelView()
             {
                 UserId = u.Id,
                 FullName = u.FullName,
-                RoleId = u.Name
+                RoleId = u.Name==""?String.Empty: _context.Roles.Where(r=>r.Id== u.Name).FirstOrDefault().Name
             });
 
             return users.OrderBy(u => u.FullName).ToList();
@@ -133,13 +191,17 @@ namespace TSSedaplanifica.Helpers
 
                 var role = _context.UserRoles.Where(u => u.UserId == model.UserId).FirstOrDefault();
 
-                var roleName = _context.Roles.Where(r => r.Id == role.RoleId).FirstOrDefault().Name;
+                if(role!=null)
+                {
+                    var roleName = _context.Roles.Where(r => r.Id == role.RoleId).FirstOrDefault().Name;
 
-                await _userManager.RemoveFromRoleAsync(user, roleName);
+                    await _userManager.RemoveFromRoleAsync(user, roleName);
 
-                roleName = _context.Roles.Where(r => r.Id == model.RoleId).FirstOrDefault().Name;
+                }
 
-                await _userManager.AddToRoleAsync(user, roleName);
+                var roleNameAdd = _context.Roles.Where(r => r.Id == model.RoleId).FirstOrDefault().Name;
+
+                await _userManager.AddToRoleAsync(user, roleNameAdd);
             }
             catch (Exception ex)
             {

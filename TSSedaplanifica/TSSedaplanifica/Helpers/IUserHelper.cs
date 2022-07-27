@@ -26,5 +26,7 @@ namespace TSSedaplanifica.Helpers
         Task<Response> UserRoleAddEditAsync(RoleUserModelView email);
 
         Task<Response> DeleteAsync(int id);
+
+        Task<Response> DeleteUserRoleAsync(string id);
     }
 }
