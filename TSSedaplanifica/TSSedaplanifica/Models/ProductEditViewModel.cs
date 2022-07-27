@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 using TSSedaplanifica.Data.Entities;
 
 namespace TSSedaplanifica.Models
@@ -19,8 +20,9 @@ namespace TSSedaplanifica.Models
 
         [Display(Name = "Unidad de medida")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-
-        public MeasureUnit MeasureUnit { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una clase de categoría.")]
+        public IEnumerable<SelectListItem> MeasureUnit { get; set; }
+        //public MeasureUnit MeasureUnit { get; set; }
 
     }
 }

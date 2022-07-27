@@ -8,9 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(cfg =>
 {
@@ -20,7 +25,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(cfg =>
     cfg.Password.RequireLowercase = false;
     cfg.Password.RequireNonAlphanumeric = false;
     cfg.Password.RequireUppercase = false;
-}).AddEntityFrameworkStores<ApplicationDbContext>();
+})
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<ICategoryTypeHelper, CategoryTypeHelper>();
 builder.Services.AddScoped<ICategoryHelper, CategoryHelper>();
@@ -30,6 +37,9 @@ builder.Services.AddScoped<ISolicitStateHelper, SolicitStateHelper>();
 builder.Services.AddScoped<IProductHelper, ProductHelper>();
 builder.Services.AddScoped<IProductCategoryHelper, ProductCategoryHelper>();
 builder.Services.AddScoped<ICategoryTypeDerHelper, CategoryTypeDerHelper>();
+builder.Services.AddScoped<ICityHelper, CityHelper>();
+builder.Services.AddScoped<ISchoolHelper, SchoolHelper>();
+builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<IApiService, ApiService>();
 
 builder.Services.AddTransient<SeedDb>();

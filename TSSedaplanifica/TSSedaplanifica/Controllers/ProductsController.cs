@@ -55,12 +55,9 @@ namespace TSSedaplanifica.Controllers
         // GET: CategoryTypes/Create
         public async Task<IActionResult> Create()
         {
-            ProductCreateViewModel vm = new ProductCreateViewModel()
-            {
-                MeasureUnit =await _measureUnitHelper.ComboAsync()
-            };
+            ViewData["MeasureUnitId"] = new SelectList(await _measureUnitHelper.ComboAsync(), "Id", "Name");
 
-            return View(vm);
+            return View();
         }
 
         // POST: CategoryTypes/Create
@@ -94,7 +91,6 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
-        // GET: CategoryTypes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -109,15 +105,22 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            return View(model);
+            ProductCreateViewModel mv = new()
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                MeasureUnitId= model.MeasureUnit.Id
+            };
+
+            ViewData["MeasureUnitId"] = new SelectList(await _measureUnitHelper.ComboAsync(), "Id", "Name", model.MeasureUnit.Id);
+
+            return View(mv);
         }
 
-        // POST: CategoryTypes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Product model)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MeasureUnitId")] ProductCreateViewModel model)
         {
             if (id != model.Id)
             {
@@ -126,7 +129,14 @@ namespace TSSedaplanifica.Controllers
 
             if (ModelState.IsValid)
             {
-                Response response = await _prodcutHelper.AddUpdateAsync(model);
+                Product product = new Product()
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Description = model.Description,
+                    MeasureUnit = await _measureUnitHelper.ByIdAsync(model.MeasureUnitId)
+                };
+                Response response = await _prodcutHelper.AddUpdateAsync(product);
 
                 TempData["AlertMessage"] = response.Message;
 
@@ -136,8 +146,10 @@ namespace TSSedaplanifica.Controllers
                 }
 
                 ModelState.AddModelError(string.Empty, response.Message);
-
             }
+
+            ViewData["MeasureUnitId"] = new SelectList(await _measureUnitHelper.ComboAsync(), "Id", "Name", model.MeasureUnitId);
+
             return View(model);
         }
 
@@ -185,7 +197,7 @@ namespace TSSedaplanifica.Controllers
 
             ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name");
 
-            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0,0), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0, 0), "Id", "Name");
 
             return View(model);
         }
@@ -193,12 +205,12 @@ namespace TSSedaplanifica.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProductCategory(ProductAddCategoryViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ProductCategory pc = new ProductCategory()
                 {
-                    Category=await _categoryHelper.ByIdAsync(model.CategoryId),
-                    Product=await _prodcutHelper.ByIdAsync(model.ProductId)
+                    Category = await _categoryHelper.ByIdAsync(model.CategoryId),
+                    Product = await _prodcutHelper.ByIdAsync(model.ProductId)
                 };
 
                 Response response = await _productCategoryHelper.AddUpdateAsync(pc);
@@ -207,18 +219,19 @@ namespace TSSedaplanifica.Controllers
                 {
                     TempData["AlertMessage"] = response.Message;
 
-                    return RedirectToAction(nameof(Details), new { id= model.ProductId });
+                    return RedirectToAction(nameof(Details), new { id = model.ProductId });
                 }
 
                 ModelState.AddModelError(string.Empty, response.Message);
 
             }
 
-            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name",model.CategoryTypeId);
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name", model.CategoryTypeId);
 
-            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(model.CategoryTypeId), "Id", "Name",model.CategoryId);
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(model.CategoryTypeId), "Id", "Name", model.CategoryId);
 
             return View(model);
+
         }
 
         //public async Task<IActionResult> DeleteProductCategory(int ProductId, int CategoryId)
@@ -233,6 +246,7 @@ namespace TSSedaplanifica.Controllers
         public async Task<IActionResult> GeneListById(int categoryTypeId, int ProductId)
         {
             List<Category> lista = await _categoryHelper.ComboAsync(categoryTypeId, ProductId);
+
 
             return Json(lista);
         }

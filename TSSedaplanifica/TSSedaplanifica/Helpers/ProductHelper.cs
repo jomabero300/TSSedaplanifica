@@ -116,7 +116,10 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<List<Product>> ListAsync()
         {
-            List<Product> model = await _context.Products.Include(p=>p.MeasureUnit).ToListAsync();
+            List<Product> model = await _context.Products
+                                .Include(p=>p.MeasureUnit)
+                                .Include(c => c.ProductCategories)
+                                .ToListAsync();
 
             return model.OrderBy(m => m.Name).ToList();
         }

@@ -465,10 +465,15 @@ namespace TSSedaplanifica.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<int?>("SchoolCampusId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ZoneId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SchoolCampusId");
 
                     b.HasIndex("ZoneId");
 
@@ -536,6 +541,15 @@ namespace TSSedaplanifica.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<DateTime>("DateOfApprovedDenied")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfClosed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfReceived")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateOfSolicit")
                         .HasColumnType("datetime2");
 
@@ -547,16 +561,39 @@ namespace TSSedaplanifica.Data.Migrations
                     b.Property<int>("SchoolId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SolicitReferredId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SolicitStatesId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserApprovedDeniedId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserClosedId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserReceivedId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolId");
 
+                    b.HasIndex("SolicitReferredId");
+
                     b.HasIndex("SolicitStatesId");
 
-                    b.ToTable("Solicit", "Seda");
+                    b.HasIndex("UserApprovedDeniedId");
+
+                    b.HasIndex("UserClosedId");
+
+                    b.HasIndex("UserReceivedId");
+
+                    b.ToTable("Solicits", "Seda");
                 });
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.SolicitDetail", b =>
@@ -566,6 +603,9 @@ namespace TSSedaplanifica.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("DateOfClosed")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("DeliveredQuantity")
                         .HasColumnType("decimal(8,2)");
@@ -590,9 +630,15 @@ namespace TSSedaplanifica.Data.Migrations
                     b.Property<int>("SolicitId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserDeliveredId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UserDeliveredId");
 
                     b.HasIndex("SolicitId", "ProductId")
                         .IsUnique()
@@ -725,7 +771,7 @@ namespace TSSedaplanifica.Data.Migrations
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.CategoryTypeDer", b =>
                 {
                     b.HasOne("TSSedaplanifica.Data.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("CategoryTypeDers")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -764,7 +810,7 @@ namespace TSSedaplanifica.Data.Migrations
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.ProductCategory", b =>
                 {
                     b.HasOne("TSSedaplanifica.Data.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("ProductCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -788,6 +834,10 @@ namespace TSSedaplanifica.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TSSedaplanifica.Data.Entities.School", "SchoolCampus")
+                        .WithMany()
+                        .HasForeignKey("SchoolCampusId");
+
                     b.HasOne("TSSedaplanifica.Data.Entities.Zone", "Zone")
                         .WithMany()
                         .HasForeignKey("ZoneId")
@@ -795,6 +845,8 @@ namespace TSSedaplanifica.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("City");
+
+                    b.Navigation("SchoolCampus");
 
                     b.Navigation("Zone");
                 });
@@ -835,15 +887,45 @@ namespace TSSedaplanifica.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TSSedaplanifica.Data.Entities.Solicit", "SolicitReferred")
+                        .WithMany()
+                        .HasForeignKey("SolicitReferredId");
+
                     b.HasOne("TSSedaplanifica.Data.Entities.SolicitState", "SolicitStates")
                         .WithMany()
                         .HasForeignKey("SolicitStatesId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TSSedaplanifica.Data.Entities.ApplicationUser", "UserApprovedDenied")
+                        .WithMany()
+                        .HasForeignKey("UserApprovedDeniedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TSSedaplanifica.Data.Entities.ApplicationUser", "UserClosed")
+                        .WithMany()
+                        .HasForeignKey("UserClosedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TSSedaplanifica.Data.Entities.ApplicationUser", "UserReceived")
+                        .WithMany()
+                        .HasForeignKey("UserReceivedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("School");
 
+                    b.Navigation("SolicitReferred");
+
                     b.Navigation("SolicitStates");
+
+                    b.Navigation("UserApprovedDenied");
+
+                    b.Navigation("UserClosed");
+
+                    b.Navigation("UserReceived");
                 });
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.SolicitDetail", b =>
@@ -860,9 +942,17 @@ namespace TSSedaplanifica.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("TSSedaplanifica.Data.Entities.ApplicationUser", "UserDelivered")
+                        .WithMany()
+                        .HasForeignKey("UserDeliveredId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Product");
 
                     b.Navigation("Solicit");
+
+                    b.Navigation("UserDelivered");
                 });
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.State", b =>
@@ -872,6 +962,13 @@ namespace TSSedaplanifica.Data.Migrations
                         .HasForeignKey("CountryId");
 
                     b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("TSSedaplanifica.Data.Entities.Category", b =>
+                {
+                    b.Navigation("CategoryTypeDers");
+
+                    b.Navigation("ProductCategories");
                 });
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.CategoryType", b =>

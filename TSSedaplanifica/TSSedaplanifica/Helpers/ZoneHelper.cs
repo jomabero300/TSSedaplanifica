@@ -13,6 +13,20 @@ namespace TSSedaplanifica.Helpers
             _context = context;
         }
 
+        public async Task<Zone> ByIdAsync(int id)
+        {
+            return await _context.Zones.FindAsync(id);
+        }
+
+        public async Task<List<Zone>> ComboAsync()
+        {
+            List<Zone> model = await _context.Zones.ToListAsync();
+
+            model.Add(new Zone { Id = 0, Name = "[Seleccione un zona..]" });
+
+            return model.OrderBy(z=>z.Name).ToList();
+        }
+
         public async Task<List<Zone>> ListAsync()
         {
             List<Zone> model = await _context.Zones.ToListAsync();

@@ -1,0 +1,21 @@
+﻿@model TSSedaplanifica.Data.Entities.School
+
+@{
+    ViewData["Title"] = "Borrar";
+}
+
+<h1>Borrar</h1>
+
+<h3>¿Está seguro de querer borrar esta institución educativa?</h3>
+<div>
+    <h4>Institución educativa</h4>
+    <hr />
+    
+    <partial name="_SchoolDetailsDelete" />
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+            <button class="btn btn-danger" type="submit"><i class="bi bi-trash-fill"></i> Borrar</button>
+            <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+    </form>
+</div>

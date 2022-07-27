@@ -33,9 +33,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @*@Html.DisplayFor(modelItem => item.Name)*@
                 <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
-
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |

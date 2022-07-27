@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 
 namespace TSSedaplanifica.Data
@@ -9,21 +10,124 @@ namespace TSSedaplanifica.Data
     {
         private readonly ApplicationDbContext _context;
         private readonly IApiService _apiService;
+        private readonly IUserHelper _userHelper;
 
-        public SeedDb(ApplicationDbContext context, IApiService apiService)
+
+        public SeedDb(ApplicationDbContext context, IApiService apiService, IUserHelper userHelper)
         {
             _context = context;
             _apiService = apiService;
+            _userHelper = userHelper;
         }
 
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
+
+            await CheckZoneAsync();
             await CheckCountriesAsync();
             await CheckCategoryTypeAsync();
-            await CheckCategoriesAsync();
+            await CheckCategoryTypeDesAsync();
+            await CheckMeasureUnitAsync();
+            await CheckSolicitStateAsync();
+            await CheckRolesAsync();
+            await CheckUserAsync("0000","admin@gmail.com","Super","administrador",Guid.Empty,"3000000000",TypeUser.Administrador);
+            await CheckUserAsync("1010","jomabero300@gmail.com","Manuel","Bello",Guid.Empty,"313670740",TypeUser.Administrador);
+            await CheckUserAsync("2020","leonardopulidom@gmail.com","Leonardo","Pulido",Guid.Empty,"3134907527",TypeUser.Administrador);
+
+            await CheckUserAsync("2020","GustavovillaRector@gmail.com","Rector","villa",Guid.Empty,"3134907527",TypeUser.Administrador);
+            await CheckUserAsync("2020", "GustavovillaCoordinador@gmail.com", "Coordinador","villa",Guid.Empty,"3134907527",TypeUser.Administrador);
+            await CheckUserAsync("2020","leonardopulidom@gmail.com","Leonardo","Pulido",Guid.Empty,"3134907527",TypeUser.Administrador);
+            await CheckUserAsync("2020","leonardopulidom@gmail.com","Leonardo","Pulido",Guid.Empty,"3134907527",TypeUser.Administrador);
         }
 
+        private async Task<ApplicationUser> CheckUserAsync(
+            string document,
+            string email,
+            string firstName,
+            string lastName,
+            Guid ImageId,
+            string phone,
+            TypeUser typeUser)
+        {
+            ApplicationUser user = await _userHelper.GetUserAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    Email = email,
+                    UserName = email,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    PhoneNumber = phone,
+                    Document = document,
+                };
+
+                await _userHelper.AddUserAsync(user, "123456");
+                await _userHelper.AddUserToRoleAsync(user, typeUser.ToString());
+            }
+
+            return user;
+        }
+
+        private async Task CheckRolesAsync()
+        {
+            await _userHelper.CheckRoleAsync(TypeUser.Administrador.ToString());
+            await _userHelper.CheckRoleAsync(TypeUser.Coordinador.ToString());
+            await _userHelper.CheckRoleAsync(TypeUser.Planificador.ToString());
+            await _userHelper.CheckRoleAsync(TypeUser.Rector.ToString());
+            await _userHelper.CheckRoleAsync(TypeUser.Secretario_municipal.ToString());
+        }
+
+        private async Task CheckZoneAsync()
+        {
+            if (!_context.Zones.Any())
+            {
+                _context.Zones.Add(new Zone { Name = "Rural" });
+                _context.Zones.Add(new Zone { Name = "Urbano" });
+
+                await _context.SaveChangesAsync();
+            }
+
+        }
+
+        private async Task CheckSolicitStateAsync()
+        {
+            if (!_context.SolicitStates.Any())
+            {
+                _context.SolicitStates.Add(new SolicitState { Name = "" });
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task CheckMeasureUnitAsync()
+        {
+            if (!_context.MeasureUnits.Any())
+            {
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Cuñete",NameShort="Cuñe" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Galón",NameShort="Gal" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Gigabit",NameShort="Gb" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "GigaByte",NameShort="GB" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Global",NameShort="Gl" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Gramo",NameShort="G" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Kilogramo",NameShort="Kg" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Kilómetro",NameShort="Km" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Litro",NameShort="Lt" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Megabit",NameShort="Mb" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Megabyte",NameShort="MB" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "MegaByte por segundo",NameShort="Mb/s" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Metro",NameShort="M" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Metro cúbico",NameShort="M3" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Pulgada",NameShort="''" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "TeraByte",NameShort="TB" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "TeraByte por segundo",NameShort="Tb/s" });
+                _context.MeasureUnits.Add(new MeasureUnit { Name = "Unidad",NameShort="Un" });
+                
+
+                await _context.SaveChangesAsync();
+            }
+        }
 
         private async Task CheckCountriesAsync()
         {
@@ -109,7 +213,7 @@ namespace TSSedaplanifica.Data
 
         }
 
-        private async Task CheckCategoriesAsync()
+        private async Task CheckCategoryTypeDesAsync()
         {
             if(!_context.Categories.Any())
             {
@@ -153,5 +257,7 @@ namespace TSSedaplanifica.Data
                 }
             }
         }
+
+
     }
 }

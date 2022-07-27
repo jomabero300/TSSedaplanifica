@@ -8,7 +8,7 @@ namespace TSSedaplanifica.Helpers
     {
         Task<Response> AddUpdateAsync(MeasureUnit model);
         Task<MeasureUnit> ByIdAsync(int id);
-        Task<IEnumerable<SelectListItem>> ComboAsync();
+        Task<List<MeasureUnit>> ComboAsync();
         Task<Response> DeleteAsync(int id);
         Task<List<MeasureUnit>> ListAsync();
 

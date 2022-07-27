@@ -1,0 +1,27 @@
+﻿@model TSSedaplanifica.Models.SchoolViewModel
+
+<div class="form-group">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="DaneCode" class="control-label"></label>
+    <input asp-for="DaneCode" class="form-control" />
+    <span asp-validation-for="DaneCode" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Address" class="control-label"></label>
+    <input asp-for="Address" class="form-control" />
+    <span asp-validation-for="Address" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="CityId" class="control-label"></label>
+    <select asp-for="CityId" asp-items="ViewBag.CityId" class="form-control"></select>
+    <span asp-validation-for="CityId" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ZoneId" class="control-label"></label>
+    <select asp-for="ZoneId" asp-items="ViewBag.ZoneId" class="form-control"></select>
+    <span asp-validation-for="ZoneId" class="text-danger"></span>
+</div> 

@@ -92,35 +92,24 @@ namespace TSSedaplanifica.Helpers
             return model.OrderBy(m => m.Name).ToList();
         }
 
-        public async Task<List<Category>> ComboAsync(int id, int prodcutId)
+        public async Task<List<Category>> ComboAsync(int categoryTypeId, int productId)
         {
 
-            List<ProductCategory> pc = await _context.ProductCategories
-                                .Include(c => c.Category)
-                                .Include(c => c.Product)
-                                .Where(x => x.Product.Id == prodcutId)
-                                .ToListAsync();
-            List<Category> category = pc.Select(d => new Category
-            {
-                Id = d.Category.Id,
-                Name = d.Category.Name
-            }).ToList();
+            List<Category> cp = (from c in _context.Categories
+                                 join p in _context.ProductCategories on c.Id equals p.Category.Id
+                                 where p.Product.Id == productId
+                                 select c).ToList();
 
-            List<CategoryTypeDer> ct = await _context.CategoryTypeDers
-                                 .Include(c => c.Category)
-                                 .Include(d => d.CategoryType)
-                                 .Where(x => x.CategoryType.Id == id && !category.Contains(x.Category)).ToListAsync();
+            List<Category> ct = await (from c in _context.Categories
+                                       join ctd in _context.CategoryTypeDers on c.Id equals ctd.Category.Id
+                                       where ctd.CategoryType.Id == categoryTypeId && !cp.Contains(c)
+                                       select c).ToListAsync();
 
 
-            List<Category> model = ct.Select(c => new Category
-            {
-                Id = c.Category.Id,
-                Name = c.Category.Name
-            }).ToList();
+            ct.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
 
-            model.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
+            return ct.OrderBy(m => m.Name).ToList();
 
-            return model.OrderBy(m => m.Name).ToList();
         }
 
 

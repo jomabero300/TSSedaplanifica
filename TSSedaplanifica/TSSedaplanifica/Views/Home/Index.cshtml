@@ -2,8 +2,44 @@
     ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
+@*<div class="text-center">
     <h1 class="display-4"><strong>SedaPlanifica</strong></h1>
     <p><strong>Aplicación</strong> de Planificacion Educativa</p>
     <p>Secretaría de Educación Departamental de Arauca</p>
 </div>
+
+
+@model AlcaldiaAraucaPortalWeb.Models.CarouselModelViewList;
+*@
+
+<body>
+    <section>
+        <div class="container-sm">
+            <div class="text-center">
+                <div class="col-md-12">
+                    <div id="carouselExampleInterval" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+
+                            <div class="carousel-item active" data-interval="3000">
+                                <img src="~/images/LogoTotSp.png" class="img-fluid" width="996" height="400" alt="Iamgen 1">
+                            </div>
+
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleInterval" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Anterior</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleInterval" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Siguiente</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <h4 style="color:white;">Avisos legales</h4>
+        <a href="#" style="color:white">Política de cookies</a>
+    </footer>
+</body>

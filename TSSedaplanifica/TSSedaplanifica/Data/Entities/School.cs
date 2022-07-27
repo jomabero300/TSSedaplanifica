@@ -16,7 +16,7 @@ namespace TSSedaplanifica.Data.Entities
         public string Name { get; set; }
 
         [Column(TypeName = "varchar(18)")]
-        [Display(Name = "Codigo dane")]
+        [Display(Name = "Código dane")]
         [MaxLength(18, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string DaneCode { get; set; }
@@ -34,6 +34,9 @@ namespace TSSedaplanifica.Data.Entities
         [Display(Name = "Zona")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public Zone Zone { get; set; }
+
+        public School SchoolCampus { get; set; }
+
         public ICollection<SchoolImage> SchoolImages { get; set; }
     }
 }

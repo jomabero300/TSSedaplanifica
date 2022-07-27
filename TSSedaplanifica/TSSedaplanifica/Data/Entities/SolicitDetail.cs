@@ -45,5 +45,12 @@ namespace TSSedaplanifica.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Description { get; set; }
 
+        [Display(Name = "Fecha entrega")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public DateTime DateOfClosed { get; set; } = DateTime.Now;
+
+        [Display(Name = "Usuario que entrega")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public ApplicationUser UserDelivered { get; set; }
     }
 }

@@ -71,28 +71,29 @@ namespace TSSedaplanifica.Helpers
             return model;
         }
 
-        public async Task<IEnumerable<SelectListItem>> ComboAsync()
+        public async Task<List<MeasureUnit>> ComboAsync()
         {
-            //List<MeasureUnit> model = await _context.MeasureUnits.ToListAsync();
+            List<MeasureUnit> model = await _context.MeasureUnits.ToListAsync();
 
-            //model.Add(new MeasureUnit { Id = 0, Name = "[Seleccione una Categoría..]" });
+            model.Add(new MeasureUnit { Id = 0, Name = "[Seleccione una Categoría..]" });
 
-            //return model.OrderBy(m => m.Name).ToList();
-            List<SelectListItem> list = await _context.MeasureUnits.Select(x => new SelectListItem
-            {
-                Text = x.Name,
-                Value = $"{x.Id}"
-            })
-                 .OrderBy(x => x.Text)
-                 .ToListAsync();
+            return model.OrderBy(m => m.Name).ToList();
 
-            list.Insert(0, new SelectListItem
-            {
-                Text = "[Seleccione unidad de medida...]",
-                Value = "0"
-            });
+            //List<SelectListItem> list = await _context.MeasureUnits.Select(x => new SelectListItem
+            //{
+            //    Text = x.Name,
+            //    Value = $"{x.Id}"
+            //})
+            //     .OrderBy(x => x.Text)
+            //     .ToListAsync();
 
-            return list;
+            //list.Insert(0, new SelectListItem
+            //{
+            //    Text = "[Seleccione unidad de medida...]",
+            //    Value = "0"
+            //});
+
+            //return list;
         }
 
         public async Task<Response> DeleteAsync(int id)

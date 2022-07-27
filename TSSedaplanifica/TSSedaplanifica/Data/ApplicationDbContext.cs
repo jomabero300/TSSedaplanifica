@@ -10,6 +10,7 @@ namespace TSSedaplanifica.Data
             : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -30,10 +31,6 @@ namespace TSSedaplanifica.Data
                 .HasIndex("CategoryId", "CategoryTypeId")
                 .HasDatabaseName("IX_CategoryTypeDer_ CategoryIdCategoryTypeId")
                 .IsUnique();
-
-            //builder.Entity<CategoryTypeDer>()
-            //    .HasKey("CategoryId", "CategoryTypeId");
-
 
             builder.Entity<City>()
                 .HasIndex("StateId", "Name")
@@ -59,8 +56,6 @@ namespace TSSedaplanifica.Data
                 .HasIndex("CategoryId", "ProductId")
                 .HasDatabaseName("IX_ProductCategory_CategoryIdProductId")
                 .IsUnique();
-            //builder.Entity<ProductCategory>()
-            //    .HasKey("CategoryId", "ProductId");
 
             builder.Entity<School>()
                 .HasIndex("CityId", "ZoneId", "Name")
@@ -76,6 +71,7 @@ namespace TSSedaplanifica.Data
                 .HasDatabaseName("IX_SolicitDetail_Solicit_Product_ Id")
                 .IsUnique();
 
+
             builder.Entity<SolicitState>()
                 .HasIndex(s => s.Name)
                 .HasDatabaseName("IX_SolicitState_ Name")
@@ -90,6 +86,8 @@ namespace TSSedaplanifica.Data
                 .HasIndex(z => z.Name)
                 .HasDatabaseName("IX_Zone_Name")
                 .IsUnique();
+
+
         }
 
         public DbSet<Category> Categories { get; set; }

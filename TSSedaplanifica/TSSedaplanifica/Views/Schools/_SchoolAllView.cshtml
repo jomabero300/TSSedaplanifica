@@ -1,0 +1,49 @@
+﻿@model  TSSedaplanifica.Models.SchoolDetailsViewModel
+
+<table class="table table-striped table-responsive-md table-bordered smfont"  id="CategoriesTable">
+    <colgroup>
+        <col span="1" />
+        <col span="1" />
+    </colgroup>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Schools.FirstOrDefault().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Schools.FirstOrDefault().DaneCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Schools.FirstOrDefault().Address)
+            </th>
+            <th>
+                <a asp-action="AddSchool" asp-route-id="@Model.Id" class="btn btn-sm btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model.Schools.Count>0)
+        {
+            @foreach (var item in Model.Schools)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DaneCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    <a asp-action="DeleteSchool" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+
+                    @*@Html.ActionLink("Borrar", "DeleteSchool",new { id=item.Id },new { @class = "btn btn-sm btn-danger bi bi-trash-fill" })*@
+
+                </td>
+            </tr>
+            }
+        }
+    </tbody>
+</table>

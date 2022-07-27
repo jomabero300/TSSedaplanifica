@@ -27,7 +27,7 @@
             <div class="form-group">
                 <span class="required">*</span>
                 <label asp-for="MeasureUnitId" class="control-label"></label>
-                <select asp-for="MeasureUnitId" asp-items="Model.MeasureUnit" class="form-control"></select>
+                <select asp-for="MeasureUnitId" asp-items="ViewBag.MeasureUnitId" class="form-control"></select>
                 <span asp-validation-for="MeasureUnitId" class="text-danger"></span>
             </div>
 

@@ -9,7 +9,9 @@
     <form asp-action="AddProductCategory" autocomplete="off" asp-route-id="@Model.ProductId">
         <div class="box-body">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProductId" />
+
+            <input id="productId" type="hidden" asp-for="ProductId" />
+
             <input type="hidden" asp-for="Categories" />
             <div class="form-group">
                 <label asp-for="CategoryTypeId" class="control-label"></label>
@@ -25,7 +27,7 @@
          </div>
         <div class="modal-footer">
             <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Guardar</button>
-            <a asp-action="Details" asp-route-ProductId="@Model.ProductId"class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+            <a asp-action="Details" asp-route-id="@Model.ProductId"class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
         </div>
     </form>
 </div>

@@ -9,7 +9,7 @@ namespace TSSedaplanifica.Helpers
         Task<Response> AddUpdateAsync(Category model);
         Task<Category> ByIdAsync(int id);
         Task<List<Category>> ComboAsync(int id);
-        Task<List<Category>> ComboAsync(int id, int prodcutId);
+        Task<List<Category>> ComboAsync(int CategoryId, int prodcutId);
         Task<Response> DeleteAsync(int id);
         Task<List<Category>> ListAsync();
         //Task<List<Category>> ListAsync(int id);

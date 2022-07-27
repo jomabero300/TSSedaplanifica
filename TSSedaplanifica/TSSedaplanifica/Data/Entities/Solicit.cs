@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TSSedaplanifica.Data.Entities
 {
-    [Table("Solicit", Schema = "Seda")]
+    [Table("Solicits", Schema = "Seda")]
     public class Solicit
     {
         [Key]
@@ -26,6 +26,33 @@ namespace TSSedaplanifica.Data.Entities
         [Display(Name = "Estado")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public SolicitState SolicitStates { get; set; }
+
+        [Display(Name = "Fecha fecibido")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public DateTime DateOfReceived { get; set; } = DateTime.Now;
+
+        [Display(Name = "Usuario que recibe")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public ApplicationUser UserReceived { get; set; }
+
+        [Display(Name = "Fecha Aprobado/Denegado")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public DateTime DateOfApprovedDenied { get; set; } = DateTime.Now;
+
+        [Display(Name = "Usuario que Aprobado/Denegado")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public ApplicationUser UserApprovedDenied { get; set; }
+
+        [Display(Name = "Fecha cierre")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public DateTime DateOfClosed { get; set; } = DateTime.Now;
+
+        [Display(Name = "Usuario que cierra")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public ApplicationUser UserClosed { get; set; }
+
+
+        public Solicit SolicitReferred { get; set; }
 
     }
 }

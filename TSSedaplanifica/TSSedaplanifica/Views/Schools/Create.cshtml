@@ -1,0 +1,28 @@
+﻿@model TSSedaplanifica.Models.SchoolViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Nuevo</h1>
+
+<h4>Institución educativa</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <partial name="_SchoolAddEdit" />
+
+            <div class="form-group mt-2">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
+                <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

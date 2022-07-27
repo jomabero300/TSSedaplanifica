@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TSSedaplanifica.Data.Migrations
 {
-    public partial class InititialDB : Migration
+    public partial class InitialBD : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -296,7 +296,8 @@ namespace TSSedaplanifica.Data.Migrations
                     DaneCode = table.Column<string>(type: "varchar(18)", maxLength: 18, nullable: false),
                     Address = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
                     CityId = table.Column<int>(type: "int", nullable: false),
-                    ZoneId = table.Column<int>(type: "int", nullable: false)
+                    ZoneId = table.Column<int>(type: "int", nullable: false),
+                    SchoolCampusId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -308,6 +309,12 @@ namespace TSSedaplanifica.Data.Migrations
                         principalTable: "Cities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Schools_Schools_SchoolCampusId",
+                        column: x => x.SchoolCampusId,
+                        principalSchema: "Seda",
+                        principalTable: "Schools",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Schools_Zones_ZoneId",
                         column: x => x.ZoneId,
@@ -370,7 +377,7 @@ namespace TSSedaplanifica.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Solicit",
+                name: "Solicits",
                 schema: "Seda",
                 columns: table => new
                 {
@@ -379,20 +386,54 @@ namespace TSSedaplanifica.Data.Migrations
                     SchoolId = table.Column<int>(type: "int", nullable: false),
                     DateOfSolicit = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
-                    SolicitStatesId = table.Column<int>(type: "int", nullable: false)
+                    SolicitStatesId = table.Column<int>(type: "int", nullable: false),
+                    DateOfReceived = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserReceivedId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateOfApprovedDenied = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserApprovedDeniedId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateOfClosed = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserClosedId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SolicitReferredId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Solicit", x => x.Id);
+                    table.PrimaryKey("PK_Solicits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Solicit_Schools_SchoolId",
+                        name: "FK_Solicits_AspNetUsers_UserApprovedDeniedId",
+                        column: x => x.UserApprovedDeniedId,
+                        principalSchema: "Admi",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Solicits_AspNetUsers_UserClosedId",
+                        column: x => x.UserClosedId,
+                        principalSchema: "Admi",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Solicits_AspNetUsers_UserReceivedId",
+                        column: x => x.UserReceivedId,
+                        principalSchema: "Admi",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Solicits_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalSchema: "Seda",
                         principalTable: "Schools",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Solicit_SolicitState_SolicitStatesId",
+                        name: "FK_Solicits_Solicits_SolicitReferredId",
+                        column: x => x.SolicitReferredId,
+                        principalSchema: "Seda",
+                        principalTable: "Solicits",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Solicits_SolicitState_SolicitStatesId",
                         column: x => x.SolicitStatesId,
                         principalSchema: "Seda",
                         principalTable: "SolicitState",
@@ -413,11 +454,20 @@ namespace TSSedaplanifica.Data.Migrations
                     DirectorQuantity = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     PlannerQuantity = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     DeliveredQuantity = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
-                    Description = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    Description = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
+                    DateOfClosed = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserDeliveredId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SolicitDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SolicitDetails_AspNetUsers_UserDeliveredId",
+                        column: x => x.UserDeliveredId,
+                        principalSchema: "Admi",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SolicitDetails_Products_ProductId",
                         column: x => x.ProductId,
@@ -426,10 +476,10 @@ namespace TSSedaplanifica.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SolicitDetails_Solicit_SolicitId",
+                        name: "FK_SolicitDetails_Solicits_SolicitId",
                         column: x => x.SolicitId,
                         principalSchema: "Seda",
-                        principalTable: "Solicit",
+                        principalTable: "Solicits",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -523,6 +573,12 @@ namespace TSSedaplanifica.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Schools_SchoolCampusId",
+                schema: "Seda",
+                table: "Schools",
+                column: "SchoolCampusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Schools_ZoneId",
                 schema: "Seda",
                 table: "Schools",
@@ -533,18 +589,6 @@ namespace TSSedaplanifica.Data.Migrations
                 schema: "Seda",
                 table: "SchoolUsers",
                 column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Solicit_SchoolId",
-                schema: "Seda",
-                table: "Solicit",
-                column: "SchoolId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Solicit_SolicitStatesId",
-                schema: "Seda",
-                table: "Solicit",
-                column: "SolicitStatesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SolicitDetail_Solicit_Product_ Id",
@@ -558,6 +602,48 @@ namespace TSSedaplanifica.Data.Migrations
                 schema: "Seda",
                 table: "SolicitDetails",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SolicitDetails_UserDeliveredId",
+                schema: "Seda",
+                table: "SolicitDetails",
+                column: "UserDeliveredId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicits_SchoolId",
+                schema: "Seda",
+                table: "Solicits",
+                column: "SchoolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicits_SolicitReferredId",
+                schema: "Seda",
+                table: "Solicits",
+                column: "SolicitReferredId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicits_SolicitStatesId",
+                schema: "Seda",
+                table: "Solicits",
+                column: "SolicitStatesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicits_UserApprovedDeniedId",
+                schema: "Seda",
+                table: "Solicits",
+                column: "UserApprovedDeniedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicits_UserClosedId",
+                schema: "Seda",
+                table: "Solicits",
+                column: "UserClosedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicits_UserReceivedId",
+                schema: "Seda",
+                table: "Solicits",
+                column: "UserReceivedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SolicitState_ Name",
@@ -707,7 +793,7 @@ namespace TSSedaplanifica.Data.Migrations
                 schema: "Seda");
 
             migrationBuilder.DropTable(
-                name: "Solicit",
+                name: "Solicits",
                 schema: "Seda");
 
             migrationBuilder.DropTable(
