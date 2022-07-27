@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
@@ -40,6 +41,7 @@ builder.Services.AddScoped<ICategoryTypeDerHelper, CategoryTypeDerHelper>();
 builder.Services.AddScoped<ICityHelper, CityHelper>();
 builder.Services.AddScoped<ISchoolHelper, SchoolHelper>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IApiService, ApiService>();
 
 builder.Services.AddTransient<SeedDb>();

@@ -9,6 +9,16 @@
 <h3>¿Está seguro de querer borrar esta sede - institución educativa?</h3>
 <div>
     <h4>sede - Institución educativa</h4>
+    @if(TempData["AlertMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    }
+
     <hr />
     
     <partial name="_SchoolDetailsDelete" />

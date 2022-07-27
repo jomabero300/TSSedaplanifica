@@ -263,7 +263,8 @@ namespace TSSedaplanifica.Controllers
 
                 if (response.IsSuccess)
                 {
-                    TempData["AlertMessage"] = response.Message;
+                    TempData["AlertMessage"] = response.Message.Replace("Institución","Seda");
+
                     return RedirectToAction(nameof(Details),new { id= institución.Id});
                 }
 
@@ -275,7 +276,7 @@ namespace TSSedaplanifica.Controllers
             ViewData["ZoneId"] = new SelectList(await _zoneHelper.ComboAsync(), "Id", "Name", model.ZoneId);
 
 
-            return View();
+            return View(model);
         }
         
         public async Task<IActionResult>  DeleteSchool(int id)
@@ -298,11 +299,11 @@ namespace TSSedaplanifica.Controllers
 
             Response response = await _schoolHelper.DeleteAsync(model.Id);
             
-            TempData["AlertMessage"] = response.Message;
+            TempData["AlertMessage"] = response.Message.Replace("Institución", "Sede");
 
             if (response.IsSuccess)
             {
-                return RedirectToAction(nameof(Details), new { id = modelI.Id });
+                return RedirectToAction(nameof(Details), new { id = modelI.SchoolCampus.Id });
             }
 
             ModelState.AddModelError(string.Empty, response.Message);

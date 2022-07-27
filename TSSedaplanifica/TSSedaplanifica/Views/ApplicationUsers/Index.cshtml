@@ -1,0 +1,62 @@
+﻿@model IEnumerable<TSSedaplanifica.Models.ApplicationUser.RoleUserModelView>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<body>
+    <section>
+        <h1>Usuarios y roles</h1>
+    </section>
+    <section>
+        <table id="MyTable" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FullName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.RoleId)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleId)
+                        </td>
+                        <td align="center">
+                            <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
+@*                            <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-sm btn-info"><i class="bi bi-eye-fill"></i> Detalles</a> |
+*@                            <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-sm btn-danger"><i class="bi bi-trash2-fill"></i> Elimnar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+    <footer>
+        <h4 style="color:white;">Avisos legales</h4>
+        <a href="#">Política de cookies</a>
+    </footer>
+
+</body>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#MyTable').DataTable({
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                }
+            });
+        });
+    </script>
+}

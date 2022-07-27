@@ -39,23 +39,11 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         /// <summary>
@@ -64,50 +52,35 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
             [Display(Name = "Email")]
+            [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+            [EmailAddress(ErrorMessage = "El campo de correo electrónico no es una dirección válida")]
             public string Email { get; set; }
 
-
             [Display(Name = "Documento")]
-            [MaxLength(20, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+            [MaxLength(20, ErrorMessage = "El campo {0} debe tener un máximo de {1} caractéres.")]
             [Required(ErrorMessage = "El campo {0} es obligatorio.")]
             public string Document { get; set; }
 
             [Display(Name = "Nombres")]
-            [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+            [MaxLength(50, ErrorMessage = "El campo {0} debe tener un máximo de {1} caractéres.")]
             [Required(ErrorMessage = "El campo {0} es obligatorio.")]
             public string FirstName { get; set; }
 
             [Display(Name = "Apellidos")]
-            [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
+            [MaxLength(50, ErrorMessage = "El {0} debe tener un máximo de {1} caractéres.")]
             [Required(ErrorMessage = "El campo {0} es obligatorio.")]
             public string LastName { get; set; }
 
-
-
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "El {0} debe tener al menos {2} y un máximo de {1} caractéres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar contraseña")]
+            [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -128,6 +101,13 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                user.Document = Input.Document;
+
+                user.FirstName = Input.FirstName;
+
+                user.LastName = Input.LastName;
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
