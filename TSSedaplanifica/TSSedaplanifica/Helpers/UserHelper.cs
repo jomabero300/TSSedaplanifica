@@ -181,6 +181,19 @@ namespace TSSedaplanifica.Helpers
             return users.OrderBy(u => u.FullName).ToList();
         }
 
+        public async Task<List<ApplicationUser>> ListUserNotAssignedAsync()
+        {
+            //List<ApplicationUser> model=(from U in _context.Users
+            //                            join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
+            //                            select new ApplicationUser
+            //                            {
+            //                                Id = U.Id
+            //                            }).ToList();
+
+            return new List<ApplicationUser>();
+
+        }
+
         public async Task<Response> UserRoleAddEditAsync(RoleUserModelView model)
         {
             Response response=new Response { IsSuccess = true, Message="Usuario rol actualizado satisfactoriamente" };

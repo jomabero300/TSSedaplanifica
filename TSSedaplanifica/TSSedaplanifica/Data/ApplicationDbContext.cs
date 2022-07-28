@@ -58,8 +58,8 @@ namespace TSSedaplanifica.Data
                 .IsUnique();
 
             builder.Entity<School>()
-                .HasIndex("CityId", "ZoneId", "Name")
-                .HasDatabaseName("IX_City_Zona_Scholl_ name")
+                .HasIndex(s=> new {s.Name,s.DaneCode })
+                .HasDatabaseName("IX_name_DaneCode")
                 .IsUnique();
 
             builder.Entity<SchoolUser>()

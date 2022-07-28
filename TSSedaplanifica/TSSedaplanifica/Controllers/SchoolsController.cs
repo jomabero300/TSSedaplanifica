@@ -12,12 +12,14 @@ namespace TSSedaplanifica.Controllers
         private readonly ISchoolHelper _schoolHelper;
         private readonly ICityHelper _cityHelper;
         private readonly IZoneHelper _zoneHelper;
+        private readonly IUserHelper _userHelper;
 
-        public SchoolsController(ISchoolHelper schoolHelper, ICityHelper cityHelper, IZoneHelper zoneHelper)
+        public SchoolsController(ISchoolHelper schoolHelper, ICityHelper cityHelper, IZoneHelper zoneHelper, IUserHelper userHelper)
         {
             _schoolHelper = schoolHelper;
             _cityHelper = cityHelper;
             _zoneHelper = zoneHelper;
+            _userHelper = userHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -311,5 +313,17 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
+        //public async Task<IActionResult> Rector (int id)
+        //{
+        //    SchoolRectorCoordinator model = new SchoolRectorCoordinator()
+        //    {
+        //        SchoolId = id,
+        //        SchoolName = (await _schoolHelper.ByIdAsync(id)).Name                
+        //    };
+
+        //    ViewData["UserId"] = new SelectList(await _userHelper.ComboAsync(), "Id", "Name");
+
+
+        //}
     }
 }
