@@ -30,6 +30,11 @@ namespace TSSedaplanifica.Helpers
             await _userManager.AddToRoleAsync(user, roleName);
         }
 
+        public async Task<ApplicationUser> ByIdAsync(string id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
         public async Task<RoleUserModelView> ByIdRoleUserAsync(string id)
         {
             RoleUserModelView user;
@@ -150,15 +155,18 @@ namespace TSSedaplanifica.Helpers
         public async Task<List<RoleUserModelView>> ListRoleUserAsync()
         {
 
-            var user =await (from U in _context.Users
-                        join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
-                        from UR in userRroleRela.DefaultIfEmpty()
-                        select new { Id = U.Id, FullName = U.FullName, Name = UR.RoleId ?? string.Empty }).ToListAsync();
+            var user = await (from U in _context.Users
+                              join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
+                              from UR in userRroleRela.DefaultIfEmpty()
+                              select new { Id = U.Id, FullName = U.FullName, Name = UR.RoleId ?? string.Empty }).ToListAsync();
+            //join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
+            //from UR in userRroleRela.DefaultIfEmpty()
+            //select new { Id = U.Id, FullName = U.FullName, Name = UR.RoleId ?? string.Empty }).ToListAsync();
 
-            //var user0 = await (from U in _context.Users
-            //                  join E in _context.UserRoles on U.Id equals E.UserId
-            //                  join R in _context.Roles on E.RoleId equals R.Id 
-            //                  select new { Id = U.Id, FullName = U.FullName, Name = R.Name ?? string.Empty }).ToListAsync();
+            //var response = await (from U in _context.Users
+            //                   join E in _context.UserRoles on U.Id equals E.UserId
+            //                   join R in _context.Roles on E.RoleId equals R.Id
+            //                   select new { Id = U.Id, FullName = U.FullName, Name = R.Name ?? string.Empty }).ToListAsync();
 
             //var users = user.Select(u => new RoleUserModelView()
             //{
@@ -181,25 +189,50 @@ namespace TSSedaplanifica.Helpers
             return users.OrderBy(u => u.FullName).ToList();
         }
 
-        public async Task<List<ApplicationUser>> ListUserNotAssignedAsync()
+        public async Task<List<ApplicationUser>> ListUserNotAssignedAsync(string roleName)
         {
-            //List<ApplicationUser> model=(from U in _context.Users
-            //                            join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
-            //                            select new ApplicationUser
-            //                            {
-            //                                Id = U.Id
-            //                            }).ToList();
+            var userInstitucion = await ((from U in _context.Users
+                                         join S in _context.SchoolUsers on U.Id equals S.ApplicationUser.Id
+                                         where S.isEnable == true
+                                        select U).Distinct()).ToListAsync();
 
-            return new List<ApplicationUser>();
+            var userNew = await (from U in _context.Users
+                                 join E in _context.UserRoles on U.Id equals E.UserId
+                                 join R in _context.Roles on E.RoleId equals R.Id
+                                 where R.Name == roleName && !userInstitucion.Contains(U)
+                                  select U).ToListAsync();
+
+
+            List<ApplicationUser> model = userNew.Select(u => new ApplicationUser
+            {
+                Id = u.Id,
+                Document=u.Document,
+                UserName = u.UserName,
+                Email = u.Email,
+                FirstName=u.FirstName,
+                LastName=u.LastName,
+                ImageId=u.ImageId
+
+            }).ToList();
+
+            model.Add(new ApplicationUser { Id = "", FirstName = $"[Seleccione un {roleName}...]" });
+
+            return model.OrderBy(u=>u.FullName).ToList();
 
         }
 
         public async Task<Response> UserRoleAddEditAsync(RoleUserModelView model)
         {
-            Response response=new Response { IsSuccess = true, Message="Usuario rol actualizado satisfactoriamente" };
+            Response response=new Response { IsSuccess = false, Message="Usuario se encuentra activo en una institución" };
 
+            SchoolUser userRole = await _context.SchoolUsers.Where(u => u.ApplicationUser.Id == model.UserId && u.isEnable==true).FirstOrDefaultAsync();
+            if (userRole != null)
+            {
+                return response;
+            }
             try
             {
+
                 var user = await _userManager.FindByIdAsync(model.UserId);
 
                 var role = _context.UserRoles.Where(u => u.UserId == model.UserId).FirstOrDefault();
@@ -209,12 +242,13 @@ namespace TSSedaplanifica.Helpers
                     var roleName = _context.Roles.Where(r => r.Id == role.RoleId).FirstOrDefault().Name;
 
                     await _userManager.RemoveFromRoleAsync(user, roleName);
-
                 }
 
                 var roleNameAdd = _context.Roles.Where(r => r.Id == model.RoleId).FirstOrDefault().Name;
 
                 await _userManager.AddToRoleAsync(user, roleNameAdd);
+
+                response = new Response { IsSuccess = true, Message = "Usuario rol actualizado satisfactoriamente" };
             }
             catch (Exception ex)
             {
@@ -223,6 +257,18 @@ namespace TSSedaplanifica.Helpers
             }        
 
             return response;
+        }
+
+        public async Task<IdentityUserRole<string>> ByIdUserRolAsync(string id)
+        {
+            return await _context.UserRoles.Where(u => u.UserId == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<IdentityRole> ByIdRoleAsync(string id)
+        {
+            IdentityRole rol = await _context.Roles.Where(r => r.Name == id).FirstOrDefaultAsync();
+
+            return rol;
         }
     }
 }

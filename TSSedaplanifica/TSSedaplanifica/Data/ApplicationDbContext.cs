@@ -63,8 +63,9 @@ namespace TSSedaplanifica.Data
                 .IsUnique();
 
             builder.Entity<SchoolUser>()
-                .HasKey("SchoolId", "ApplicationUserId", "ApplicationRole");
-
+                .HasIndex("SchoolId", "ApplicationUserId", "ApplicationRole")
+                .HasDatabaseName("IX_SchoolUser_SchoolId_ApplicationUserId_ApplicationRole")
+                .IsUnique();
 
             builder.Entity<SolicitDetail>()
                 .HasIndex("SolicitId", "ProductId")

@@ -41,6 +41,7 @@ builder.Services.AddScoped<ICategoryTypeDerHelper, CategoryTypeDerHelper>();
 builder.Services.AddScoped<ICityHelper, CityHelper>();
 builder.Services.AddScoped<ISchoolHelper, SchoolHelper>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
+builder.Services.AddScoped<ISchoolUserHelper, SchoolUserHelper>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IApiService, ApiService>();
 

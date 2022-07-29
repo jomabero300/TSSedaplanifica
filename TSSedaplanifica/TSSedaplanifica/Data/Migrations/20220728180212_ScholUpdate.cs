@@ -4,7 +4,7 @@
 
 namespace TSSedaplanifica.Data.Migrations
 {
-    public partial class schoolNameDaneCode : Migration
+    public partial class ScholUpdate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -123,10 +123,37 @@ namespace TSSedaplanifica.Data.Migrations
                 schema: "Seda",
                 table: "Solicits");
 
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_SchoolUsers",
+                schema: "Seda",
+                table: "SchoolUsers");
+
             migrationBuilder.DropIndex(
                 name: "IX_City_Zona_Scholl_ name",
                 schema: "Seda",
                 table: "Schools");
+
+            migrationBuilder.AddColumn<int>(
+                name: "Id",
+                schema: "Seda",
+                table: "SchoolUsers",
+                type: "int",
+                nullable: false,
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_SchoolUsers",
+                schema: "Seda",
+                table: "SchoolUsers",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SchoolUser_SchoolId_ApplicationUserId_ApplicationRole",
+                schema: "Seda",
+                table: "SchoolUsers",
+                columns: new[] { "SchoolId", "ApplicationUserId", "ApplicationRole" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_name_DaneCode",
@@ -489,6 +516,16 @@ namespace TSSedaplanifica.Data.Migrations
                 schema: "Seda",
                 table: "Solicits");
 
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_SchoolUsers",
+                schema: "Seda",
+                table: "SchoolUsers");
+
+            migrationBuilder.DropIndex(
+                name: "IX_SchoolUser_SchoolId_ApplicationUserId_ApplicationRole",
+                schema: "Seda",
+                table: "SchoolUsers");
+
             migrationBuilder.DropIndex(
                 name: "IX_name_DaneCode",
                 schema: "Seda",
@@ -498,6 +535,17 @@ namespace TSSedaplanifica.Data.Migrations
                 name: "IX_Schools_CityId",
                 schema: "Seda",
                 table: "Schools");
+
+            migrationBuilder.DropColumn(
+                name: "Id",
+                schema: "Seda",
+                table: "SchoolUsers");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_SchoolUsers",
+                schema: "Seda",
+                table: "SchoolUsers",
+                columns: new[] { "SchoolId", "ApplicationUserId", "ApplicationRole" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_City_Zona_Scholl_ name",

@@ -8,6 +8,16 @@
 
 <h4>Institución educativa</h4>
 <hr />
+@if(TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+}
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">

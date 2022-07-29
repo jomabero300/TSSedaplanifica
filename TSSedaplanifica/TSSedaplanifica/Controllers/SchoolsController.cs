@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 using TSSedaplanifica.Models;
 
@@ -13,13 +15,15 @@ namespace TSSedaplanifica.Controllers
         private readonly ICityHelper _cityHelper;
         private readonly IZoneHelper _zoneHelper;
         private readonly IUserHelper _userHelper;
+        private readonly ISchoolUserHelper _schoolUserHelper;
 
-        public SchoolsController(ISchoolHelper schoolHelper, ICityHelper cityHelper, IZoneHelper zoneHelper, IUserHelper userHelper)
+        public SchoolsController(ISchoolHelper schoolHelper, ICityHelper cityHelper, IZoneHelper zoneHelper, IUserHelper userHelper, ISchoolUserHelper schoolUserHelper)
         {
             _schoolHelper = schoolHelper;
             _cityHelper = cityHelper;
             _zoneHelper = zoneHelper;
             _userHelper = userHelper;
+            _schoolUserHelper = schoolUserHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -313,17 +317,108 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
-        //public async Task<IActionResult> Rector (int id)
-        //{
-        //    SchoolRectorCoordinator model = new SchoolRectorCoordinator()
-        //    {
-        //        SchoolId = id,
-        //        SchoolName = (await _schoolHelper.ByIdAsync(id)).Name                
-        //    };
+        public async Task<IActionResult> Rector(int id)
+        {
+            var rol = await _userHelper.ByIdRoleAsync(TypeUser.Rector.ToString());
 
-        //    ViewData["UserId"] = new SelectList(await _userHelper.ComboAsync(), "Id", "Name");
+            var schoolName = await _schoolHelper.ByIdAsync(id);
 
+            SchoolRectorCoordinator model = new SchoolRectorCoordinator()
+            {
+                SchoolId = id,
+                rol = rol.Id,
+                SchoolName = schoolName.Name,
+                HireOfDate = DateTime.Now,
+                EndOfDate = DateTime.Now,
+            };
 
-        //}
+            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName");
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Rector(SchoolRectorCoordinator model)
+        {
+            if (ModelState.IsValid)
+            {
+                if(model.HireOfDate<DateTime.Now.Date)
+                {
+                    ModelState.AddModelError(string.Empty, "La fecha inicial debe ser igual o superior a la fecha de hoy");
+                }
+                else if (model.HireOfDate>model.EndOfDate)
+                {
+                    ModelState.AddModelError(string.Empty, "La fecha inicial NO debe ser superior a la fecha final");
+                }
+                else
+                {
+                    Response response= await _schoolUserHelper.AddUpdateAsync(model);
+
+                    if (response.IsSuccess)
+                    {
+                        TempData["AlertMessage"] = response.Message;
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+            }
+
+            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName",model.UserId);
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Coordinator(int id)
+        {
+            var rol = await _userHelper.ByIdRoleAsync(TypeUser.Coordinador.ToString());
+
+            var schoolName = await _schoolHelper.ByIdAsync(id);
+
+            SchoolRectorCoordinator model = new SchoolRectorCoordinator()
+            {
+                SchoolId = id,
+                rol = rol.Id,
+                SchoolName = schoolName.Name,
+                HireOfDate = DateTime.Now,
+                EndOfDate = DateTime.Now,
+            };
+
+            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Coordinador.ToString()), "Id", "FullName");
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Coordinator(SchoolRectorCoordinator model)
+        {
+            if (ModelState.IsValid)
+            {
+                if(model.HireOfDate<DateTime.Now.Date)
+                {
+                    ModelState.AddModelError(string.Empty, "La fecha inicial debe ser igual o superior a la fecha de hoy");
+                }
+                else if (model.HireOfDate>model.EndOfDate)
+                {
+                    ModelState.AddModelError(string.Empty, "La fecha inicial NO debe ser superior a la fecha final");
+                }
+                else
+                {
+                    Response response= await _schoolUserHelper.AddUpdateAsync(model);
+
+                    if (response.IsSuccess)
+                    {
+                        TempData["AlertMessage"] = response.Message;
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+            }
+
+            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName",model.UserId);
+
+            return View(model);
+        }
     }
 }

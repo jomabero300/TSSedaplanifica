@@ -6,6 +6,9 @@ namespace TSSedaplanifica.Data.Entities
     [Table("SchoolUsers", Schema = "Seda")]
     public class SchoolUser
     {
+        [Key]
+        public int Id { get; set; }
+
         [Required]
         public School School { get; set; }
         [Required]

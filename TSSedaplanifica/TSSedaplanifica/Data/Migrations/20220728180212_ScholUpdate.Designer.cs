@@ -12,8 +12,8 @@ using TSSedaplanifica.Data;
 namespace TSSedaplanifica.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220728001822_schoolNameDaneCode")]
-    partial class schoolNameDaneCode
+    [Migration("20220728180212_ScholUpdate")]
+    partial class ScholUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -511,14 +511,19 @@ namespace TSSedaplanifica.Data.Migrations
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.SchoolUser", b =>
                 {
-                    b.Property<int>("SchoolId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ApplicationRole")
+                        .IsRequired()
                         .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("EndOfDate")
@@ -527,12 +532,19 @@ namespace TSSedaplanifica.Data.Migrations
                     b.Property<DateTime>("HireOfDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("SchoolId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("isEnable")
                         .HasColumnType("bit");
 
-                    b.HasKey("SchoolId", "ApplicationUserId", "ApplicationRole");
+                    b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("SchoolId", "ApplicationUserId", "ApplicationRole")
+                        .IsUnique()
+                        .HasDatabaseName("IX_SchoolUser_SchoolId_ApplicationUserId_ApplicationRole");
 
                     b.ToTable("SchoolUsers", "Seda");
                 });

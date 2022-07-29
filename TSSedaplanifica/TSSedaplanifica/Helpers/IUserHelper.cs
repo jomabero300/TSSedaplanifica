@@ -23,12 +23,18 @@ namespace TSSedaplanifica.Helpers
 
         Task<List<RolesModelView>> ListRolesAsync();
 
-        Task<List<ApplicationUser>> ListUserNotAssignedAsync();
+        Task<List<ApplicationUser>> ListUserNotAssignedAsync(string roleName);
 
         Task<Response> UserRoleAddEditAsync(RoleUserModelView email);
 
         Task<Response> DeleteAsync(int id);
 
         Task<Response> DeleteUserRoleAsync(string id);
+
+        Task<ApplicationUser> ByIdAsync(string id);
+
+        Task<IdentityRole> ByIdRoleAsync(string id);
+
+        Task<IdentityUserRole<string>> ByIdUserRolAsync(string id);
     }
 }

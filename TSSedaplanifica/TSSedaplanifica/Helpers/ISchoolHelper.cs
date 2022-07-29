@@ -9,7 +9,16 @@ namespace TSSedaplanifica.Helpers
         Task<School> ByIdAsync(int id);
         Task<List<School>> ComboAsync();
         Task<Response> DeleteAsync(int id);
+        /// <summary>
+        /// Listado de Instituciones educativas
+        /// </summary>
+        /// <returns></returns>
         Task<List<School>> ListAsync();
+        /// <summary>
+        /// Busqueda de una isntitución educativa especifica
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Idenificación de la isntitución</returns>
         Task<List<School>> ListAsync(int id);
     }
 }
