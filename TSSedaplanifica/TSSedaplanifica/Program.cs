@@ -30,6 +30,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(cfg =>
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Home/NotAuthorized";
+    options.AccessDeniedPath = "/Home/NotAuthorized";
+});
+
 builder.Services.AddScoped<ICategoryTypeHelper, CategoryTypeHelper>();
 builder.Services.AddScoped<ICategoryHelper, CategoryHelper>();
 builder.Services.AddScoped<IMeasureUnitHelper, MeasureUnitHelper>();
@@ -53,6 +59,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+app.UseStatusCodePagesWithReExecute("/error/{0}");
 
 SeedData(app);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
@@ -9,6 +10,8 @@ using TSSedaplanifica.Models;
 
 namespace TSSedaplanifica.Controllers
 {
+    [Authorize(Roles = "Administrador")]
+
     public class SchoolsController : Controller
     {
         private readonly ISchoolHelper _schoolHelper;

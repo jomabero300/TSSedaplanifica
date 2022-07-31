@@ -2,6 +2,7 @@
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 
 namespace TSSedaplanifica.Helpers
 {
@@ -85,9 +86,40 @@ namespace TSSedaplanifica.Helpers
             throw new NotImplementedException();
         }
 
-        public Task<Response> DeleteAsync(int id)
+        public async Task<Response> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Response response = new Response() { IsSuccess = true, Message= $"{_name} borrado satisfactoriamente.!!!" };
+
+            Solicit model =await _context.Solicits.Include(s=>s.SolicitDetails).Where(x=>x.Id==id).FirstOrDefaultAsync();
+
+            try
+            {
+
+                _context.Solicits.Remove(model);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException.Message.Contains("duplica"))
+                {
+                    response.Message = $"Ya existe una {_name} con el mismo nombre.";
+                }
+                else
+                {
+                    response.Message = dbUpdateException.InnerException.Message;
+                }
+
+                response.IsSuccess = false;
+            }
+            catch (Exception exception)
+            {
+                response.Message = exception.Message;
+
+                response.IsSuccess = false;
+            }
+
+            return response;
         }
 
         public async Task<List<Solicit>> ListAsync(string id)
@@ -98,6 +130,55 @@ namespace TSSedaplanifica.Helpers
                                 .ToListAsync();
 
             return solicits;
+        }
+
+        public async Task<Response> RequestSendAsync(int id)
+        {
+            Response response = new Response() { IsSuccess = false };
+
+            int solicitudDetailCount = await _context.SolicitDetails.Where(s => s.Solicit.Id == id).CountAsync();
+
+            if(solicitudDetailCount > 0)
+            {
+                Solicit solicit=await _context.Solicits.FindAsync(id);
+
+                solicit.SolicitStates = await _context.SolicitStates.Where(s => s.Name == TypeSolicitState.Enviado.ToString()).FirstOrDefaultAsync();
+
+                try
+                {
+                    _context.Update(solicit);
+
+                    await _context.SaveChangesAsync();
+
+                    response.Message = $"{_name} enviada exitosamente. !!!";
+                    response.IsSuccess = true;
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplica"))
+                    {
+                        response.Message = $"Ya existe una {_name} con el mismo nombre.";
+                    }
+                    else
+                    {
+                        response.Message = dbUpdateException.InnerException.Message;
+                    }
+
+                    response.IsSuccess = false;
+                }
+                catch (Exception exception)
+                {
+                    response.Message = exception.Message;
+
+                    response.IsSuccess = false;
+                }
+            }
+            else
+            {
+                response.Message = $"La {_name} NO tiene elementos a solicitar...";
+            }
+
+            return response;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace TSSedaplanifica.Helpers
         Task<Solicit> ByIdDetailAsync(int id);
         Task<List<Solicit>> ComboAsync();
         Task<Response> DeleteAsync(int id);
+        Task<Response> RequestSendAsync(int id);
         Task<List<Solicit>> ListAsync(string id);
     }
 }

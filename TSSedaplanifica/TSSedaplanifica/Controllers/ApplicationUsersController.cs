@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Helpers;
@@ -6,6 +7,8 @@ using TSSedaplanifica.Models.ApplicationUser;
 
 namespace TSSedaplanifica.Controllers
 {
+    [Authorize(Roles = "Administrador")]
+
     public class ApplicationUsersController : Controller
     {
         private readonly IUserHelper _userHelper;

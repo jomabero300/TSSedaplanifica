@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Helpers;
 
 namespace TSSedaplanifica.Controllers
 {
+    [Authorize(Roles = "Administrador")]
+
     public class SolicitStatesController : Controller
     {
         private readonly ISolicitStateHelper _solicitStateHelper;

@@ -17,6 +17,8 @@ namespace TSSedaplanifica.Helpers
         /// <param name="id"></param>
         /// <returns>Retorna un detalle si no encontro</returns>
         Task<SolicitDetail> ByIdAsync(int id);
+
+        Task<SolicitDetail> ByIdAsync(int id,int producId);
         /// <summary>
         /// Borra un detalle de de la solicitud
         /// </summary>

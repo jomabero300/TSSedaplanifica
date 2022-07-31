@@ -10,7 +10,7 @@ using TSSedaplanifica.Models;
 
 namespace TSSedaplanifica.Controllers
 {
-    //[Authorize]
+    [Authorize(Roles = "Coordinador,Rector,Secretario_municipal")]
 
     public class SolicitsController : Controller
     {
@@ -175,6 +175,40 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Solicit solicit = await _solicitHelper.ByIdAsync((int)id);
+
+            if (solicit == null)
+            {
+                return NotFound();
+            }
+
+            return View(solicit);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            Response response = await _solicitHelper.DeleteAsync(id);
+
+            TempData["AlertMessage"] = response.Message;
+
+            if (response.IsSuccess)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            Solicit solicit = await _solicitHelper.ByIdAsync((int)id);
+
+            return View(solicit);
+        }
 
         public async Task<IActionResult> ProductAdd(int id)
         {
@@ -195,24 +229,34 @@ namespace TSSedaplanifica.Controllers
         {
             if(ModelState.IsValid)
             {
-                Solicit solicit = await _solicitHelper.ByIdAsync(model.Id);
 
-                Product product = await _productHelper.ByIdAsync(model.ProductId);
+                SolicitDetail sd= await _solicitDetailHelper.ByIdAsync(model.Id, model.ProductId);
 
-                ApplicationUser user = await _userHelper.GetUserAsync(User.Identity.Name);
-
-                SolicitDetail sd=new SolicitDetail()
+                if(sd != null)
                 {
-                    Solicit=solicit,
-                    Product=product,
-                    Quantity=model.Quantity,
-                    DirectorQuantity = model.Quantity,
-                    PlannerQuantity = model.Quantity,
-                    DeliveredQuantity = model.Quantity,
-                    DateOfClosed=DateTime.Now,
-                    UserDelivered=user,
-                    Description="s/d"
-                };
+                    model.Quantity += sd.Quantity;
+                }
+                else
+                {
+                    Solicit solicit = await _solicitHelper.ByIdAsync(model.Id);
+
+                    Product product = await _productHelper.ByIdAsync(model.ProductId);
+
+                    ApplicationUser user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                    sd=new SolicitDetail()
+                    {
+                        Solicit=solicit,
+                        Product=product,
+                        Quantity=model.Quantity,
+                        DirectorQuantity = model.Quantity,
+                        PlannerQuantity = model.Quantity,
+                        DeliveredQuantity = model.Quantity,
+                        DateOfClosed=DateTime.Now,
+                        UserDelivered=user,
+                        Description="s/d"
+                    };
+                }
 
                 Response response = await _solicitDetailHelper.AddUpdateAsync(sd);
 
@@ -220,7 +264,7 @@ namespace TSSedaplanifica.Controllers
 
                 if (response.IsSuccess)
                 {
-                    return RedirectToAction(nameof(Details),new { Id= solicit.Id});
+                    return RedirectToAction(nameof(Details),new { Id= model.Id});
                 }
 
             }
@@ -231,6 +275,79 @@ namespace TSSedaplanifica.Controllers
 
             return View(model);
         }
+        
+        public async Task<IActionResult> ProductDelete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            SolicitDetail model = await _solicitDetailHelper.ByIdAsync((int)id);
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("ProductDelete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductDeleteConfirmed(int id)
+        {
+            SolicitDetail model = await _solicitDetailHelper.ByIdAsync((int)id);
+
+            Response response = await _solicitDetailHelper.DeleteAsync((int)id);
+
+            if(response.IsSuccess)
+            {
+                return RedirectToAction(nameof(Details), new { id = model.Solicit.Id });
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> RequestSend(int id)
+        {
+            Solicit model=await _solicitHelper.ByIdAsync(id);
+
+            if(model==null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("RequestSend")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RequestSendConfirmed(int id)
+        {
+            Response response = await _solicitHelper.RequestSendAsync(id);
+
+            TempData["AlertMessage"] = response.Message;
+
+            if(response.IsSuccess)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            Solicit model = await _solicitHelper.ByIdAsync(id);
+
+            return View(model);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> CategoryListById(int categoryTypeId)
+        {
+            List<Category> lista = await _categoryHelper.ComboAsync(categoryTypeId);
+
+
+            return Json(lista);
+        }
 
         [HttpGet]
         public async Task<IActionResult> ProductListById(int categoryId)
@@ -239,6 +356,5 @@ namespace TSSedaplanifica.Controllers
 
             return Json(lista);
         }
-
     }
 }

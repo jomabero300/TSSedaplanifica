@@ -23,6 +23,17 @@ namespace TSSedaplanifica.Controllers
             return View();
         }
 
+        [Route("error/404")]
+        public IActionResult Error404()
+        {
+            return View();
+        }
+
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

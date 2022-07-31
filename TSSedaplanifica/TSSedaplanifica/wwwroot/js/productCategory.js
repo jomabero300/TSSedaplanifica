@@ -4,9 +4,9 @@
         $("#categoryId").empty();
         $.ajax({
             type: 'GET',
-            url: '/Products/GeneListById',
+            url: '/Solicits/CategoryListById',
             dataType: 'json',
-            data: { categoryTypeId: $("#categoryTypeId").val(), ProductId: $("#productId").val() },
+            data: { categoryTypeId: $("#categoryTypeId").val() },
             success: function (data) {
                 $.each(data, function (i, data) {
 
@@ -44,4 +44,5 @@
         });
         return false;
     })
+
 });

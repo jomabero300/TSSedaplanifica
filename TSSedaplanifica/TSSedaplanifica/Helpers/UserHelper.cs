@@ -159,7 +159,7 @@ namespace TSSedaplanifica.Helpers
             var user = await (from U in _context.Users
                               join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
                               from UR in userRroleRela.DefaultIfEmpty()
-                              select new { Id = U.Id, FullName = U.FullName, Name = UR.RoleId ?? string.Empty }).ToListAsync();
+                              select new { Id = U.Id, FullName = U.FullName, Name = UR.RoleId ?? string.Empty,U.Email }).ToListAsync();
             //join E in _context.UserRoles on U.Id equals E.UserId into userRroleRela
             //from UR in userRroleRela.DefaultIfEmpty()
             //select new { Id = U.Id, FullName = U.FullName, Name = UR.RoleId ?? string.Empty }).ToListAsync();
@@ -180,12 +180,13 @@ namespace TSSedaplanifica.Helpers
             //                  from UR in userRoles.DefaultIfEmpty()
             //                  select new { Id = U.Id, FullName=U.FullName, Name= UR.UserId ?? string.Empty  }).ToListAsync();
 
-            var users = user.Select(u => new RoleUserModelView()
+            List<RoleUserModelView> users = user.Select(u => new RoleUserModelView()
             {
                 UserId = u.Id,
                 FullName = u.FullName,
-                RoleId = u.Name==""?String.Empty: _context.Roles.Where(r=>r.Id== u.Name).FirstOrDefault().Name
-            });
+                RoleId = u.Name==""?String.Empty: _context.Roles.Where(r=>r.Id== u.Name).FirstOrDefault().Name,
+                email=u.Email
+            }).ToList();
 
             return users.OrderBy(u => u.FullName).ToList();
         }

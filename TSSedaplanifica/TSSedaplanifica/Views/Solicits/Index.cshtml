@@ -2,8 +2,6 @@
 @{
     ViewData["Title"] = "Index";
 }
-    @*<link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />*@
-    
 
 <h1>Solicitudes</h1>
 
@@ -21,7 +19,7 @@
 
 }
 
-<table class="table table-striped table-responsive-md table-bordered smfont"  id="SolicitTable">
+<table class="table table-striped table-responsive-md table-bordered smfont" id="SolicitTable">
     <thead>
         <tr>
             <th>
@@ -41,7 +39,7 @@
         {
             <tr>
                 <td>
-                <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.DateOfSolicit)</a>
+                    <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.DateOfSolicit)</a>
 
                 </td>
                 <td>
@@ -51,28 +49,18 @@
                     @Html.DisplayFor(modelItem => item.SolicitStates.Name)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+                    @if (item.SolicitStates.Name == "Borrador")
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+                        <a asp-action="RequestSend" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Enviar</a>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-@section Scripts{
-        @*<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>*@
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#SolicitTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-                },
-                "aLengthMenu": [
-                    [25, 50, 100, 200, -1],
-                    [25, 50, 100, 200, "Todos"]
-                ]
-            });
-        });
-    </script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

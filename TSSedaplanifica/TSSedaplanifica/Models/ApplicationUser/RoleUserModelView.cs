@@ -14,5 +14,8 @@ namespace TSSedaplanifica.Models.ApplicationUser
         [Display(Name = "Rol")]
         [Required(ErrorMessage = "El campo {0} es requerido.")]
         public string RoleId { get; set; }
+
+        [Display(Name = "Correo electrónico")]
+        public string email { get; set; }
     }
 }

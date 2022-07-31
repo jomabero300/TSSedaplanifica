@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
@@ -7,6 +8,8 @@ using TSSedaplanifica.Models;
 
 namespace TSSedaplanifica.Controllers
 {
+    [Authorize(Roles = "Administrador")]
+
     public class ProductsController : Controller
     {
         private readonly IProductHelper _prodcutHelper;
@@ -193,7 +196,7 @@ namespace TSSedaplanifica.Controllers
 
             ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name");
 
-            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0, 0), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0), "Id", "Name");
 
             return View(model);
         }
@@ -238,9 +241,9 @@ namespace TSSedaplanifica.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GeneListById(int categoryTypeId, int ProductId)
+        public async Task<IActionResult> GeneListById(int categoryTypeId)
         {
-            List<Category> lista = await _categoryHelper.ComboAsync(categoryTypeId, ProductId);
+            List<Category> lista = await _categoryHelper.ComboAsync(categoryTypeId);
 
 
             return Json(lista);

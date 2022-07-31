@@ -20,22 +20,22 @@ namespace TSSedaplanifica.Helpers
         {
             Response response = new Response() { IsSuccess = true };
 
-            if (model.Id == 0)
-            {
-                _context.SolicitDetails.Add(model);
-
-                response.Message = $"{_name} guardado satisfactoriamente.!!!";
-            }
-            else
-            {
-                _context.SolicitDetails.Update(model);
-
-                response.Message = $"{_name} actualizado satisfactoriamente.!!!";
-            }
 
 
             try
             {
+                if (model.Id == 0)
+                {
+                    _context.SolicitDetails.Add(model);
+
+                    response.Message = $"{_name} guardado satisfactoriamente.!!!";
+                }
+                else
+                {
+                    _context.SolicitDetails.Update(model);
+
+                    response.Message = $"{_name} actualizado satisfactoriamente.!!!";
+                }
 
                 await _context.SaveChangesAsync();
             }
@@ -66,8 +66,18 @@ namespace TSSedaplanifica.Helpers
         {
             return await _context.SolicitDetails
                                     .Include(d => d.Solicit)
+                                    .Include(s=>s.Product)
                                     .Where(x => x.Id == id)
                                 .FirstOrDefaultAsync();
+        }
+        public async Task<SolicitDetail> ByIdAsync(int id, int producId)
+        {
+            SolicitDetail model= await _context.SolicitDetails
+                                    .Include(d => d.Solicit)
+                                    .Include(s=>s.Product)
+                                    .Where(x => x.Solicit.Id == id && x.Product.Id== producId)
+                                .FirstOrDefaultAsync();
+            return model;
         }
 
         public async Task<Response> DeleteAsync(int id)

@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - TSSedaplanifica</title>
     <link rel="stylesheet" href="~/datatables/css/jquery.dataTables.css" />
     <link rel="stylesheet" href="~/css/SedaPlanifica.css" />
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TSSedaplanifica.styles.css" asp-append-version="true" />
@@ -29,61 +29,73 @@
                             </a>
                         </li>
 
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Administración</a>
+                                <div class="dropdown-menu">
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Administración</a>
-                            <div class="dropdown-menu">
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="CategoryTypes" asp-action="Index"><i class="bi bi-wallet-fill"></i> Clases de categorías</a>
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags-fill"></i> Categorías</a>
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="MeasureUnits" asp-action="Index"><i class="bi bi-aspect-ratio-fill"></i> Unidades de medida</a>
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="SolicitStates" asp-action="Index"><i class="bi bi-toggles2"></i> Estados de solicitud</a>
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="Products" asp-action="Index"><i class="bi bi-circle-square"></i> Elementos</a>
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="ApplicationUsers" asp-action="Index"><i class="bi bi-people-fill"></i> Usuarios cambio de rol</a>
 
-                                <a class="nav-link text-primary dropdown-item" asp-controller="CategoryTypes" asp-action="Index"><i class="bi bi-wallet-fill"></i> Clases de categorías</a>
-                                <a class="nav-link text-primary dropdown-item" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags-fill"></i> Categorías</a>
-                                <a class="nav-link text-primary dropdown-item" asp-controller="MeasureUnits" asp-action="Index"><i class="bi bi-aspect-ratio-fill"></i> Unidades de medida</a>
-                                <a class="nav-link text-primary dropdown-item" asp-controller="SolicitStates" asp-action="Index"><i class="bi bi-toggles2"></i> Estados de solicitud</a>
-                                <a class="nav-link text-primary dropdown-item" asp-controller="Products" asp-action="Index"><i class="bi bi-circle-square"></i> Elementos</a>
-                                <a class="nav-link text-primary dropdown-item" asp-controller="ApplicationUsers" asp-action="Index"><i class="bi bi-people-fill"></i> Usuarios cambio de rol</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="Schools" asp-action="Index"><i class="bi bi-bank2"></i> Instituciones educativas</a>
 
-                                <div class="dropdown-divider"></div>
-                                <a class="nav-link text-primary dropdown-item" asp-controller="Schools" asp-action="Index"><i class="bi bi-bank2"></i> Instituciones educativas</a>
+                                </div>
+                            </li>
+                        }
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Rector") || User.IsInRole("Coordinador") )
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-withe" asp-controller="Solicits" asp-action="Index">
+                                    <i class="bi bi-wallet-fill"></i> Solicitudes
+                                </a>
+                            </li>
+                        }
 
-                            </div>
+
+                        @*                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Procesos</a>
+                        <div class="dropdown-menu">
+
+                        <a class="nav-link text-primary dropdown-item" asp-controller="Solicits" asp-action="Index"><i class="bi bi-wallet-fill"></i> Solicitudes</a>
+
+                        </div>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Procesos</a>
-                            <div class="dropdown-menu">
-
-                                <a class="nav-link text-primary dropdown-item" asp-controller="Solicits" asp-action="Index"><i class="bi bi-wallet-fill"></i> Solicitudes</a>
-
-                            </div>
-                        </li>
+                        *@
 
 
 
-
-@*                        <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
+                        @*                        <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
+                        <a class="nav-link" href="#">Pricing</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="#">About</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Separated link</a>
-                            </div>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                        <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Separated link</a>
+                        </div>
                         </li>*@
-                        </ul>
+                    </ul>
 
-                        <partial name="_LoginPartial" />
+                    <partial name="_LoginPartial" />
 
-                        @*<form class="d-flex">
-                        <input class="form-control me-sm-2" type="text" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                    @*<form class="d-flex">
+                    <input class="form-control me-sm-2" type="text" placeholder="Search">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                     </form>*@
                 </div>
             </div>
@@ -100,7 +112,7 @@
             &copy; 2022 - TSSedaplanifica - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    
+
     <script src="~/datatables/js/jquery.dataTables.js"></script>
     <script src="~/js/AlertStyle.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TSSedaplanifica.Common;
-using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Helpers;
 
 namespace TSSedaplanifica.Controllers
 {
+    [Authorize(Roles = "Administrador")]
+
     public class CategoryTypesController : Controller
     {
         private readonly ICategoryTypeHelper _categoryType;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
@@ -7,6 +8,8 @@ using TSSedaplanifica.Models;
 
 namespace TSSedaplanifica.Controllers
 {
+    [Authorize(Roles = "Administrador")]
+
     public class CategoriesController : Controller
     {
         private readonly ICategoryHelper _category;

@@ -13,6 +13,7 @@ namespace TSSedaplanifica.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public Solicit Solicit { get; set; }
 
+        [Display(Name = "Elemento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public Product Product { get; set; }
 
