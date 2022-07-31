@@ -15,6 +15,11 @@ namespace TSSedaplanifica.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string UserId { get; set; }
 
+        [Display(Name = "Sede")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una sede.")]
+        public int SchoolCampus { get; set; }
+
         [Display(Name = "Fecha de ingreso")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]

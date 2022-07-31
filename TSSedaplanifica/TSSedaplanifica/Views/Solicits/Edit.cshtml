@@ -1,0 +1,43 @@
+﻿@model TSSedaplanifica.Data.Entities.Solicit
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<h1>Editar</h1>
+
+<h4>Solicitud</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="DateOfApprovedDenied" />
+            <input type="hidden" asp-for="DateOfClosed" />
+            <input type="hidden" asp-for="DateOfReceived" />
+            <input type="hidden" asp-for="DateOfSolicit" />
+            <input type="hidden" asp-for="School" />
+            <input type="hidden" asp-for="UserApprovedDenied" />
+            <input type="hidden" asp-for="UserClosed" />
+            <input type="hidden" asp-for="UserReceived" />
+            <input type="hidden" asp-for="SolicitStates" />
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
+                <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

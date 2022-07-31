@@ -11,5 +11,6 @@ namespace TSSedaplanifica.Helpers
         Task<Response> DeleteAsync(int id);
         Task<List<SolicitState>> ListAsync();
 
+        Task<List<SolicitState>> SolicitudStateAsync(string stateId, bool lbEsta);
     }
 }

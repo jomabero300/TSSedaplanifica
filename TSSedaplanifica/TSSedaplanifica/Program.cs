@@ -35,6 +35,8 @@ builder.Services.AddScoped<ICategoryHelper, CategoryHelper>();
 builder.Services.AddScoped<IMeasureUnitHelper, MeasureUnitHelper>();
 builder.Services.AddScoped<IZoneHelper, ZoneHelper>();
 builder.Services.AddScoped<ISolicitStateHelper, SolicitStateHelper>();
+builder.Services.AddScoped<ISolicitDetailHelper, SolicitDetailHelper>();
+builder.Services.AddScoped<ISolicitHelper, SolicitHelper>();
 builder.Services.AddScoped<IProductHelper, ProductHelper>();
 builder.Services.AddScoped<IProductCategoryHelper, ProductCategoryHelper>();
 builder.Services.AddScoped<ICategoryTypeDerHelper, CategoryTypeDerHelper>();

@@ -95,7 +95,16 @@ namespace TSSedaplanifica.Data
         {
             if (!_context.SolicitStates.Any())
             {
-                _context.SolicitStates.Add(new SolicitState { Name = "" });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Aceptado.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Admitido.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Borrador.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Consolidado.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Denegado.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Enviado.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Pendiente.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Rechada.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Recibido.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Revisado.ToString() });
 
                 await _context.SaveChangesAsync();
             }

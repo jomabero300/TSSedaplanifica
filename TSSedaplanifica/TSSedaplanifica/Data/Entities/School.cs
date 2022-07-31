@@ -38,5 +38,7 @@ namespace TSSedaplanifica.Data.Entities
         public School SchoolCampus { get; set; }
 
         public ICollection<SchoolImage> SchoolImages { get; set; }
+        public ICollection<SchoolUser> schoolUsers { get; set; }
+        public ICollection<Solicit> Solicits { get; set; }
     }
 }

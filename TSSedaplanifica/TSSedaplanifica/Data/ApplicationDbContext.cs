@@ -75,7 +75,7 @@ namespace TSSedaplanifica.Data
 
             builder.Entity<SolicitState>()
                 .HasIndex(s => s.Name)
-                .HasDatabaseName("IX_SolicitState_ Name")
+                .HasDatabaseName("IX_SolicitState_Name")
                 .IsUnique();
 
             builder.Entity<State>()
@@ -87,7 +87,6 @@ namespace TSSedaplanifica.Data
                 .HasIndex(z => z.Name)
                 .HasDatabaseName("IX_Zone_Name")
                 .IsUnique();
-
 
         }
 

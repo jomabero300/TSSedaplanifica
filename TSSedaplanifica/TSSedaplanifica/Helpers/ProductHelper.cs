@@ -78,7 +78,20 @@ namespace TSSedaplanifica.Helpers
         {
             List<Product> model = await _context.Products.ToListAsync();
 
-            model.Add(new Product { Id = 0, Name = "[Seleccione una Categoría..]" });
+            model.Add(new Product { Id = 0, Name = "[Seleccione un elemento..]" });
+
+            return model.OrderBy(m => m.Name).ToList();
+        }
+
+        public async Task<List<Product>> ComboAsync(int id)
+        {
+            //List<Product> model = await _context.Products.Include(x=>x.ProductCategories).Where(p=>p.ProductCategories.FirstOrDefault().Category.Id==id).ToListAsync();
+            List<Product> model = await (from p in _context.Products
+                               join R in _context.ProductCategories on p.Id equals R.Product.Id
+                               where R.Category.Id == id
+                               select p).ToListAsync();
+
+            model.Add(new Product { Id = 0, Name = "[Seleccione un elemento..]" });
 
             return model.OrderBy(m => m.Name).ToList();
         }

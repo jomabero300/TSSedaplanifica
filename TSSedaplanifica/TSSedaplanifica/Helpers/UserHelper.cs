@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 using TSSedaplanifica.Models.ApplicationUser;
 
 namespace TSSedaplanifica.Helpers
@@ -269,6 +270,44 @@ namespace TSSedaplanifica.Helpers
             IdentityRole rol = await _context.Roles.Where(r => r.Name == id).FirstOrDefaultAsync();
 
             return rol;
+        }
+
+        //public async Task<List<SolicitState>> SolicitudStateAsync(string stateId, bool lbEsta)
+        //{
+
+        //    string[] ltname;
+
+        //    if(stateId != "P" && lbEsta == true)
+        //    {
+        //        ltname = new string[] { TypeSolicitState.Borrador.ToString(), TypeSolicitState.Enviado.ToString() };
+        //    }
+        //    else if (stateId == "R")
+        //    {
+        //        ltname = new string[] { TypeSolicitState.Admitido.ToString(), TypeSolicitState.Denegado.ToString(), TypeSolicitState.Pendiente.ToString() };
+        //    }
+        //    else 
+        //    {
+        //        ltname = new string[] { TypeSolicitState.Aceptado.ToString(), TypeSolicitState.Rechada.ToString(), TypeSolicitState.Recibido.ToString(), TypeSolicitState.Recibido.ToString() };
+        //    }
+
+        //    List<SolicitState> solicitStates = await _context.SolicitStates.Where(s=> ltname.Contains( s.Name)).ToListAsync();
+
+        //    solicitStates.Add(new SolicitState { Id = 0, Name = "[Seleccione un estado..]" });
+
+        //    return solicitStates.OrderBy(s => s.Name).ToList();
+        //}
+
+        public async Task<string> ByNameUneRoleAsync(string email)
+        {
+            ApplicationUser user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            IdentityUserRole<string> userRol = await  _context.UserRoles.Where(u => u.UserId == user.Id).FirstOrDefaultAsync();
+
+            IdentityRole<string> rolname = await _context.Roles.Where(r => r.Id == userRol.RoleId).FirstOrDefaultAsync(); ;
+
+            string lt = rolname.Name.Substring(0, 1);
+
+            return lt;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TSSedaplanifica.Data.Entities
@@ -51,8 +52,11 @@ namespace TSSedaplanifica.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public ApplicationUser UserClosed { get; set; }
 
-
         public Solicit SolicitReferred { get; set; }
+
+        [JsonIgnore]
+
+        public ICollection<SolicitDetail> SolicitDetails { get; set; }
 
     }
 }

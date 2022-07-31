@@ -2,6 +2,7 @@
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 
 namespace TSSedaplanifica.Helpers
 {
@@ -116,5 +117,28 @@ namespace TSSedaplanifica.Helpers
             return model.OrderBy(m => m.Name).ToList();
         }
 
+        public async Task<List<SolicitState>> SolicitudStateAsync(string stateId, bool lbEsta)
+        {
+            string[] ltname;
+
+            if (stateId != "P" && lbEsta == true)
+            {
+                ltname = new string[] { TypeSolicitState.Borrador.ToString(), TypeSolicitState.Enviado.ToString() };
+            }
+            else if (stateId == "R")
+            {
+                ltname = new string[] { TypeSolicitState.Admitido.ToString(), TypeSolicitState.Denegado.ToString(), TypeSolicitState.Pendiente.ToString() };
+            }
+            else
+            {
+                ltname = new string[] { TypeSolicitState.Aceptado.ToString(), TypeSolicitState.Rechada.ToString(), TypeSolicitState.Recibido.ToString(), TypeSolicitState.Recibido.ToString() };
+            }
+
+            List<SolicitState> solicitStates = await _context.SolicitStates.Where(s => ltname.Contains(s.Name)).ToListAsync();
+
+            solicitStates.Add(new SolicitState { Id = 0, Name = "[Seleccione un estado..]" });
+
+            return solicitStates.OrderBy(s => s.Name).ToList();
+        }
     }
 }

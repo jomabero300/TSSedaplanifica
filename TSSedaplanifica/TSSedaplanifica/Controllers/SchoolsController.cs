@@ -328,8 +328,7 @@ namespace TSSedaplanifica.Controllers
                 SchoolId = id,
                 rol = rol.Id,
                 SchoolName = schoolName.Name,
-                HireOfDate = DateTime.Now,
-                EndOfDate = DateTime.Now,
+                SchoolCampus=1
             };
 
             ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName");
@@ -343,9 +342,9 @@ namespace TSSedaplanifica.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(model.HireOfDate<DateTime.Now.Date)
+                if(model.HireOfDate.Year<DateTime.Now.Date.Year)
                 {
-                    ModelState.AddModelError(string.Empty, "La fecha inicial debe ser igual o superior a la fecha de hoy");
+                    ModelState.AddModelError(string.Empty, "La fecha inicial no se encuentra dentro de este año");
                 }
                 else if (model.HireOfDate>model.EndOfDate)
                 {
@@ -380,11 +379,11 @@ namespace TSSedaplanifica.Controllers
                 SchoolId = id,
                 rol = rol.Id,
                 SchoolName = schoolName.Name,
-                HireOfDate = DateTime.Now,
-                EndOfDate = DateTime.Now,
             };
 
             ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Coordinador.ToString()), "Id", "FullName");
+
+            ViewData["SchoolCampus"] = new SelectList(await _schoolHelper.ComboAsync(id), "Id", "Name");
 
             return View(model);
         }
@@ -417,6 +416,8 @@ namespace TSSedaplanifica.Controllers
             }
 
             ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName",model.UserId);
+
+            ViewData["SchoolCampus"] = new SelectList(await _schoolHelper.ComboAsync(model.SchoolId), "Id", "Name", model.SchoolCampus);
 
             return View(model);
         }

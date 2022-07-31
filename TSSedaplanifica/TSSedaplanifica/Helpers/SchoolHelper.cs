@@ -61,10 +61,6 @@ namespace TSSedaplanifica.Helpers
 
             return response;
         }
-         //<summary>
-         //    This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-         //    directly from your code.This API may change or be removed in future releases.
-         //</summary>
 
         public async Task<School> ByIdAsync(int id)
         {
@@ -78,11 +74,21 @@ namespace TSSedaplanifica.Helpers
             return model;
         }
 
-        public async Task<List<School>> ComboAsync()
+        public async Task<SchoolUser> ByUserSchoolAsync(string email)
         {
-            List<School> model = await _context.Schools.ToListAsync();
+            return await _context.SchoolUsers
+                            .Include(s=>s.ApplicationUser)
+                            .Include(x=>x.School)
+                            .Where(s => s.ApplicationUser.Email == email && s.isEnable == true).FirstOrDefaultAsync();
+        }
 
-            model.Add(new School { Id = 0, Name = "[Seleccione una Institución..]" });
+        public async Task<List<School>> ComboAsync(int id)
+        {
+            List<School> model = id==0 ? await _context.Schools.ToListAsync(): await _context.Schools.Where(s=>s.SchoolCampus.Id==id).ToListAsync();
+
+            string lsName = id == 0 ? "institución" : "sede";
+
+            model.Add(new School { Id = 0, Name = $"[Seleccione una {lsName}..]" });
 
             return model.OrderBy(m => m.Name).ToList();
         }

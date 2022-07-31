@@ -6,8 +6,13 @@ namespace TSSedaplanifica.Helpers
     public interface ISchoolHelper
     {
         Task<Response> AddUpdateAsync(School model);
+
         Task<School> ByIdAsync(int id);
-        Task<List<School>> ComboAsync();
+
+        Task<SchoolUser> ByUserSchoolAsync(string email);
+
+        Task<List<School>> ComboAsync(int id);
+
         Task<Response> DeleteAsync(int id);
         /// <summary>
         /// Listado de Instituciones educativas

@@ -1,0 +1,50 @@
+﻿@model TSSedaplanifica.Models.SolicitViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Crear</h1>
+
+<h4>Solicitud</h4>
+<hr />
+
+
+@if(TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+}
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserReceivedId"/>
+            <input type="hidden" asp-for="UserApprovedDeniedId"/>
+            <input type="hidden" asp-for="SolicitStatesId"/>
+            <input type="hidden" asp-for="UserClosedId" />
+
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-2">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
+                <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

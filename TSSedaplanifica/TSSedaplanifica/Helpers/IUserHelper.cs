@@ -35,6 +35,11 @@ namespace TSSedaplanifica.Helpers
 
         Task<IdentityRole> ByIdRoleAsync(string id);
 
+        Task<string> ByNameUneRoleAsync(string email);
+
         Task<IdentityUserRole<string>> ByIdUserRolAsync(string id);
+
+        //Task<List<SolicitState>> SolicitudStateAsync(string stateId, bool lbEsta);
+
     }
 }

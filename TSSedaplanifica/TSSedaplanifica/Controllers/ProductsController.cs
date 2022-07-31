@@ -34,7 +34,6 @@ namespace TSSedaplanifica.Controllers
             return View(await _prodcutHelper.ListAsync());
         }
 
-        // GET: CategoryTypes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -52,7 +51,6 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
-        // GET: CategoryTypes/Create
         public async Task<IActionResult> Create()
         {
             ViewData["MeasureUnitId"] = new SelectList(await _measureUnitHelper.ComboAsync(), "Id", "Name");
@@ -153,7 +151,6 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
-        // GET: CategoryTypes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -166,7 +163,6 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
-        // POST: CategoryTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -234,7 +230,6 @@ namespace TSSedaplanifica.Controllers
 
         }
 
-        //public async Task<IActionResult> DeleteProductCategory(int ProductId, int CategoryId)
         public async Task<IActionResult> DeleteProductCategory(int ProductId, int CategoryId)
         {
             Response response = await _productCategoryHelper.DeleteAsync(CategoryId);
