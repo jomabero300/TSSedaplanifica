@@ -223,6 +223,70 @@ namespace TSSedaplanifica.Helpers
 
         }
 
+        public async Task<List<ApplicationUser>> ListUserNotAssignedAsync(int SchoolId)
+        {
+
+            List<ApplicationUser> userOn = await (from U in _context.Users
+                                                        join S in _context.SchoolUsers on U.Id equals S.ApplicationUser.Id
+                                                        join E in _context.UserRoles on U.Id equals E.UserId
+                                                        join R in _context.Roles on E.RoleId equals R.Id
+                                                  where S.isEnable == true && R.Name == TypeUser.Coordinador.ToString()
+                                                        select U).ToListAsync();
+
+            //List<ApplicationUser> userOff = await (from U in _context.Users
+            //                                            join S in _context.SchoolUsers on U.Id equals S.ApplicationUser.Id
+            //                                            join E in _context.UserRoles on U.Id equals E.UserId
+            //                                            join R in _context.Roles on E.RoleId equals R.Id
+            //                                       where S.isEnable == false && !userOn.Contains(U)
+            //                                            select U).ToListAsync();
+
+
+            List<ApplicationUser> userSchool = await (from U in _context.Users
+                                                        join E in _context.UserRoles on U.Id equals E.UserId
+                                                        join R in _context.Roles on E.RoleId equals R.Id
+                                                        join S in _context.SchoolUsers on U.Id equals S.ApplicationUser.Id
+                                                    where R.Name == TypeUser.Coordinador.ToString()
+                                                    select U).ToListAsync();
+
+            List<ApplicationUser> userNew = await (
+                                                    (
+                                                        from U in _context.Users
+                                                        join S in _context.SchoolUsers on U.Id equals S.ApplicationUser.Id
+                                                        where S.School.SchoolCampus.Id == SchoolId && S.isEnable == true
+                                                        select U).Distinct()
+                                                    .Union(
+                                                        from U in _context.Users
+                                                        join E in _context.UserRoles on U.Id equals E.UserId
+                                                        join R in _context.Roles on E.RoleId equals R.Id
+                                                        where R.Name == TypeUser.Coordinador.ToString() && !userSchool.Contains(U)
+                                                        select U
+                                                    ).Union(
+                                                        from U in _context.Users
+                                                        join S in _context.SchoolUsers on U.Id equals S.ApplicationUser.Id
+                                                        join E in _context.UserRoles on U.Id equals E.UserId
+                                                        join R in _context.Roles on E.RoleId equals R.Id
+                                                        where S.isEnable == false && !userOn.Contains(U)
+                                                        select U
+                                                    )).ToListAsync();
+
+
+            List<ApplicationUser> model = userNew.Select(u => new ApplicationUser
+            {
+                Id = u.Id,
+                Document = u.Document,
+                UserName = u.UserName,
+                Email = u.Email,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                ImageId = u.ImageId
+
+            }).ToList();
+
+            model.Add(new ApplicationUser { Id = "", FirstName = $"[Seleccione un {TypeUser.Coordinador.ToString()}...]" });
+
+            return model.OrderBy(u => u.FullName).ToList();
+        }
+
         public async Task<Response> UserRoleAddEditAsync(RoleUserModelView model)
         {
             Response response=new Response { IsSuccess = false, Message="Usuario se encuentra activo en una institución" };
@@ -272,31 +336,6 @@ namespace TSSedaplanifica.Helpers
 
             return rol;
         }
-
-        //public async Task<List<SolicitState>> SolicitudStateAsync(string stateId, bool lbEsta)
-        //{
-
-        //    string[] ltname;
-
-        //    if(stateId != "P" && lbEsta == true)
-        //    {
-        //        ltname = new string[] { TypeSolicitState.Borrador.ToString(), TypeSolicitState.Enviado.ToString() };
-        //    }
-        //    else if (stateId == "R")
-        //    {
-        //        ltname = new string[] { TypeSolicitState.Admitido.ToString(), TypeSolicitState.Denegado.ToString(), TypeSolicitState.Pendiente.ToString() };
-        //    }
-        //    else 
-        //    {
-        //        ltname = new string[] { TypeSolicitState.Aceptado.ToString(), TypeSolicitState.Rechada.ToString(), TypeSolicitState.Recibido.ToString(), TypeSolicitState.Recibido.ToString() };
-        //    }
-
-        //    List<SolicitState> solicitStates = await _context.SolicitStates.Where(s=> ltname.Contains( s.Name)).ToListAsync();
-
-        //    solicitStates.Add(new SolicitState { Id = 0, Name = "[Seleccione un estado..]" });
-
-        //    return solicitStates.OrderBy(s => s.Name).ToList();
-        //}
 
         public async Task<string> ByNameUneRoleAsync(string email)
         {

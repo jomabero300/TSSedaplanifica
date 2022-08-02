@@ -4,60 +4,80 @@
     ViewData["Title"] = "Index";
 }
 
+
 <h1>Elementos</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
 </p>
 
-@if(TempData["AlertMessage"] != null)
+@if (TempData["AlertMessage"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-exclamation-triangle-fill"></i>
         <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+    </div>
 
 }
 
-<table class="table">
+<table class="table" id="myTable">
     <thead>
         <tr>
-            <th>
+            <th style="width:32%">
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
+            <th style="width:30%">
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            <th>
+            <th style="width:10%">
                 @Html.DisplayNameFor(model => model.MeasureUnit.Name)
             </th>
-            <th>
+            <th style="width:10%">
                 @Html.DisplayNameFor(model => model.CategoriesNumber)
             </th>
-            <th></th>
+            <th style="width:18%"></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MeasureUnit.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoriesNumber)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MeasureUnit.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoriesNumber)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
+}

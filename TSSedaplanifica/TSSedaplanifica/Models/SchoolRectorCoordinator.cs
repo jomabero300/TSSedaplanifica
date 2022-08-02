@@ -32,5 +32,8 @@ namespace TSSedaplanifica.Models
         [DataType(DataType.Date)]
         public DateTime EndOfDate { get; set; }
 
+        [Display(Name = "¿ Asignar otra sede ?")]
+        public bool assignSeat { get; set; }
+
     }
 }

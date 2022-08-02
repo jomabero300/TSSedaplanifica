@@ -37,10 +37,12 @@
                     @Html.DisplayFor(modelItem => item.Address)
                 </td>
                 <td>
-                    <a asp-action="DeleteSchool" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+                    <a asp-action="DeleteSchool" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a> |
+                    <a asp-action="Coordinator" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-person"></i> Coordinador</a> |
+                    @*<a asp-action="CoordinatorDelete" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-person-x"></i> Quitar Coordinador</a>*@
 
-                    @*@Html.ActionLink("Borrar", "DeleteSchool",new { id=item.Id },new { @class = "btn btn-sm btn-danger bi bi-trash-fill" })*@
 
+                <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="bi bi-person-x"></i> Quitar Coordinador</button>
                 </td>
             </tr>
             }

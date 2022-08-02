@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TSSedaplanifica.Data.Entities
@@ -37,8 +38,11 @@ namespace TSSedaplanifica.Data.Entities
 
         public School SchoolCampus { get; set; }
 
+        [JsonIgnore]
         public ICollection<SchoolImage> SchoolImages { get; set; }
-        public ICollection<SchoolUser> schoolUsers { get; set; }
+        [JsonIgnore]
+        public ICollection<SchoolUser> SchoolUsers { get; set; }
+        [JsonIgnore]
         public ICollection<Solicit> Solicits { get; set; }
     }
 }

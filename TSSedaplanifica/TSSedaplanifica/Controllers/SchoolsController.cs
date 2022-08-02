@@ -7,6 +7,7 @@ using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 using TSSedaplanifica.Models;
+using static TSSedaplanifica.Helpers.ModalHelper;
 
 namespace TSSedaplanifica.Controllers
 {
@@ -61,7 +62,6 @@ namespace TSSedaplanifica.Controllers
                 Zone=model.Zone,                
                 Schools=campus
             };
-
 
             return View(vm);
         }
@@ -331,7 +331,8 @@ namespace TSSedaplanifica.Controllers
                 SchoolId = id,
                 rol = rol.Id,
                 SchoolName = schoolName.Name,
-                SchoolCampus=1
+                SchoolCampus=1,
+                assignSeat=false
             };
 
             ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName");
@@ -375,18 +376,19 @@ namespace TSSedaplanifica.Controllers
         {
             var rol = await _userHelper.ByIdRoleAsync(TypeUser.Coordinador.ToString());
 
-            var schoolName = await _schoolHelper.ByIdAsync(id);
+            School schoolName = await _schoolHelper.ByIdAsync(id);
 
             SchoolRectorCoordinator model = new SchoolRectorCoordinator()
             {
                 SchoolId = id,
                 rol = rol.Id,
                 SchoolName = schoolName.Name,
+                SchoolCampus=schoolName.SchoolCampus.Id,
+                assignSeat=true
             };
 
-            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Coordinador.ToString()), "Id", "FullName");
+            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(schoolName.SchoolCampus.Id), "Id", "FullName");
 
-            ViewData["SchoolCampus"] = new SelectList(await _schoolHelper.ComboAsync(id), "Id", "Name");
 
             return View(model);
         }
@@ -413,16 +415,33 @@ namespace TSSedaplanifica.Controllers
                     {
                         TempData["AlertMessage"] = response.Message;
 
-                        return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Details), new { id = model.SchoolCampus });
                     }
                 }
             }
 
-            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName",model.UserId);
+            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(model.SchoolCampus), "Id", "FullName");
 
             ViewData["SchoolCampus"] = new SelectList(await _schoolHelper.ComboAsync(model.SchoolId), "Id", "Name", model.SchoolCampus);
 
             return View(model);
         }
+
+
+        [NoDirectAccess]
+        public async Task<IActionResult> CoordinatorDelete(int id)
+        {
+
+            Response response= await _schoolUserHelper.DeleteAsync(id);
+
+            TempData["AlertMessage"] = response.Message;
+
+            //if (response.IsSuccess)
+            //{
+            //    return RedirectToAction(nameof(Index))
+            //}
+            return RedirectToAction(nameof(Details), new {id=response.Result });
+        }
+
     }
 }

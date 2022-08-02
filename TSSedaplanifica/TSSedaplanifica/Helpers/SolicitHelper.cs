@@ -124,10 +124,23 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<List<Solicit>> ListAsync(string id)
         {
+
+
+            SchoolUser su = await _context.SchoolUsers.Include(s => s.ApplicationUser.Id == id && s.isEnable==true).FirstOrDefaultAsync();
+            School sc = await _context.Schools.Where(s => s.Id == su.School.Id).FirstOrDefaultAsync();
             List<Solicit> solicits = await _context.Solicits
                                 .Include(s => s.SolicitStates)
-                                .Where(s => s.School.schoolUsers.FirstOrDefault().ApplicationUser.Id == id && s.School.schoolUsers.FirstOrDefault().isEnable==true)
+                                .Include(s => s.School).ThenInclude(x=>x.SchoolUsers)
+                                .Where(s => s.School.SchoolUsers.FirstOrDefault().ApplicationUser.Id==id)
                                 .ToListAsync();
+
+            //List<Solicit> solicits =await (from s in _context.Solicits
+            //                                 join e in _context.SolicitStates on s.SolicitStates.Id equals e.Id
+            //                                 join c in _context.Schools on s.School.Id equals c.Id
+            //                                 join su in _context.SchoolUsers on c.Id equals su.School.Id
+            //                               where su.ApplicationUser.Id == id && su.isEnable == true
+            //                               select s).ToListAsync();
+
 
             return solicits;
         }

@@ -30,16 +30,24 @@ namespace TSSedaplanifica.Data
             await CheckCategoryTypeDesAsync();
             await CheckMeasureUnitAsync();
             await CheckSolicitStateAsync();
+            //await CheckSchoolAsync();
+
             await CheckRolesAsync();
             await CheckUserAsync("0000","admin@gmail.com","Super","administrador",Guid.Empty,"3000000000",TypeUser.Administrador);
             await CheckUserAsync("1010","jomabero300@gmail.com","Manuel","Bello",Guid.Empty,"313670740",TypeUser.Administrador);
             await CheckUserAsync("2020","leonardopulidom@gmail.com","Leonardo","Pulido",Guid.Empty,"3134907527",TypeUser.Administrador);
 
-            await CheckUserAsync("2020","GustavovillaRector@gmail.com","Rector","villa",Guid.Empty,"3134907527",TypeUser.Administrador);
-            await CheckUserAsync("2020", "GustavovillaCoordinador@gmail.com", "Coordinador","villa",Guid.Empty,"3134907527",TypeUser.Administrador);
-            await CheckUserAsync("2020","leonardopulidom@gmail.com","Leonardo","Pulido",Guid.Empty,"3134907527",TypeUser.Administrador);
-            await CheckUserAsync("2020","leonardopulidom@gmail.com","Leonardo","Pulido",Guid.Empty,"3134907527",TypeUser.Administrador);
+            await CheckUserAsync("3030","GustavovillaRector@gmail.com","Rector","villa",Guid.Empty,"3134907527",TypeUser.Rector);
+            await CheckUserAsync("4040", "GustavovillaCoordinador@gmail.com", "Coordinador","villa",Guid.Empty,"3134907527",TypeUser.Coordinador);
         }
+
+        //private async Task CheckSchoolAsync()
+        //{
+        //    if(!_context.Schools.Any())
+        //    {
+        //        _context.Schools.Add(new School { Name = "", DaneCode = "", Address = "", City = 0, Zone = 0 });
+        //    }
+        //}
 
         private async Task<ApplicationUser> CheckUserAsync(
             string document,

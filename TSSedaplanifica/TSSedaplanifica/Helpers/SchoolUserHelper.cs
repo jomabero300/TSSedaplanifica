@@ -22,16 +22,21 @@ namespace TSSedaplanifica.Helpers
         {
             Response response=new Response {IsSuccess=true,Message= $"{_name} guardado satisfactoriamente.!!!" };
 
-            SchoolUser schoolUser = await _context.SchoolUsers.FindAsync(model.SchoolId);
-
-            SchoolUser userNew = await _context.SchoolUsers.Where(s => s.ApplicationUser.Id == model.UserId).FirstOrDefaultAsync();
-
             School school=await _context.Schools.FindAsync(model.SchoolId);
 
-            if(userNew != null)
-            {
-                response = await ByIdEnableAsync(model.UserId);
-            }
+            SchoolUser schoolUser = await _context.SchoolUsers.Include(u=>u.ApplicationUser).Where(s=>s.School.Id==model.SchoolId && s.isEnable==true).FirstOrDefaultAsync();
+
+            //if(model.assignSeat==false)
+            //{
+            //    SchoolUser userNew = await _context.SchoolUsers.Where(s => s.ApplicationUser.Id == model.UserId).FirstOrDefaultAsync();
+
+            //    if(userNew != null)
+            //    {
+            //        response = await ByIdEnableAsync(model.UserId);
+            //    }
+            //}
+            
+            //TODO: Inavilitar al usuario si aparece en otras instituciones o sedes
 
             if (schoolUser != null)
             {
@@ -40,36 +45,44 @@ namespace TSSedaplanifica.Helpers
             }
 
             SchoolUser schoolUserExiste = await _context.SchoolUsers.Where(s => s.ApplicationUser.Id == model.UserId && s.School.Id == model.SchoolId && s.ApplicationRole == model.rol).FirstOrDefaultAsync();
-                
-            if (schoolUserExiste == null)
+            if (schoolUserExiste != null)
             {
-                ApplicationUser user = await _context.Users.FindAsync(model.UserId);
-
-                _context.SchoolUsers.Add(new SchoolUser
-                {
-                    ApplicationRole = model.rol,
-                    ApplicationUser = user,
-                    isEnable = true,
-                    School = school,
-                    EndOfDate = model.EndOfDate,
-                    HireOfDate = model.HireOfDate,
-                }) ;
-
-                response.Message = $"{_name} guardado satisfactoriamente.!!!";
-
-            }
-            else
-            {
-                schoolUserExiste.ApplicationRole = model.rol;
-                schoolUserExiste.EndOfDate = model.EndOfDate;
-                schoolUserExiste.HireOfDate = model.HireOfDate;
-                schoolUserExiste.isEnable = true;
-
+                schoolUserExiste.EndOfDate = DateTime.Now;
+                schoolUserExiste.isEnable=false;
                 _context.SchoolUsers.Update(schoolUserExiste);
-
-                response.Message = $"{_name} actualizado satisfactoriamente.!!!";
-
             }
+            //if (schoolUserExiste == null)
+            //{
+            ApplicationUser user = await _context.Users.FindAsync(model.UserId);
+
+            SchoolUser su = new SchoolUser()
+            {
+                ApplicationRole = model.rol,
+                ApplicationUser = user,
+                isEnable = true,
+                School = school,
+                EndOfDate = model.EndOfDate,
+                HireOfDate = model.HireOfDate,
+            };
+
+            _context.SchoolUsers.Add(su) ;
+
+            response.Message = $"{_name} guardado satisfactoriamente.!!!";
+            response.Result = su;
+
+            //}
+            //else
+            //{
+            //    schoolUserExiste.ApplicationRole = model.rol;
+            //    schoolUserExiste.EndOfDate = model.EndOfDate;
+            //    schoolUserExiste.HireOfDate = model.HireOfDate;
+            //    schoolUserExiste.isEnable = true;
+
+            //    _context.SchoolUsers.Update(schoolUserExiste);
+
+            //    response.Message = $"{_name} actualizado satisfactoriamente.!!!";
+
+            //}
 
             try
             {
@@ -114,51 +127,46 @@ namespace TSSedaplanifica.Helpers
             return model;
         }
 
-        //public async Task<Response> ByIdEnableAsync(string UserId)
-        //{
-        //    Response response = new Response { IsSuccess = true };
-
-        //    SchoolUser schoolUser = await _context.SchoolUsers.Where(s => s.ApplicationUser.Id == UserId && s.isEnable == true).FirstOrDefaultAsync();
-
-        //    if (schoolUser != null)
-        //    {
-
-        //        schoolUser.isEnable = false;
-
-        //        _context.SchoolUsers.Update(schoolUser);
-
-        //        try
-        //        {
-        //            await _context.SaveChangesAsync();
-
-        //        }
-        //        catch (DbUpdateException dbUpdateException)
-        //        {
-        //            if (dbUpdateException.InnerException.Message.Contains("duplica"))
-        //            {
-        //                response.Message = $"Ya existe una {_name} con el mismo nombre.";
-        //            }
-        //            else
-        //            {
-        //                response.Message = dbUpdateException.InnerException.Message;
-        //            }
-
-        //            response.IsSuccess = false;
-        //        }
-        //        catch (Exception exception)
-        //        {
-        //            response.Message = exception.Message;
-
-        //            response.IsSuccess = false;
-        //        }
-        //    }
-
-        //    return response;
-        //}
-
         public async Task<Response> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            Response response = new Response() { IsSuccess = true, Message = $"{_name} guardado satisfactoriamente.!!!" };
+
+            SchoolUser model = await _context.SchoolUsers.Where(s=>s.School.Id==id).FirstOrDefaultAsync();
+
+            School sc = await _context.Schools.Include(s=>s.SchoolCampus).Where(x=>x.Id==id).FirstOrDefaultAsync();
+
+            response.Result = sc.SchoolCampus.Id;
+
+
+            model.isEnable = false;
+
+            try
+            {
+                _context.SchoolUsers.Update(model);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                if (dbUpdateException.InnerException.Message.Contains("duplica"))
+                {
+                    response.Message = $"Ya existe una {_name} con el mismo nombre.";
+                }
+                else
+                {
+                    response.Message = dbUpdateException.InnerException.Message;
+                }
+
+                response.IsSuccess = false;
+            }
+            catch (Exception exception)
+            {
+                response.Message = exception.Message;
+
+                response.IsSuccess = false;
+            }
+
+            return response;
         }
 
         private async Task< Response> ByIdEnableAsync(string UserId)

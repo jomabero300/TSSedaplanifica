@@ -36,6 +36,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Home/NotAuthorized";
 });
 
+builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<ICategoryTypeHelper, CategoryTypeHelper>();
 builder.Services.AddScoped<ICategoryHelper, CategoryHelper>();
 builder.Services.AddScoped<IMeasureUnitHelper, MeasureUnitHelper>();
@@ -53,7 +54,6 @@ builder.Services.AddScoped<ISchoolUserHelper, SchoolUserHelper>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IApiService, ApiService>();
 
-builder.Services.AddTransient<SeedDb>();
 builder.Services.AddRazorPages();
 
 builder.Services.AddControllersWithViews();

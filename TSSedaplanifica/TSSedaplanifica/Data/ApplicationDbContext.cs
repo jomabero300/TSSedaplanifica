@@ -19,22 +19,22 @@ namespace TSSedaplanifica.Data
 
             builder.Entity<Category>()
                 .HasIndex(c => c.Name)
-                .HasDatabaseName("IX_Category_ Name")
+                .HasDatabaseName("IX_Category_Name")
                 .IsUnique();
 
             builder.Entity<CategoryType>()
                 .HasIndex(c => c.Name)
-                .HasDatabaseName("IX_CategoryType_ Name")
+                .HasDatabaseName("IX_CategoryType_Name")
                 .IsUnique();
 
             builder.Entity<CategoryTypeDer>()
                 .HasIndex("CategoryId", "CategoryTypeId")
-                .HasDatabaseName("IX_CategoryTypeDer_ CategoryIdCategoryTypeId")
+                .HasDatabaseName("IX_CategoryTypeDer_CategoryIdCategoryTypeId")
                 .IsUnique();
 
             builder.Entity<City>()
                 .HasIndex("StateId", "Name")
-                .HasDatabaseName("IX_State_City_ Name")
+                .HasDatabaseName("IX_State_City_Name")
                 .IsUnique();
 
             builder.Entity<Country>()
@@ -49,7 +49,7 @@ namespace TSSedaplanifica.Data
 
             builder.Entity<Product>()
                 .HasIndex(p => p.Name)
-                .HasDatabaseName("IX_Product_ Name")
+                .HasDatabaseName("IX_Product_Name")
                 .IsUnique();
 
             builder.Entity<ProductCategory>()
@@ -62,16 +62,10 @@ namespace TSSedaplanifica.Data
                 .HasDatabaseName("IX_name_DaneCode")
                 .IsUnique();
 
-            builder.Entity<SchoolUser>()
-                .HasIndex("SchoolId", "ApplicationUserId", "ApplicationRole")
-                .HasDatabaseName("IX_SchoolUser_SchoolId_ApplicationUserId_ApplicationRole")
-                .IsUnique();
-
             builder.Entity<SolicitDetail>()
                 .HasIndex("SolicitId", "ProductId")
-                .HasDatabaseName("IX_SolicitDetail_Solicit_Product_ Id")
+                .HasDatabaseName("IX_SolicitDetail_Solicit_Product_Id")
                 .IsUnique();
-
 
             builder.Entity<SolicitState>()
                 .HasIndex(s => s.Name)
