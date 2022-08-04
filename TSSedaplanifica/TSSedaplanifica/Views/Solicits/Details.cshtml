@@ -35,7 +35,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> | 
+    @if (Model.SolicitStates.Name == "Borrador")
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> 
+    }
     <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
 </div>
 

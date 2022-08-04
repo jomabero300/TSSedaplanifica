@@ -48,6 +48,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/showmodal.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -61,5 +62,8 @@
                 ]
             });
         });
+    </script>
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Schools/CoordinatorDelete/', false);
     </script>
 }

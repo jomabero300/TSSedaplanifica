@@ -7,10 +7,12 @@ using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 using TSSedaplanifica.Models;
+using static TSSedaplanifica.Helpers.ModalHelper;
 
 namespace TSSedaplanifica.Controllers
 {
-    [Authorize(Roles = "Coordinador,Rector,Secretario_municipal")]
+
+    [Authorize(Roles = $"{nameof(TypeUser.Coordinador)},{nameof(TypeUser.Rector)}, {nameof(TypeUser.Secretario_municipal)}")]
 
     public class SolicitsController : Controller
     {
@@ -24,7 +26,6 @@ namespace TSSedaplanifica.Controllers
         private readonly IProductHelper _productHelper;
 
         private readonly ISolicitDetailHelper _solicitDetailHelper;
-
 
         public SolicitsController(
             ISolicitHelper solicitHelper,
@@ -50,7 +51,7 @@ namespace TSSedaplanifica.Controllers
         {
             ApplicationUser lnaem = await _userHelper.GetUserAsync(User.Identity.Name);
 
-            List<Solicit> model = await _solicitHelper.ListAsync(lnaem.Id);
+            List<SolicitViewModel> model = await _solicitHelper.ListAsync(lnaem.Id);
             
             return View(model);
         }
@@ -79,7 +80,7 @@ namespace TSSedaplanifica.Controllers
             ApplicationUser user = await _userHelper.GetUserAsync(User.Identity.Name);
             List<SolicitState> state = await _solicitStateHelper.SolicitudStateAsync(lnaem, true);
 
-            SolicitViewModel model = new SolicitViewModel()
+            SolicitAddAndEditViewModel model = new SolicitAddAndEditViewModel()
             {
                 UserApprovedDeniedId = user.Id,
                 UserClosedId= user.Id,
@@ -92,7 +93,7 @@ namespace TSSedaplanifica.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SolicitViewModel model)
+        public async Task<IActionResult> Create(SolicitAddAndEditViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -223,6 +224,7 @@ namespace TSSedaplanifica.Controllers
 
             return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProductAdd(SolicitDetailProductViewModel model)
@@ -234,7 +236,7 @@ namespace TSSedaplanifica.Controllers
 
                 if(sd != null)
                 {
-                    model.Quantity += sd.Quantity;
+                    sd.Quantity += model.Quantity;
                 }
                 else
                 {
@@ -325,7 +327,7 @@ namespace TSSedaplanifica.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RequestSendConfirmed(int id)
         {
-            Response response = await _solicitHelper.RequestSendAsync(id);
+            Response response = await _solicitHelper.RequestSendAsync(id, TypeSolicitState.Enviado.ToString());
 
             TempData["AlertMessage"] = response.Message;
 
@@ -338,7 +340,6 @@ namespace TSSedaplanifica.Controllers
 
             return View(model);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> CategoryListById(int categoryTypeId)
@@ -356,5 +357,108 @@ namespace TSSedaplanifica.Controllers
 
             return Json(lista);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ToConsolidate(int id)
+        {
+            Solicit model = await _solicitHelper.ByIdAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("ToConsolidate")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToConsolidateConfirmed(int id)
+        {
+            Response response = await _solicitHelper.RequestSendAsync(id,TypeSolicitState.Consolidado.ToString());
+
+            TempData["AlertMessage"] = response.Message;
+
+            if (response.IsSuccess)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            Solicit model = await _solicitHelper.ByIdAsync(id);
+
+            return View(model);
+        }
+
+        [NoDirectAccess]
+        public async Task<IActionResult> SolicitEarring(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            solicit.SolicitStates=await _solicitStateHelper.ByIdAsync(TypeSolicitState.Pendiente.ToString());
+            
+            Response response = await _solicitHelper.DeleteAsync(solicit.Id);
+
+            TempData["AlertMessage"] = response.Message;
+
+            return RedirectToAction(nameof(Details), new { id = solicit.Id });
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SolicitPassed(int id)
+        {
+            Solicit model = await _solicitHelper.ByIdAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("SolicitPassed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SolicitPassedConfirmed(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            solicit.SolicitStates = await _solicitStateHelper.ByIdAsync(TypeSolicitState.Consolidado.ToString());
+
+            Response response = await _solicitHelper.AddUpdateAsync(solicit);
+
+            TempData["AlertMessage"] = response.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SolicitDenied(int id)
+        {
+            Solicit model = await _solicitHelper.ByIdAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("SolicitDenied")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SolicitDeniedConfirmed(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            solicit.SolicitStates = await _solicitStateHelper.ByIdAsync(TypeSolicitState.Denegado.ToString());
+
+            Response response = await _solicitHelper.AddUpdateAsync(solicit);
+
+            TempData["AlertMessage"] = response.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

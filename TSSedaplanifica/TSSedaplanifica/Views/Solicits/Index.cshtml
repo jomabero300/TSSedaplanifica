@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TSSedaplanifica.Data.Entities.Solicit>
+﻿@model IEnumerable<TSSedaplanifica.Models.SolicitViewModel>
 @{
     ViewData["Title"] = "Index";
 }
@@ -29,6 +29,9 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.ProductCount)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.SolicitStates)
             </th>
             <th></th>
@@ -40,29 +43,65 @@
             <tr>
                 <td>
                     <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.DateOfSolicit)</a>
-
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SolicitStates.Name)
+                    @Html.DisplayFor(modelItem => item.ProductCount)
                 </td>
                 <td>
-                    @if (item.SolicitStates.Name == "Borrador")
+                    @Html.DisplayFor(modelItem => item.SolicitStates.Name)
+                </td>
+
+                <td style="width:28%">
+                    @if (item.TypeUser)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
-                        <a asp-action="RequestSend" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Enviar</a>
+                        @if(item.SolicitStates.Name=="Borrador")
+                        {
+                            @if(item.SolicitStates.Name != "Consolidado" && item.SolicitStates.Name != "Enviado")
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+
+                                @if (User.IsInRole("Rector"))
+                                {
+                                    <a asp-action="ToConsolidate" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-union"></i> Solicitar</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="RequestSend" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-send-fill"></i> Enviar</a>
+                                }                                
+                            }                            
+                        }
+                    }
+                    else
+                    {
+                        @if(item.SolicitStates.Name=="Pendiente" || item.SolicitStates.Name=="Enviado")
+                        {
+                            if(item.SolicitStates.Name=="Pendiente")
+                            {
+                                <a asp-action="SolicitPassed" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-check-circle-fill"></i> Aprobar</a>
+                                <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>                               
+                            }
+                            else
+                            {
+                                <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#SolicitEarring"><i class="bi bi-trash-fill"></i> Pendiente</button>
+                                <a asp-action="SolicitPassed" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-check-circle-fill"></i> Aprobar</a>
+                                <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>                               
+                            }
+                        }
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<partial name="_SolicitEarringDialog" />
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/showmodal.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -77,4 +116,10 @@
             });
         });
     </script>
+
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Solicits/SolicitEarring/', false);
+    </script>
+
 }

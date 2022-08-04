@@ -11,7 +11,7 @@ using static TSSedaplanifica.Helpers.ModalHelper;
 
 namespace TSSedaplanifica.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = $"{nameof(TypeUser.Administrador)}")]
 
     public class SchoolsController : Controller
     {
@@ -427,7 +427,6 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
-
         [NoDirectAccess]
         public async Task<IActionResult> CoordinatorDelete(int id)
         {
@@ -436,12 +435,7 @@ namespace TSSedaplanifica.Controllers
 
             TempData["AlertMessage"] = response.Message;
 
-            //if (response.IsSuccess)
-            //{
-            //    return RedirectToAction(nameof(Index))
-            //}
             return RedirectToAction(nameof(Details), new {id=response.Result });
         }
-
     }
 }

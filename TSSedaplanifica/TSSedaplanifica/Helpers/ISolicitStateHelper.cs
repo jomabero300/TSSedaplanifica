@@ -7,6 +7,7 @@ namespace TSSedaplanifica.Helpers
     {
         Task<Response> AddUpdateAsync(SolicitState model);
         Task<SolicitState> ByIdAsync(int id);
+        Task<SolicitState> ByIdAsync(string name);
         Task<List<SolicitState>> ComboAsync();
         Task<Response> DeleteAsync(int id);
         Task<List<SolicitState>> ListAsync();

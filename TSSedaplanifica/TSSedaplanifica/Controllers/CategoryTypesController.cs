@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 
 namespace TSSedaplanifica.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = $"{nameof(TypeUser.Administrador)}")]
 
     public class CategoryTypesController : Controller
     {

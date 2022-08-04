@@ -35,8 +35,11 @@
                     @Html.DisplayFor(modelItem => item.CategoryType.Name)
                 </td>
                 <td>
-                    <a asp-action="CategoryTypeDerDelete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+                    
+                    <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="bi bi-trash-fill"></i> Borrar</button>
 
+@*                    <a asp-action="CategoryTypeDerDelete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+*@
                     @*@Html.ActionLink("Borrar", "CategoryTypeDerDelete",new { CategoryId=item.Id, CategoryTypeId=item.CategoryType.Id },new { @class = "btn btn-sm btn-danger bi bi-trash-fill" })*@
                 </td>
             </tr>

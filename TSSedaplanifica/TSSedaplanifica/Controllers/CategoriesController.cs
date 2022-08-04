@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 using TSSedaplanifica.Models;
+using static TSSedaplanifica.Helpers.ModalHelper;
 
 namespace TSSedaplanifica.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = $"{nameof(TypeUser.Administrador)}")]
 
     public class CategoriesController : Controller
     {
@@ -221,6 +223,7 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> CategoryTypeDerDelete(int id)
         {
             CategoryTypeDer ctd = await _categoryTypeDerHelper.ByIdAsync(id);
@@ -230,8 +233,6 @@ namespace TSSedaplanifica.Controllers
             TempData["AlertMessage"] = response.Message;
             
             return RedirectToAction(nameof(Details), new { id = ctd.Category.Id });
-
         }
-
     }
 }

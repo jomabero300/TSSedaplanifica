@@ -1,5 +1,6 @@
 ﻿using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Models;
 
 namespace TSSedaplanifica.Helpers
 {
@@ -10,7 +11,8 @@ namespace TSSedaplanifica.Helpers
         Task<Solicit> ByIdDetailAsync(int id);
         Task<List<Solicit>> ComboAsync();
         Task<Response> DeleteAsync(int id);
-        Task<Response> RequestSendAsync(int id);
-        Task<List<Solicit>> ListAsync(string id);
+        Task<Response> RequestSendAsync(int id, string typeSolicitState);
+        //Task<List<Solicit>> ListAsync(string id);
+        Task<List<SolicitViewModel>> ListAsync(string id);
     }
 }

@@ -58,5 +58,10 @@ namespace TSSedaplanifica.Data.Entities
 
         public ICollection<SolicitDetail> SolicitDetails { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N0}")]
+        [Display(Name = "Elementos")]
+        public int ProductCount => SolicitDetails == null ? 0 : SolicitDetails.Count;
+
+
     }
 }

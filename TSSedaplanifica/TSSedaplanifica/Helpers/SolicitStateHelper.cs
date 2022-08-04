@@ -140,5 +140,12 @@ namespace TSSedaplanifica.Helpers
 
             return solicitStates.OrderBy(s => s.Name).ToList();
         }
+
+        public async Task<SolicitState> ByIdAsync(string name)
+        {
+            SolicitState model = await _context.SolicitStates.Where(s=>s.Name==name).FirstOrDefaultAsync();
+
+            return model;
+        }
     }
 }

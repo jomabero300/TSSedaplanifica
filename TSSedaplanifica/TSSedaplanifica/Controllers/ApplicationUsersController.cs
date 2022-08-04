@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
+using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 using TSSedaplanifica.Models.ApplicationUser;
 
 namespace TSSedaplanifica.Controllers
 {
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = $"{nameof(TypeUser.Administrador) }")]
 
     public class ApplicationUsersController : Controller
     {
