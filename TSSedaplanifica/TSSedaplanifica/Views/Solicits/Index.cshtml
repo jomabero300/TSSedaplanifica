@@ -6,97 +6,133 @@
 <h1>Solicitudes</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
+    @if(!User.IsInRole("Planificador"))
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
+    }
+    @if (User.IsInRole("Rector") && Model.Where(s=>s.SolicitStates.Name=="Consolidado").Count()>0)
+    {
+        <a asp-action="RectorConsolidate" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Consolidar</a>
+    }
 </p>
 
 @if (TempData["AlertMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    if(TempData["AlertMessage"].ToString().Contains("borrad"))
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
+    }
+    else
+    {
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>        
+    }
 }
 
-<table class="table table-striped table-responsive-md table-bordered smfont" id="SolicitTable">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfSolicit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductCount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SolicitStates)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.DateOfSolicit)</a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SolicitStates.Name)
-                </td>
-
-                <td style="width:28%">
-                    @if (item.TypeUser)
-                    {
-                        @if(item.SolicitStates.Name=="Borrador")
-                        {
-                            @if(item.SolicitStates.Name != "Consolidado" && item.SolicitStates.Name != "Enviado")
-                            {
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
-
-                                @if (User.IsInRole("Rector"))
+<div class="row">
+    <div class="col-md-12">
+        <div class="container-fluid">
+            <div class="card mt-2">
+                <div class="card-header text-danger">
+                    <i class="fa fa-object-group"></i>  <strong>Solicitudes</strong>
+                </div>
+                <div class="card-body">
+                    <div id="view-all">
+                        <table class="table" id="SolicitTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.DateOfSolicit)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Description)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.ProductCount)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.SolicitStates)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
                                 {
-                                    <a asp-action="ToConsolidate" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-union"></i> Solicitar</a>
+                                    <tr>
+                                        <td>
+                                            <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.DateOfSolicit)</a>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Description)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ProductCount)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SolicitStates.Name)
+                                        </td>
+
+                                        <td style="width:28%">
+                                            @if (item.TypeUser)
+                                            {
+                                                @if (item.SolicitStates.Name == "Borrador")
+                                                {
+                                                    @if (item.SolicitStates.Name != "Consolidado" && item.SolicitStates.Name != "Enviado")
+                                                    {
+                                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
+                                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+
+                                                        @if (User.IsInRole("Rector") || User.IsInRole("Secretario_municipal") )
+                                                        {
+                                                            <a asp-action="ToConsolidate" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-terminal-fill"></i> Solicitar</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            if(User.IsInRole("Coordinador"))
+                                                            {
+                                                                <a asp-action="RequestSend" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-send-fill"></i> Enviar</a>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (item.SolicitStates.Name == "Pendiente" || item.SolicitStates.Name == "Enviado")
+                                                {
+                                                    if (item.SolicitStates.Name == "Pendiente")
+                                                    {
+                                                        <a asp-action="SolicitPassed" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-check-circle-fill"></i> Aprobar</a>
+                                                        <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#SolicitEarring"><i class="bi bi-pin-angle-fill"></i> Pendiente</button>
+                                                        <a asp-action="SolicitPassed" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-check-circle-fill"></i> Aprobar</a>
+                                                        <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>
+                                                    }
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
                                 }
-                                else
-                                {
-                                    <a asp-action="RequestSend" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-send-fill"></i> Enviar</a>
-                                }                                
-                            }                            
-                        }
-                    }
-                    else
-                    {
-                        @if(item.SolicitStates.Name=="Pendiente" || item.SolicitStates.Name=="Enviado")
-                        {
-                            if(item.SolicitStates.Name=="Pendiente")
-                            {
-                                <a asp-action="SolicitPassed" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-check-circle-fill"></i> Aprobar</a>
-                                <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>                               
-                            }
-                            else
-                            {
-                                <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#SolicitEarring"><i class="bi bi-trash-fill"></i> Pendiente</button>
-                                <a asp-action="SolicitPassed" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-check-circle-fill"></i> Aprobar</a>
-                                <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>                               
-                            }
-                        }
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <partial name="_SolicitEarringDialog" />
 
 @section Scripts {
@@ -104,7 +140,7 @@
     <script src="~/js/showmodal.js"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#SolicitTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"

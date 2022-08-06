@@ -30,7 +30,6 @@ namespace TSSedaplanifica.Data
             await CheckCategoryTypeDesAsync();
             await CheckMeasureUnitAsync();
             await CheckSolicitStateAsync();
-            //await CheckSchoolAsync();
 
             await CheckRolesAsync();
             await CheckUserAsync("0000","admin@gmail.com","Super","administrador",Guid.Empty,"3000000000",TypeUser.Administrador);
@@ -40,14 +39,6 @@ namespace TSSedaplanifica.Data
             await CheckUserAsync("3030","GustavovillaRector@gmail.com","Rector","villa",Guid.Empty,"3134907527",TypeUser.Rector);
             await CheckUserAsync("4040", "GustavovillaCoordinador@gmail.com", "Coordinador","villa",Guid.Empty,"3134907527",TypeUser.Coordinador);
         }
-
-        //private async Task CheckSchoolAsync()
-        //{
-        //    if(!_context.Schools.Any())
-        //    {
-        //        _context.Schools.Add(new School { Name = "", DaneCode = "", Address = "", City = 0, Zone = 0 });
-        //    }
-        //}
 
         private async Task<ApplicationUser> CheckUserAsync(
             string document,
@@ -274,7 +265,5 @@ namespace TSSedaplanifica.Data
                 }
             }
         }
-
-
     }
 }

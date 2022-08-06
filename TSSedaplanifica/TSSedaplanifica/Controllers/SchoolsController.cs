@@ -322,7 +322,13 @@ namespace TSSedaplanifica.Controllers
 
         public async Task<IActionResult> Rector(int id)
         {
-            var rol = await _userHelper.ByIdRoleAsync(TypeUser.Rector.ToString());
+            string typeUser = TypeUser.Rector.ToString();
+
+            if (id >= 68 && id <= 74)
+            {
+                typeUser = TypeUser.Secretario_municipal.ToString();
+            }
+            var rol = await _userHelper.ByIdRoleAsync(typeUser);
 
             var schoolName = await _schoolHelper.ByIdAsync(id);
 
@@ -335,7 +341,7 @@ namespace TSSedaplanifica.Controllers
                 assignSeat=false
             };
 
-            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(TypeUser.Rector.ToString()), "Id", "FullName");
+            ViewData["UserId"] = new SelectList(await _userHelper.ListUserNotAssignedAsync(typeUser), "Id", "FullName");
 
             return View(model);
         }

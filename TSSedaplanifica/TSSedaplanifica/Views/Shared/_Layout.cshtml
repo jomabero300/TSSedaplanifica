@@ -49,7 +49,7 @@
                                 </div>
                             </li>
                         }
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Rector") || User.IsInRole("Coordinador") )
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Coordinador") || User.IsInRole("Rector") || User.IsInRole("Secretario_municipal"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-withe" asp-controller="Solicits" asp-action="Index">

@@ -396,11 +396,12 @@ namespace TSSedaplanifica.Controllers
 
             solicit.SolicitStates=await _solicitStateHelper.ByIdAsync(TypeSolicitState.Pendiente.ToString());
             
-            Response response = await _solicitHelper.DeleteAsync(solicit.Id);
+            Response response = await _solicitHelper.AddUpdateAsync(solicit);
 
             TempData["AlertMessage"] = response.Message;
 
-            return RedirectToAction(nameof(Details), new { id = solicit.Id });
+            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Details), new { id = solicit.Id });
 
         }
 
@@ -460,5 +461,70 @@ namespace TSSedaplanifica.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RectorEditQuantity(int id)
+        {
+            SolicitDetail model = await _solicitDetailHelper.ByIdAsync(id);
+            ProductEditrectorPlanner p = new ProductEditrectorPlanner()
+            {
+                Id = model.Id,
+                Name=model.Product.Name,
+                Description=model.Description,
+                Quantity=model.DirectorQuantity,
+                SolicitId=model.Solicit.Id
+            };
+
+            return View(p);
+        }
+
+        [HttpPost, ActionName("RectorEditQuantity")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RectorEditQuantityConfirmed([Bind("Id,SolicitId,Name,Description,Quantity")] ProductEditrectorPlanner model)
+        {
+            if(ModelState.IsValid)
+            {
+                SolicitDetail sd = await _solicitDetailHelper.ByIdAsync(model.Id);
+
+                sd.DirectorQuantity = model.Quantity;
+                sd.Description= model.Description;
+
+                Response response = await _solicitDetailHelper.AddUpdateAsync(sd);
+
+                TempData["AlertMessage"] = response.Message;
+
+                return RedirectToAction(nameof(Details),new { id= model.SolicitId});
+            }
+
+            return View(model);
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RectorConsolidate()
+        {
+            SolicitConsolidateViewModel model =await _solicitHelper.ListConsolidateAsync(User.Identity.Name);
+
+            return View(model);
+
+        }
+
+        [HttpPost, ActionName("RectorConsolidate")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RectorConsolidateConfirmed([Bind("School,Description,SolicitCons,Details")]SolicitConsolidateViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                Response response = await _solicitHelper.AddUpdateAsync(User.Identity.Name,model.Description,User.Identity.Name);
+
+                TempData["AlertMessage"] = response.Message;
+
+                if (response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            return View(model);
+        }
     }
 }

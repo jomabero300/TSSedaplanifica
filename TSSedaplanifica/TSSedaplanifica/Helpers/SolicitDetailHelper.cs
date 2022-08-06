@@ -20,8 +20,6 @@ namespace TSSedaplanifica.Helpers
         {
             Response response = new Response() { IsSuccess = true };
 
-
-
             try
             {
                 if (model.Id == 0)

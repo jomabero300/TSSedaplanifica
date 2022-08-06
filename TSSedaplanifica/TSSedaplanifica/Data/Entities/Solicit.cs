@@ -61,7 +61,6 @@ namespace TSSedaplanifica.Data.Entities
         [DisplayFormat(DataFormatString = "{0:N0}")]
         [Display(Name = "Elementos")]
         public int ProductCount => SolicitDetails == null ? 0 : SolicitDetails.Count;
-
-
+        
     }
 }

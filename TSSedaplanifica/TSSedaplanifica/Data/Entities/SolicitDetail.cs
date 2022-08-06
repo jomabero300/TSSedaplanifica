@@ -21,6 +21,7 @@ namespace TSSedaplanifica.Data.Entities
         [Display(Name = "Cantidad")]
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(0, float.MaxValue, ErrorMessage = "Debe ingresar un valo superios a {0}.")]
         public float Quantity { get; set; }
 
         [Column(TypeName = "decimal(8,2)")]
@@ -33,12 +34,14 @@ namespace TSSedaplanifica.Data.Entities
         [Display(Name = "Cantidad")]
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(0, float.MaxValue, ErrorMessage = "Debe ingresar un valo superios a {0}.")]
         public float PlannerQuantity { get; set; }
 
         [Column(TypeName = "decimal(8,2)")]
         [Display(Name = "Cantidad")]
         [DisplayFormat(DataFormatString = "{0:N2}")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(0, float.MaxValue, ErrorMessage = "Debe ingresar un valo superios a {0}.")]
         public float DeliveredQuantity { get; set; }
 
         [Column(TypeName = "varchar(200)")]

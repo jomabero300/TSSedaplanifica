@@ -7,6 +7,7 @@ namespace TSSedaplanifica.Helpers
     public interface ISolicitHelper
     {
         Task<Response> AddUpdateAsync(Solicit model);
+        Task<Response> AddUpdateAsync(string id,string description,string username);
         Task<Solicit> ByIdAsync(int id);
         Task<Solicit> ByIdDetailAsync(int id);
         Task<List<Solicit>> ComboAsync();
@@ -14,5 +15,7 @@ namespace TSSedaplanifica.Helpers
         Task<Response> RequestSendAsync(int id, string typeSolicitState);
         //Task<List<Solicit>> ListAsync(string id);
         Task<List<SolicitViewModel>> ListAsync(string id);
+        Task<SolicitConsolidateViewModel> ListConsolidateAsync(string id);
+
     }
 }
