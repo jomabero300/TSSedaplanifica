@@ -11,8 +11,7 @@ using static TSSedaplanifica.Helpers.ModalHelper;
 
 namespace TSSedaplanifica.Controllers
 {
-
-    [Authorize(Roles = $"{nameof(TypeUser.Coordinador)},{nameof(TypeUser.Rector)}, {nameof(TypeUser.Secretario_municipal)}")]
+    [Authorize(Roles = $"{nameof(TypeUser.Coordinador)},{nameof(TypeUser.Rector)}, {nameof(TypeUser.Secretario_municipal)}, {nameof(TypeUser.Planificador)}")]
 
     public class SolicitsController : Controller
     {
@@ -395,7 +394,13 @@ namespace TSSedaplanifica.Controllers
             Solicit solicit = await _solicitHelper.ByIdAsync(id);
 
             solicit.SolicitStates=await _solicitStateHelper.ByIdAsync(TypeSolicitState.Pendiente.ToString());
-            
+
+            ApplicationUser user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            solicit.UserReceived = user;
+
+            solicit.DateOfReceived = DateTime.Now;
+
             Response response = await _solicitHelper.AddUpdateAsync(solicit);
 
             TempData["AlertMessage"] = response.Message;
@@ -426,6 +431,12 @@ namespace TSSedaplanifica.Controllers
 
             solicit.SolicitStates = await _solicitStateHelper.ByIdAsync(TypeSolicitState.Consolidado.ToString());
 
+            ApplicationUser user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            solicit.UserApprovedDenied = user;
+
+            solicit.DateOfApprovedDenied = DateTime.Now;
+
             Response response = await _solicitHelper.AddUpdateAsync(solicit);
 
             TempData["AlertMessage"] = response.Message;
@@ -454,6 +465,12 @@ namespace TSSedaplanifica.Controllers
 
             solicit.SolicitStates = await _solicitStateHelper.ByIdAsync(TypeSolicitState.Denegado.ToString());
 
+            ApplicationUser user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            solicit.UserApprovedDenied = user;
+
+            solicit.DateOfApprovedDenied=DateTime.Now;
+
             Response response = await _solicitHelper.AddUpdateAsync(solicit);
 
             TempData["AlertMessage"] = response.Message;
@@ -465,6 +482,7 @@ namespace TSSedaplanifica.Controllers
         public async Task<IActionResult> RectorEditQuantity(int id)
         {
             SolicitDetail model = await _solicitDetailHelper.ByIdAsync(id);
+
             ProductEditrectorPlanner p = new ProductEditrectorPlanner()
             {
                 Id = model.Id,
@@ -486,7 +504,12 @@ namespace TSSedaplanifica.Controllers
                 SolicitDetail sd = await _solicitDetailHelper.ByIdAsync(model.Id);
 
                 sd.DirectorQuantity = model.Quantity;
-                sd.Description= model.Description;
+                sd.PlannerQuantity = model.Quantity;
+                sd.DeliveredQuantity = model.Quantity;
+                if (model.Description != null && model.Description != "s/d" && model.Description.Trim().Length > 3)
+                {
+                    sd.Description += $"\n Rector : {model.Description.Trim()}";
+                }
 
                 Response response = await _solicitDetailHelper.AddUpdateAsync(sd);
 
@@ -496,7 +519,6 @@ namespace TSSedaplanifica.Controllers
             }
 
             return View(model);
-
         }
 
         [HttpGet]
@@ -514,7 +536,7 @@ namespace TSSedaplanifica.Controllers
         {
             if(ModelState.IsValid)
             {
-                Response response = await _solicitHelper.AddUpdateAsync(User.Identity.Name,model.Description,User.Identity.Name);
+                Response response = await _solicitHelper.AddUpdateAsync(User.Identity.Name,model.Description);
 
                 TempData["AlertMessage"] = response.Message;
 
@@ -522,6 +544,172 @@ namespace TSSedaplanifica.Controllers
                 {
                     return RedirectToAction(nameof(Index));
                 }
+            }
+            
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SolicitProcessing(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            return View(solicit);
+        }
+
+        [HttpPost, ActionName("SolicitProcessing")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SolicitProcessingConfirmed(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            solicit.SolicitStates =await _solicitStateHelper.ByIdAsync(TypeSolicitState.Proceso.ToString());
+            solicit.UserReceived = await _userHelper.ByIdAsync(User.Identity.Name);
+            solicit.DateOfReceived = DateTime.Now;
+
+            Response response = await _solicitHelper.AddUpdateAsync(solicit);
+
+            TempData["AlertMessage"] = response.Message;
+            
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PlannerEditQuantity(int id)
+        {
+            SolicitDetail model = await _solicitDetailHelper.ByIdAsync(id);
+
+            ProductEditrectorPlanner p = new ProductEditrectorPlanner()
+            {
+                Id = model.Id,
+                Name = model.Product.Name,
+                Description = model.Description,
+                Quantity = model.PlannerQuantity,
+                SolicitId = model.Solicit.Id
+            };
+
+            return View(p);
+        }
+
+        [HttpPost, ActionName("PlannerEditQuantity")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PlannerEditQuantityConfirmed([Bind("Id,SolicitId,Name,Description,Quantity")] ProductEditrectorPlanner model)
+        {
+            if (ModelState.IsValid)
+            {
+                SolicitDetail sd = await _solicitDetailHelper.ByIdAsync(model.Id);
+
+                sd.PlannerQuantity = model.Quantity;
+                sd.DeliveredQuantity = model.Quantity;
+
+                if (model.Description != "s/d" && model.Description.Trim().Length > 3)
+                {
+                    sd.Description += $"\n Planificador : {model.Description.Trim()}";
+                }
+
+                Response response = await _solicitDetailHelper.AddUpdateAsync(sd);
+
+                TempData["AlertMessage"] = response.Message;
+
+                return RedirectToAction(nameof(Details), new { id = model.SolicitId });
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SolicitClosed(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            return View(solicit);
+
+        }
+
+        [HttpPost, ActionName("SolicitClosed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SolicitClosedConfirmed(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            solicit.SolicitStates = await _solicitStateHelper.ByIdAsync(TypeSolicitState.Cerrado.ToString());
+
+            solicit.UserClosed = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            solicit.DateOfClosed = DateTime.Now;
+
+            Response response = await _solicitHelper.AddUpdateAsync(solicit);
+
+            TempData["AlertMessage"] = response.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SolicitPlannerPassed(int id)
+        {
+            Solicit model = await _solicitHelper.ByIdAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost, ActionName("SolicitPlannerPassed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SolicitPlannerPassedConfirmed(int id)
+        {
+            Solicit solicit = await _solicitHelper.ByIdAsync(id);
+
+            solicit.SolicitStates = await _solicitStateHelper.ByIdAsync(TypeSolicitState.Aceptado.ToString());
+
+            Response response = await _solicitHelper.AddUpdateAsync(solicit);
+
+            TempData["AlertMessage"] = response.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeliveredEditQuantity(int id)
+        {
+            SolicitDetail model = await _solicitDetailHelper.ByIdAsync(id);
+
+            ProductEditrectorPlanner p = new ProductEditrectorPlanner()
+            {
+                Id = model.Id,
+                Name = model.Product.Name,
+                Description = model.Description,
+                Quantity = model.DeliveredQuantity,
+                SolicitId = model.Solicit.Id
+            };
+
+            return View(p);
+        }
+
+        [HttpPost, ActionName("DeliveredEditQuantity")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeliveredEditQuantity([Bind("Id,SolicitId,Name,Description,Quantity")] ProductEditrectorPlanner model)
+        {
+            if (ModelState.IsValid)
+            {
+                SolicitDetail sd = await _solicitDetailHelper.ByIdAsync(model.Id);
+
+                sd.DeliveredQuantity = model.Quantity;
+
+                if(model.Description != "s/d" && model.Description.Trim().Length>3)
+                {
+                    sd.Description +=$"\nEntregado : {model.Description.Trim()}";
+                }
+
+                Response response = await _solicitDetailHelper.AddUpdateAsync(sd);
+
+                TempData["AlertMessage"] = response.Message;
+
+                return RedirectToAction(nameof(Details), new { id = model.SolicitId });
             }
 
             return View(model);

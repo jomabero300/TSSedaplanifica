@@ -13,10 +13,29 @@
                 @Html.DisplayNameFor(model => model.SolicitDetails.FirstOrDefault().Product.Name)
             </th>
             <th>
+                @if (User.IsInRole("Planificador") && Model.SolicitStates.Name == "Aceptado" && Model.School.SchoolCampus == null)
+                {
+                    @if (Model.SolicitStates.Name == "Aceptado")
+                    {
+                        @Html.DisplayNameFor(model => model.SolicitDetails.FirstOrDefault().DeliveredQuantity)
 
-                @Html.DisplayNameFor(model => model.SolicitDetails.FirstOrDefault().Quantity)
+                    }
+                    else
+                    {
+                        @Html.DisplayNameFor(model => model.SolicitDetails.FirstOrDefault().PlannerQuantity)
 
-            </th>                
+                    }
+                }
+                else @if (User.IsInRole("Rector") && Model.School.SchoolCampus != null)
+                {
+                    @Html.DisplayNameFor(model => model.SolicitDetails.FirstOrDefault().DirectorQuantity)
+                }
+                else
+                {
+                    @Html.DisplayNameFor(model => model.SolicitDetails.FirstOrDefault().Quantity)
+                }
+
+            </th>
             <th>
                 @if (Model.SolicitStates.Name == "Borrador")
                 {
@@ -34,13 +53,21 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Product.Name)
                     </td>
-                    <td>
-                        
-                        @if(User.IsInRole("Planificador") && Model.School.SchoolCampus == null)
+                    <td style="text-align:center">
+
+                        @if (User.IsInRole("Planificador") && Model.School.SchoolCampus == null)
                         {
-                            @Html.DisplayFor(modelItem => item.PlannerQuantity)
+                            if (Model.SolicitStates.Name == "Aceptado")
+                            {
+                                @Html.DisplayFor(modelItem => item.DeliveredQuantity)
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.PlannerQuantity)
+
+                            }
                         }
-                        else @if(User.IsInRole("Rector") && Model.School.SchoolCampus != null)
+                        else @if (User.IsInRole("Rector") && Model.School.SchoolCampus != null)
                         {
                             @Html.DisplayFor(modelItem => item.DirectorQuantity)
                         }
@@ -49,18 +76,25 @@
                             @Html.DisplayFor(modelItem => item.Quantity)
                         }
                     </td>
-                    <td>
+                    <td style="text-align:center">
                         @if (Model.SolicitStates.Name == "Borrador")
                         {
                             <a asp-action="ProductDelete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
                         }
-                        else @if(User.IsInRole("Rector") && Model.School.SchoolCampus != null && Model.SolicitStates.Name != "Consolidado" && Model.SolicitStates.Name != "Aceptado")
+                        else @if (User.IsInRole("Rector") && Model.School.SchoolCampus != null && Model.SolicitStates.Name != "Consolidado" && Model.SolicitStates.Name != "Enviado" && Model.SolicitStates.Name != "Aceptado")
                         {
                             <a asp-action="RectorEditQuantity" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
                         }
-                        else @if(User.IsInRole("Planificador"))
+                        else @if (User.IsInRole("Planificador") && Model.SolicitStates.Name != "Cerrado" && Model.SolicitStates.Name != "Rechada" && Model.SolicitStates.Name != "Enviado")
                         {
-                            <a asp-action="PlannerEditQuantity" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
+                            if (Model.SolicitStates.Name == "Aceptado")
+                            {
+                                <a asp-action="DeliveredEditQuantity" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
+                            }
+                            else
+                            {
+                                <a asp-action="PlannerEditQuantity" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a>
+                            }
                         }
                         else
                         {

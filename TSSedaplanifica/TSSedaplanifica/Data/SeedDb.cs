@@ -97,13 +97,13 @@ namespace TSSedaplanifica.Data
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Aceptado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Admitido.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Borrador.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Cerrado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Consolidado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Denegado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Enviado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Pendiente.ToString() });
-                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Rechada.ToString() });
-                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Recibido.ToString() });
-                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Revisado.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Proceso.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Rechazada.ToString() });
 
                 await _context.SaveChangesAsync();
             }

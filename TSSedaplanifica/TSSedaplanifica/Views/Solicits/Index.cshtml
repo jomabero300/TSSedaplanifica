@@ -10,9 +10,9 @@
     {
         <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
     }
-    @if (User.IsInRole("Rector") && Model.Where(s=>s.SolicitStates.Name=="Consolidado").Count()>0)
+    @if (Model.Where(s=>s.SolicitStates.Name=="Consolidado").Count()>0 && (User.IsInRole("Rector") || User.IsInRole("Secretario_municipal")))
     {
-        <a asp-action="RectorConsolidate" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Consolidar</a>
+        <a asp-action="RectorConsolidate" class="btn btn-primary"><i class="bi bi-union"></i> Consolidar</a>
     }
 </p>
 
@@ -59,6 +59,9 @@
                                         @Html.DisplayNameFor(model => model.ProductCount)
                                     </th>
                                     <th>
+                                        @Html.DisplayNameFor(model => model.School.Name)
+                                    </th>
+                                    <th>
                                         @Html.DisplayNameFor(model => model.SolicitStates)
                                     </th>
                                     <th></th>
@@ -78,6 +81,9 @@
                                             @Html.DisplayFor(modelItem => item.ProductCount)
                                         </td>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.School.Name)
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.SolicitStates.Name)
                                         </td>
 
@@ -95,13 +101,30 @@
                                                         {
                                                             <a asp-action="ToConsolidate" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-terminal-fill"></i> Solicitar</a>
                                                         }
-                                                        else
+                                                        else if(User.IsInRole("Coordinador"))
                                                         {
-                                                            if(User.IsInRole("Coordinador"))
-                                                            {
                                                                 <a asp-action="RequestSend" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-send-fill"></i> Enviar</a>
-                                                            }
                                                         }
+                                                    }
+                                                }
+                                            }
+                                            else if(User.IsInRole("Planificador"))
+                                            {
+                                                if (item.SolicitStates.Name != "Cerrado")
+                                                {
+                                                    if (item.SolicitStates.Name == "Enviado")
+                                                    {
+                                                        <a asp-action="SolicitProcessing" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-pin-angle-fill"></i> Proceso</a>
+                                                    }
+
+                                                    if (item.SolicitStates.Name == "Aceptado")
+                                                    {
+                                                        <a asp-action="SolicitClosed" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-check-circle-fill"></i> Cerrar</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a asp-action="SolicitPlannerPassed" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-check-circle-fill"></i> Aceptar</a>
+                                                        <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>                                                       
                                                     }
                                                 }
                                             }
@@ -115,7 +138,7 @@
                                                         <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>
                                                     }
                                                     else
-                                                    {
+                                                    {                                                        
                                                         <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#SolicitEarring"><i class="bi bi-pin-angle-fill"></i> Pendiente</button>
                                                         <a asp-action="SolicitPassed" asp-route-id="@item.Id" class="btn btn-sm btn-success"><i class="bi bi-check-circle-fill"></i> Aprobar</a>
                                                         <a asp-action="SolicitDenied" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-calendar-x-fill"></i> Rechazar</a>

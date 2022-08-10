@@ -64,13 +64,13 @@ namespace TSSedaplanifica.Helpers
             return response;
         }
 
-        public async Task<Response> AddUpdateAsync(string id, string description,string username)
+        public async Task<Response> AddUpdateAsync(string id, string description)
         {
             SolicitConsolidateViewModel model = await lmConsolidar(id);
 
             Response response = new Response() { IsSuccess = true };
 
-            ApplicationUser userDelivere = await _context.Users.Where(u => u.Email == username).FirstOrDefaultAsync();
+            ApplicationUser userDelivere = await _context.Users.Where(u => u.Email == id).FirstOrDefaultAsync();
 
             ICollection<SolicitDetail> detalles = model.Details.Select(d => new SolicitDetail()
             {
@@ -207,78 +207,125 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<List<SolicitViewModel>> ListAsync(string id)
         {
+            List<SolicitViewModel> model = new List<SolicitViewModel>();
+
             List<Solicit> solicits=new  List<Solicit>();
-            List<Solicit> solicitsO = new List<Solicit>(); ;
 
             var user = await _context.UserRoles.Where(u => u.UserId == id).FirstOrDefaultAsync();
-            var rol = await _context.Roles.FindAsync(user.RoleId);
-            
-            SchoolUser su = await _context.SchoolUsers
-                                                .Include(s => s.School)
-                                                .Where(s=>s.ApplicationUser.Id == id && s.isEnable == true)
-                                                .FirstOrDefaultAsync();
 
-            if (rol.Name == TypeUser.Rector.ToString())
+            var rol = await _context.Roles.FindAsync(user.RoleId);
+
+            if (rol.Name == "Planificador")
             {
-                solicitsO = await _context.Solicits
+                solicits = await _context.Solicits
                                         .Include(s => s.SolicitStates)
                                         .Include(s => s.UserReceived)
                                         .Include(s => s.UserApprovedDenied)
                                         .Include(s => s.UserClosed)
                                         .Include(s => s.School).ThenInclude(x => x.SchoolUsers)
-                                        .Include(d=>d.SolicitDetails)
-                                        .Where(s => s.School.SchoolCampus.Id == su.School.Id &&
+                                        .Include(d => d.SolicitDetails)
+                                        .Where(s => s.SolicitReferred == null && s.School.SchoolCampus == null &&
+                                                    (s.SolicitStates.Name == TypeSolicitState.Aceptado.ToString() ||
                                                     s.SolicitStates.Name == TypeSolicitState.Enviado.ToString() ||
-                                                    s.SolicitStates.Name == TypeSolicitState.Consolidado.ToString() ||
-                                                    s.SolicitStates.Name == TypeSolicitState.Aceptado.ToString() ||
-                                                    s.SolicitStates.Name == TypeSolicitState.Pendiente.ToString())
+                                                    s.SolicitStates.Name == TypeSolicitState.Proceso.ToString() ||
+                                                    s.SolicitStates.Name == TypeSolicitState.Cerrado.ToString()))
                                         .ToListAsync();
-            }
 
-            List<Solicit> solicits1 = await _context.Solicits
-                                .Include(s => s.SolicitStates)
-                                .Include(s => s.School).ThenInclude(x => x.SchoolUsers)
-                                .Include(d => d.SolicitDetails)
-                                .Where(s => s.School.Id == su.School.Id && !solicitsO.Contains(s))
-                                .ToListAsync();
-
-            List<SolicitViewModel> model = solicits1.Select(x => new SolicitViewModel()
-            {
-                Id=x.Id,
-                School=x.School,
-                DateOfSolicit=x.DateOfSolicit,
-                Description=x.Description,
-                SolicitStates=x.SolicitStates,
-                DateOfReceived=x.DateOfReceived,
-                UserReceived=x.UserReceived,
-                DateOfApprovedDenied=x.DateOfApprovedDenied,
-                UserApprovedDenied=x.UserApprovedDenied,
-                DateOfClosed=x.DateOfClosed,
-                UserClosed=x.UserClosed,
-                TypeUser=true,
-                SolicitDetails=x.SolicitDetails
-            }).ToList();
-
-            if (solicitsO.Count() >0 )
-            {
-                foreach (var item in solicitsO)
+                if (solicits.Count() > 0)
                 {
-                    model.Add(new SolicitViewModel()
+                    foreach (var item in solicits)
                     {
-                        Id = item.Id,
-                        School = item.School,
-                        DateOfSolicit = item.DateOfSolicit,
-                        Description = item.Description,
-                        SolicitStates = item.SolicitStates,
-                        DateOfReceived = item.DateOfReceived,
-                        UserReceived = item.UserReceived,
-                        DateOfApprovedDenied = item.DateOfApprovedDenied,
-                        UserApprovedDenied = item.UserApprovedDenied,
-                        DateOfClosed = item.DateOfClosed,
-                        UserClosed = item.UserClosed,
-                        TypeUser = false,
-                        SolicitDetails=item.SolicitDetails
-                    });
+                        model.Add(new SolicitViewModel()
+                        {
+                            Id = item.Id,
+                            School = item.School,
+                            DateOfSolicit = item.DateOfSolicit,
+                            Description = item.Description,
+                            SolicitStates = item.SolicitStates,
+                            DateOfReceived = item.DateOfReceived,
+                            UserReceived = item.UserReceived,
+                            DateOfApprovedDenied = item.DateOfApprovedDenied,
+                            UserApprovedDenied = item.UserApprovedDenied,
+                            DateOfClosed = item.DateOfClosed,
+                            UserClosed = item.UserClosed,
+                            TypeUser = false,
+                            SolicitDetails = item.SolicitDetails
+                        });
+                    }
+                }
+            }
+            else
+            {
+                List<Solicit> solicitsO = new List<Solicit>(); 
+            
+                SchoolUser su = await _context.SchoolUsers
+                                                    .Include(s => s.School)
+                                                    .Where(s=>s.ApplicationUser.Id == id && s.isEnable == true)
+                                                    .FirstOrDefaultAsync();
+
+                if (rol.Name == TypeUser.Rector.ToString())
+                {
+                    solicitsO = await _context.Solicits
+                                            .Include(s => s.SolicitStates)
+                                            .Include(s => s.UserReceived)
+                                            .Include(s => s.UserApprovedDenied)
+                                            .Include(s => s.UserClosed)
+                                            .Include(s => s.School).ThenInclude(x => x.SchoolUsers)
+                                            .Include(d=>d.SolicitDetails)
+                                            .Where(s => s.School.SchoolCampus.Id == su.School.Id &&
+                                                        (s.SolicitStates.Name == TypeSolicitState.Enviado.ToString() ||
+                                                        s.SolicitStates.Name == TypeSolicitState.Consolidado.ToString() ||
+                                                        s.SolicitStates.Name == TypeSolicitState.Aceptado.ToString() ||
+                                                        s.SolicitStates.Name == TypeSolicitState.Pendiente.ToString()))
+                                            .ToListAsync();
+                }
+
+                solicits = await _context.Solicits
+                                    .Include(s => s.SolicitStates)
+                                    .Include(s => s.School).ThenInclude(x => x.SchoolUsers)
+                                    .Include(d => d.SolicitDetails)
+                                    .Where(s => s.School.Id == su.School.Id && !solicitsO.Contains(s))
+                                    .ToListAsync();
+
+                model = solicits.Select(x => new SolicitViewModel()
+                {
+                    Id=x.Id,
+                    School=x.School,
+                    DateOfSolicit=x.DateOfSolicit,
+                    Description=x.Description,
+                    SolicitStates=x.SolicitStates,
+                    DateOfReceived=x.DateOfReceived,
+                    UserReceived=x.UserReceived,
+                    DateOfApprovedDenied=x.DateOfApprovedDenied,
+                    UserApprovedDenied=x.UserApprovedDenied,
+                    DateOfClosed=x.DateOfClosed,
+                    UserClosed=x.UserClosed,
+                    TypeUser=true,
+                    SolicitDetails=x.SolicitDetails
+                }).ToList();
+
+
+                if (solicitsO.Count() >0 )
+                {
+                    foreach (var item in solicitsO)
+                    {
+                        model.Add(new SolicitViewModel()
+                        {
+                            Id = item.Id,
+                            School = item.School,
+                            DateOfSolicit = item.DateOfSolicit,
+                            Description = item.Description,
+                            SolicitStates = item.SolicitStates,
+                            DateOfReceived = item.DateOfReceived,
+                            UserReceived = item.UserReceived,
+                            DateOfApprovedDenied = item.DateOfApprovedDenied,
+                            UserApprovedDenied = item.UserApprovedDenied,
+                            DateOfClosed = item.DateOfClosed,
+                            UserClosed = item.UserClosed,
+                            TypeUser = false,
+                            SolicitDetails=item.SolicitDetails
+                        });
+                    }
                 }
             }
 

@@ -1,0 +1,43 @@
+﻿@model TSSedaplanifica.Data.Entities.Solicit
+
+@{
+    ViewData["Title"] = "Confrimar";
+}
+
+<h1>Confirmar</h1>
+
+<h3>¿Está seguro de querer de aprobar total ésta solicitud?</h3>
+<div>
+    <h4>Solicitud</h4>
+
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+    }
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateOfSolicit)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateOfSolicit)
+        </dd>
+    </dl>
+
+    <form asp-action="SolicitPlannerPassed">
+        <input type="hidden" asp-for="Id" />
+        <button class="btn btn-sm btn-info" type="submit"><i class="bi bi-check-circle-fill"></i> Aprobar</button>
+        <a asp-action="Index" class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+    </form>
+</div>

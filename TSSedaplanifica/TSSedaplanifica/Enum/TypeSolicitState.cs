@@ -5,12 +5,12 @@
         Aceptado,
         Admitido,
         Borrador,
+        Cerrado,
         Consolidado,
         Denegado,
         Enviado,
         Pendiente,
-        Rechada,
-        Recibido,
-        Revisado
+        Proceso,
+        Rechazada
     }
 }

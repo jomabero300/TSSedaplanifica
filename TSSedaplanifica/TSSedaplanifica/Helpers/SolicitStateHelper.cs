@@ -131,7 +131,7 @@ namespace TSSedaplanifica.Helpers
             }
             else
             {
-                ltname = new string[] { TypeSolicitState.Aceptado.ToString(), TypeSolicitState.Rechada.ToString(), TypeSolicitState.Recibido.ToString(), TypeSolicitState.Recibido.ToString() };
+                ltname = new string[] { TypeSolicitState.Aceptado.ToString(), TypeSolicitState.Rechazada.ToString(), TypeSolicitState.Proceso.ToString()};
             }
 
             List<SolicitState> solicitStates = await _context.SolicitStates.Where(s => ltname.Contains(s.Name)).ToListAsync();
