@@ -72,7 +72,7 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<List<SolicitState>> ComboAsync()
         {
-            List<SolicitState> model = await _context.SolicitStates.ToListAsync();
+            List<SolicitState> model = await _context.SolicitStates.Where(s=>s.Name != "Inicial").ToListAsync();
 
             model.Add(new SolicitState { Id = 0, Name = "[Seleccione una Categoría..]" });
 
@@ -112,7 +112,7 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<List<SolicitState>> ListAsync()
         {
-            List<SolicitState> model = await _context.SolicitStates.ToListAsync();
+            List<SolicitState> model = await _context.SolicitStates.Where(s => s.Name != "Inicial").ToListAsync();
 
             return model.OrderBy(m => m.Name).ToList();
         }
@@ -127,11 +127,11 @@ namespace TSSedaplanifica.Helpers
             }
             else if (stateId == "R")
             {
-                ltname = new string[] { TypeSolicitState.Admitido.ToString(), TypeSolicitState.Denegado.ToString(), TypeSolicitState.Pendiente.ToString() };
+                ltname = new string[] { TypeSolicitState.Denegado.ToString(), TypeSolicitState.Pendiente.ToString() };
             }
             else
             {
-                ltname = new string[] { TypeSolicitState.Aceptado.ToString(), TypeSolicitState.Rechazada.ToString(), TypeSolicitState.Proceso.ToString()};
+                ltname = new string[] { TypeSolicitState.Aceptado.ToString(), TypeSolicitState.Proceso.ToString()};
             }
 
             List<SolicitState> solicitStates = await _context.SolicitStates.Where(s => ltname.Contains(s.Name)).ToListAsync();
@@ -143,7 +143,7 @@ namespace TSSedaplanifica.Helpers
 
         public async Task<SolicitState> ByIdAsync(string name)
         {
-            SolicitState model = await _context.SolicitStates.Where(s=>s.Name==name).FirstOrDefaultAsync();
+            SolicitState model = await _context.SolicitStates.Where(s=>s.Name==name && s.Name != "Inicial").FirstOrDefaultAsync();
 
             return model;
         }

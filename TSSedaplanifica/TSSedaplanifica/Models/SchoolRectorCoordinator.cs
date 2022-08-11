@@ -24,13 +24,13 @@ namespace TSSedaplanifica.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         [DataType(DataType.Date)]
-        public DateTime HireOfDate { get; set; }
+        public DateTime HireOfDate { get; set; }= DateTime.Now;
 
         [Display(Name = "Fecha de retiro")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         [DataType(DataType.Date)]
-        public DateTime EndOfDate { get; set; }
+        public DateTime EndOfDate { get; set; }=DateTime.Now.AddYears(100);
 
         [Display(Name = "¿ Asignar otra sede ?")]
         public bool assignSeat { get; set; }

@@ -121,8 +121,8 @@ namespace TSSedaplanifica.Helpers
         public async Task<SchoolUser> ByIdAsync(string id)
         {
             SchoolUser model = await _context.SchoolUsers
-                                    .Include(x => x.ApplicationRole)
-                                    .Where(s => s.ApplicationUser.Id == id).FirstOrDefaultAsync();
+                                             .Where(s => s.ApplicationUser.Id == id && s.isEnable==true)
+                                             .FirstOrDefaultAsync();
 
             return model;
         }

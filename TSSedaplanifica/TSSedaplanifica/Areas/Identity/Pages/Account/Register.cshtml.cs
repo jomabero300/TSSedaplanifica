@@ -52,7 +52,7 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            [Display(Name = "Email")]
+            [Display(Name = "Correo electrónico")]
             [Required(ErrorMessage = "El campo {0} es obligatorio.")]
             [EmailAddress(ErrorMessage = "El campo de correo electrónico no es una dirección válida")]
             public string Email { get; set; }

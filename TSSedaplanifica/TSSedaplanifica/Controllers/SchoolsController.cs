@@ -352,6 +352,7 @@ namespace TSSedaplanifica.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 if(model.HireOfDate.Year<DateTime.Now.Date.Year)
                 {
                     ModelState.AddModelError(string.Empty, "La fecha inicial no se encuentra dentro de este año");

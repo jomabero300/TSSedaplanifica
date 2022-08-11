@@ -4,10 +4,10 @@
     ViewData["Title"] = "Registrarse";
 }
 
-<h1>@ViewData["Title"]</h1>
 
-<div class="row">
+<div class="mt-2 row justify-content-center">
     <div class="col-md-4">
+        <h1>@ViewData["Title"]</h1>
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h2>Crear una cuenta nueva.</h2>
             <hr />
@@ -42,12 +42,11 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-2">Register</button>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-2">Registrarse</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-
-    </div>
+@*    <div class="col-md-6 col-md-offset-2">
+    </div>*@
 </div>
 
 @section Scripts {

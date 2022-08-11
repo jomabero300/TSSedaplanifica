@@ -25,6 +25,9 @@ namespace TSSedaplanifica.Controllers
         private readonly IProductHelper _productHelper;
 
         private readonly ISolicitDetailHelper _solicitDetailHelper;
+        
+        private readonly ISchoolUserHelper _schoolUserHelper;
+
 
         public SolicitsController(
             ISolicitHelper solicitHelper,
@@ -34,7 +37,8 @@ namespace TSSedaplanifica.Controllers
             ICategoryTypeHelper categoryTypeHelper,
             ICategoryHelper categoryHelper,
             IProductHelper productHelper,
-            ISolicitDetailHelper solicitDetailHelper)
+            ISolicitDetailHelper solicitDetailHelper,
+            ISchoolUserHelper schoolUserHelper)
         {
             _solicitHelper = solicitHelper;
             _userHelper = userHelper;
@@ -44,11 +48,20 @@ namespace TSSedaplanifica.Controllers
             _categoryHelper = categoryHelper;
             _productHelper = productHelper;
             _solicitDetailHelper = solicitDetailHelper;
+            _schoolUserHelper = schoolUserHelper;
         }
 
         public async Task<IActionResult> Index()
         {
+
             ApplicationUser lnaem = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            SchoolUser su = await _schoolUserHelper.ByIdAsync(lnaem.Id);
+
+            if(su == null)
+            {
+                return RedirectToAction("NotAuthorized", "Home");
+            }
 
             List<SolicitViewModel> model = await _solicitHelper.ListAsync(lnaem.Id);
             

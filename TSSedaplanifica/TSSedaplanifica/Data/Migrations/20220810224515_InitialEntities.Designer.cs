@@ -12,8 +12,8 @@ using TSSedaplanifica.Data;
 namespace TSSedaplanifica.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220726192311_InitialBD")]
-    partial class InitialBD
+    [Migration("20220810224515_InitialEntities")]
+    partial class InitialEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -258,7 +258,7 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_Category_ Name");
+                        .HasDatabaseName("IX_Category_Name");
 
                     b.ToTable("Categories", "Seda");
                 });
@@ -280,7 +280,7 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_CategoryType_ Name");
+                        .HasDatabaseName("IX_CategoryType_Name");
 
                     b.ToTable("CategoryTypes", "Seda");
                 });
@@ -305,7 +305,7 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasIndex("CategoryId", "CategoryTypeId")
                         .IsUnique()
-                        .HasDatabaseName("IX_CategoryTypeDer_ CategoryIdCategoryTypeId");
+                        .HasDatabaseName("IX_CategoryTypeDer_CategoryIdCategoryTypeId");
 
                     b.ToTable("CategoryTypeDers", "Seda");
                 });
@@ -330,7 +330,7 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasIndex("StateId", "Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_State_City_ Name")
+                        .HasDatabaseName("IX_State_City_Name")
                         .HasFilter("[StateId] IS NOT NULL");
 
                     b.ToTable("Cities", "Gene");
@@ -411,7 +411,7 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_Product_ Name");
+                        .HasDatabaseName("IX_Product_Name");
 
                     b.ToTable("Products", "Seda");
                 });
@@ -475,13 +475,15 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.HasIndex("SchoolCampusId");
 
                     b.HasIndex("ZoneId");
 
-                    b.HasIndex("CityId", "ZoneId", "Name")
+                    b.HasIndex("Name", "DaneCode")
                         .IsUnique()
-                        .HasDatabaseName("IX_City_Zona_Scholl_ name");
+                        .HasDatabaseName("IX_name_DaneCode");
 
                     b.ToTable("Schools", "Seda");
                 });
@@ -509,14 +511,19 @@ namespace TSSedaplanifica.Data.Migrations
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.SchoolUser", b =>
                 {
-                    b.Property<int>("SchoolId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ApplicationRole")
+                        .IsRequired()
                         .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("EndOfDate")
@@ -525,12 +532,17 @@ namespace TSSedaplanifica.Data.Migrations
                     b.Property<DateTime>("HireOfDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("SchoolId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("isEnable")
                         .HasColumnType("bit");
 
-                    b.HasKey("SchoolId", "ApplicationUserId", "ApplicationRole");
+                    b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("SchoolId");
 
                     b.ToTable("SchoolUsers", "Seda");
                 });
@@ -644,7 +656,7 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasIndex("SolicitId", "ProductId")
                         .IsUnique()
-                        .HasDatabaseName("IX_SolicitDetail_Solicit_Product_ Id");
+                        .HasDatabaseName("IX_SolicitDetail_Solicit_Product_Id");
 
                     b.ToTable("SolicitDetails", "Seda");
                 });
@@ -666,7 +678,7 @@ namespace TSSedaplanifica.Data.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_SolicitState_ Name");
+                        .HasDatabaseName("IX_SolicitState_Name");
 
                     b.ToTable("SolicitState", "Seda");
                 });
@@ -871,7 +883,7 @@ namespace TSSedaplanifica.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("TSSedaplanifica.Data.Entities.School", "School")
-                        .WithMany()
+                        .WithMany("SchoolUsers")
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -884,7 +896,7 @@ namespace TSSedaplanifica.Data.Migrations
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.Solicit", b =>
                 {
                     b.HasOne("TSSedaplanifica.Data.Entities.School", "School")
-                        .WithMany()
+                        .WithMany("Solicits")
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -939,7 +951,7 @@ namespace TSSedaplanifica.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("TSSedaplanifica.Data.Entities.Solicit", "Solicit")
-                        .WithMany()
+                        .WithMany("SolicitDetails")
                         .HasForeignKey("SolicitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -991,6 +1003,15 @@ namespace TSSedaplanifica.Data.Migrations
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.School", b =>
                 {
                     b.Navigation("SchoolImages");
+
+                    b.Navigation("SchoolUsers");
+
+                    b.Navigation("Solicits");
+                });
+
+            modelBuilder.Entity("TSSedaplanifica.Data.Entities.Solicit", b =>
+                {
+                    b.Navigation("SolicitDetails");
                 });
 
             modelBuilder.Entity("TSSedaplanifica.Data.Entities.State", b =>

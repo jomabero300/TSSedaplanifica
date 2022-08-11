@@ -3,14 +3,13 @@
     public enum TypeSolicitState
     {
         Aceptado,
-        Admitido,
         Borrador,
         Cerrado,
         Consolidado,
         Denegado,
         Enviado,
+        Inicial,
         Pendiente,
-        Proceso,
-        Rechazada
+        Proceso
     }
 }

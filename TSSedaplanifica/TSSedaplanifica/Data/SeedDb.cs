@@ -36,8 +36,8 @@ namespace TSSedaplanifica.Data
             await CheckUserAsync("1010","jomabero300@gmail.com","Manuel","Bello",Guid.Empty,"313670740",TypeUser.Administrador);
             await CheckUserAsync("2020","leonardopulidom@gmail.com","Leonardo","Pulido",Guid.Empty,"3134907527",TypeUser.Administrador);
 
-            await CheckUserAsync("3030","GustavovillaRector@gmail.com","Rector","villa",Guid.Empty,"3134907527",TypeUser.Rector);
-            await CheckUserAsync("4040", "GustavovillaCoordinador@gmail.com", "Coordinador","villa",Guid.Empty,"3134907527",TypeUser.Coordinador);
+            //await CheckUserAsync("3030","GustavovillaRector@gmail.com","Rector","villa",Guid.Empty,"3134907527",TypeUser.Rector);
+            //await CheckUserAsync("4040", "GustavovillaCoordinador@gmail.com", "Coordinador","villa",Guid.Empty,"3134907527",TypeUser.Coordinador);
         }
 
         private async Task<ApplicationUser> CheckUserAsync(
@@ -95,15 +95,14 @@ namespace TSSedaplanifica.Data
             if (!_context.SolicitStates.Any())
             {
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Aceptado.ToString() });
-                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Admitido.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Borrador.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Cerrado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Consolidado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Denegado.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Enviado.ToString() });
+                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Inicial.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Pendiente.ToString() });
                 _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Proceso.ToString() });
-                _context.SolicitStates.Add(new SolicitState { Name = TypeSolicitState.Rechazada.ToString() });
 
                 await _context.SaveChangesAsync();
             }

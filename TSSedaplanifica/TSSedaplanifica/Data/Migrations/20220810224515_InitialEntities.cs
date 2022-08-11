@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TSSedaplanifica.Data.Migrations
 {
-    public partial class InitialBD : Migration
+    public partial class InitialEntities : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -350,16 +350,18 @@ namespace TSSedaplanifica.Data.Migrations
                 schema: "Seda",
                 columns: table => new
                 {
-                    ApplicationRole = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     SchoolId = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationRole = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     HireOfDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndOfDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     isEnable = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SchoolUsers", x => new { x.SchoolId, x.ApplicationUserId, x.ApplicationRole });
+                    table.PrimaryKey("PK_SchoolUsers", x => x.Id);
                     table.ForeignKey(
                         name: "FK_SchoolUsers_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
@@ -485,14 +487,14 @@ namespace TSSedaplanifica.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Category_ Name",
+                name: "IX_Category_Name",
                 schema: "Seda",
                 table: "Categories",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryTypeDer_ CategoryIdCategoryTypeId",
+                name: "IX_CategoryTypeDer_CategoryIdCategoryTypeId",
                 schema: "Seda",
                 table: "CategoryTypeDers",
                 columns: new[] { "CategoryId", "CategoryTypeId" },
@@ -505,14 +507,14 @@ namespace TSSedaplanifica.Data.Migrations
                 column: "CategoryTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryType_ Name",
+                name: "IX_CategoryType_Name",
                 schema: "Seda",
                 table: "CategoryTypes",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_State_City_ Name",
+                name: "IX_State_City_Name",
                 schema: "Gene",
                 table: "Cities",
                 columns: new[] { "StateId", "Name" },
@@ -547,7 +549,7 @@ namespace TSSedaplanifica.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_ Name",
+                name: "IX_Product_Name",
                 schema: "Seda",
                 table: "Products",
                 column: "Name",
@@ -566,11 +568,17 @@ namespace TSSedaplanifica.Data.Migrations
                 column: "SchoolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_City_Zona_Scholl_ name",
+                name: "IX_name_DaneCode",
                 schema: "Seda",
                 table: "Schools",
-                columns: new[] { "CityId", "ZoneId", "Name" },
+                columns: new[] { "Name", "DaneCode" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schools_CityId",
+                schema: "Seda",
+                table: "Schools",
+                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schools_SchoolCampusId",
@@ -591,7 +599,13 @@ namespace TSSedaplanifica.Data.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SolicitDetail_Solicit_Product_ Id",
+                name: "IX_SchoolUsers_SchoolId",
+                schema: "Seda",
+                table: "SchoolUsers",
+                column: "SchoolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SolicitDetail_Solicit_Product_Id",
                 schema: "Seda",
                 table: "SolicitDetails",
                 columns: new[] { "SolicitId", "ProductId" },
@@ -646,7 +660,7 @@ namespace TSSedaplanifica.Data.Migrations
                 column: "UserReceivedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SolicitState_ Name",
+                name: "IX_SolicitState_Name",
                 schema: "Seda",
                 table: "SolicitState",
                 column: "Name",
