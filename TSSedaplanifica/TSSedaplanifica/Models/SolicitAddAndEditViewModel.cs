@@ -8,6 +8,7 @@ namespace TSSedaplanifica.Models
         public int Id { get; set; }
 
         [Display(Name = "Institución")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una institución.")]
         public int SchoolId { get; set; }
 
         [Display(Name = "Fecha solicitud")]

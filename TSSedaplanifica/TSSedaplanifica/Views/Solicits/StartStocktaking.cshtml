@@ -1,0 +1,122 @@
+﻿@model IEnumerable<TSSedaplanifica.Data.Entities.Solicit>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Solicitudes iniciales</h1>
+
+<p>
+    <a asp-action="StartStocktakingCreate" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
+</p>
+
+@if (TempData["AlertMessage"] != null)
+{
+    if(TempData["AlertMessage"].ToString().Contains("borrad"))
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+    }
+    else
+    {
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>        
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="container-fluid">
+            <div class="card mt-2">
+                <div class="card-header text-danger">
+                    <i class="fa fa-object-group"></i>  <strong>Solicitudes inciales</strong>
+                </div>
+                <div class="card-body">
+                    <div id="view-all">
+                        <table class="table" id="SolicitTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.School.Name)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.DateOfSolicit)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Description)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.ProductCount)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.SolicitStates)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-action="StartStocktakingDetails" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.School.Name)</a>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DateOfSolicit)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Description)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ProductCount)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SolicitStates.Name)
+                                        </td>
+
+                                        <td>
+                                            <a asp-action="StartStocktakingEdit" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-pencil-fill"></i> Editar</a>
+                                            <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="bi bi-trash-fill"></i> Borrar</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/showmodal.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#SolicitTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                },
+                "aLengthMenu": [
+                    [25, 50, 100, 200, -1],
+                    [25, 50, 100, 200, "Todos"]
+                ]
+            });
+        });
+    </script>
+
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Solicits/StartStocktakingDelete/', false);
+    </script>
+
+}

@@ -2,6 +2,7 @@
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Enum;
 
 namespace TSSedaplanifica.Helpers
 {
@@ -91,6 +92,22 @@ namespace TSSedaplanifica.Helpers
             model.Add(new School { Id = 0, Name = $"[Seleccione una {lsName}..]" });
 
             return model.OrderBy(m => m.Name).ToList();
+        }
+
+        public async Task<List<School>> ComboStartStocktakingAsync()
+        {
+            List<School> modelSchols = await _context.Solicits.Include(s=>s.School)
+                                                .Where(s => s.SolicitStates.Name == TypeSolicitState.Inicial.ToString())
+                                                .Select(s=>s.School)
+                                                .ToListAsync();
+            List<School> model = await _context.Schools
+                                                .Where(s => s.SchoolCampus==null && !modelSchols.Contains(s))
+                                                .ToListAsync();
+
+            model.Add(new School { Id = 0, Name = $"[Seleccione una institución..]" });
+
+            return model.OrderBy(s=>s.Name).ToList();
+
         }
 
         public async Task<Response> DeleteAsync(int id)

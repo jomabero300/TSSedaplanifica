@@ -1,0 +1,51 @@
+﻿@model TSSedaplanifica.Models.SolicitAddAndEditViewModel
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<h1>Nuevo</h1>
+
+<h4>Inventario Inicial</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="StartStocktakingCreate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-floating">
+                <select id="categoryTypeId"  asp-for="SchoolId" asp-items="ViewBag.SchoolId" class="form-control"></select>
+                <label asp-for="SchoolId" class="control-label"></label>
+                <span asp-validation-for="SchoolId" class="text-danger"></span>
+            </div>
+            <div class="form-floating mt-2">
+                <input asp-for="DateOfSolicit" type="date" class="form-control" />
+                <label asp-for="DateOfSolicit" class="control-label"></label>
+                <span asp-validation-for="DateOfSolicit" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mt-2">
+                <input asp-for="DateOfClosed" type="date" class="form-control" />
+                <label asp-for="DateOfClosed" class="control-label"></label>
+                <span asp-validation-for="DateOfClosed" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mt-2">
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <label asp-for="Description" class="control-label"></label>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-2">
+                <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
+                <a asp-action="StartStocktaking" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

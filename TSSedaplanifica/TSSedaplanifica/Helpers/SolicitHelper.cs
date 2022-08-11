@@ -146,6 +146,15 @@ namespace TSSedaplanifica.Helpers
             return response;
         }
 
+        public async Task<Solicit> ByIdAllAsync(int id)
+        {
+            return await _context.Solicits
+                                    .Include(s=>s.School)
+                                    .Include(s=>s.SolicitStates)
+                                 .Where(s => s.Id == id)
+                                 .FirstOrDefaultAsync();
+        }
+
         public async Task<Solicit> ByIdAsync(int id)
         {
             return await _context.Solicits
@@ -156,10 +165,10 @@ namespace TSSedaplanifica.Helpers
         public async Task<Solicit> ByIdDetailAsync(int id)
         {
             Solicit model = await _context.Solicits
-                                .Include(a=>a.School).ThenInclude(w=>w.SchoolCampus)
-                                .Include(s => s.SolicitStates)
-                                .Include(s => s.SolicitDetails)
-                                .ThenInclude(x=>x.Product)
+                                    .Include(a=>a.School).ThenInclude(w=>w.SchoolCampus)
+                                    .Include(s => s.SolicitStates)
+                                    .Include(s => s.SolicitDetails)
+                                    .ThenInclude(x=>x.Product)
                                 .Where(s => s.Id == id)
                                 .FirstOrDefaultAsync();
             return model;
@@ -335,6 +344,18 @@ namespace TSSedaplanifica.Helpers
         public async Task<SolicitConsolidateViewModel> ListConsolidateAsync(string id)
         {
             SolicitConsolidateViewModel model=await lmConsolidar(id);
+
+            return model;
+        }
+
+        public async Task<List<Solicit>> ListStartStocktakingAsync()
+        {
+            List<Solicit> model = await _context.Solicits
+                                              .Include(s=>s.School)
+                                              .Include(s => s.SolicitDetails)
+                                              .Where(s => s.SolicitStates.Name == TypeSolicitState.Inicial.ToString())
+                                              .OrderBy(s => s.DateOfSolicit)
+                                              .ToListAsync();
 
             return model;
         }

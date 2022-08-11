@@ -12,6 +12,7 @@ namespace TSSedaplanifica.Helpers
         Task<SchoolUser> ByUserSchoolAsync(string email);
 
         Task<List<School>> ComboAsync(int id);
+        Task<List<School>> ComboStartStocktakingAsync();
 
         Task<Response> DeleteAsync(int id);
         /// <summary>

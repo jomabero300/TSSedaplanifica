@@ -70,6 +70,13 @@ namespace TSSedaplanifica.Helpers
             return model;
         }
 
+        public async Task<SolicitState> ByIdAsync(string name)
+        {
+            SolicitState model = await _context.SolicitStates.Where(s => s.Name == name).FirstOrDefaultAsync();
+
+            return model;
+        }
+
         public async Task<List<SolicitState>> ComboAsync()
         {
             List<SolicitState> model = await _context.SolicitStates.Where(s=>s.Name != "Inicial").ToListAsync();
@@ -141,9 +148,9 @@ namespace TSSedaplanifica.Helpers
             return solicitStates.OrderBy(s => s.Name).ToList();
         }
 
-        public async Task<SolicitState> ByIdAsync(string name)
+        public async Task<SolicitState> ByNotInitialAsync(string name)
         {
-            SolicitState model = await _context.SolicitStates.Where(s=>s.Name==name && s.Name != "Inicial").FirstOrDefaultAsync();
+            SolicitState model = await _context.SolicitStates.Where(s => s.Name == name && s.Name != "Inicial").FirstOrDefaultAsync();
 
             return model;
         }
