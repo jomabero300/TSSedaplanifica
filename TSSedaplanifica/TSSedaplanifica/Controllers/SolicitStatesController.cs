@@ -4,6 +4,7 @@ using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 
 namespace TSSedaplanifica.Controllers
 {
@@ -12,10 +13,13 @@ namespace TSSedaplanifica.Controllers
     public class SolicitStatesController : Controller
     {
         private readonly ISolicitStateHelper _solicitStateHelper;
+        private readonly IPdfDocumentHelper _pdfDocument;
 
-        public SolicitStatesController(ISolicitStateHelper solicitStateHelper)
+
+        public SolicitStatesController(ISolicitStateHelper solicitStateHelper, IPdfDocumentHelper pdfDocument)
         {
             _solicitStateHelper = solicitStateHelper;
+            _pdfDocument = pdfDocument;
         }
 
         public async Task<IActionResult> Index()
@@ -153,5 +157,12 @@ namespace TSSedaplanifica.Controllers
 
             return View(model);
         }
+        public async Task<IActionResult> ReportList()
+        {
+            MemoryStream ms = await _pdfDocument.ReportAsync("Estados de solicitud");
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
     }
 }

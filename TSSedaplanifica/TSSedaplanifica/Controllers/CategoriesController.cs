@@ -5,6 +5,7 @@ using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 using TSSedaplanifica.Models;
 using static TSSedaplanifica.Helpers.ModalHelper;
 
@@ -17,14 +18,17 @@ namespace TSSedaplanifica.Controllers
         private readonly ICategoryHelper _category;
         private readonly ICategoryTypeHelper _categoryTypeHelper;
         private readonly ICategoryTypeDerHelper _categoryTypeDerHelper;
+        private readonly IPdfDocumentHelper _pdfDocument;
 
         public CategoriesController(ICategoryHelper category,
             ICategoryTypeHelper categoryTypeHelper,
-            ICategoryTypeDerHelper categoryTypeDerHelper)
+            ICategoryTypeDerHelper categoryTypeDerHelper,
+            IPdfDocumentHelper pdfDocument)
         {
             _category = category;
             _categoryTypeHelper = categoryTypeHelper;
             _categoryTypeDerHelper = categoryTypeDerHelper;
+            _pdfDocument = pdfDocument;
         }
 
         // GET: CategoryTypes
@@ -196,6 +200,13 @@ namespace TSSedaplanifica.Controllers
             ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(categoryid), "Id", "Name");
 
             return View(c);
+        }
+
+        public async Task<IActionResult> ReportList()
+        {
+            MemoryStream ms = await _pdfDocument.ReportAsync("Categorías");
+
+            return File(ms.ToArray(), "application/pdf");
         }
 
         [HttpPost]

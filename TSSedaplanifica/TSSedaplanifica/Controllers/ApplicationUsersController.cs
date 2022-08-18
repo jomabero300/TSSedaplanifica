@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 using TSSedaplanifica.Models.ApplicationUser;
 
 namespace TSSedaplanifica.Controllers
@@ -13,10 +14,12 @@ namespace TSSedaplanifica.Controllers
     public class ApplicationUsersController : Controller
     {
         private readonly IUserHelper _userHelper;
+        private readonly IPdfDocumentHelper _pdfDocument;
 
-        public ApplicationUsersController(IUserHelper userHelper)
+        public ApplicationUsersController(IUserHelper userHelper, IPdfDocumentHelper pdfDocument)
         {
             _userHelper = userHelper;
+            _pdfDocument = pdfDocument;
         }
 
         public async Task<IActionResult> Index()
@@ -90,5 +93,14 @@ namespace TSSedaplanifica.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> ReportList()
+        {
+            MemoryStream ms = await _pdfDocument.ReportAsync("Usuarios");
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
+
     }
 }

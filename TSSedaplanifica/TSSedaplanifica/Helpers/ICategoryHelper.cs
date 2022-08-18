@@ -13,5 +13,7 @@ namespace TSSedaplanifica.Helpers
         Task<Response> DeleteAsync(int id);
         Task<List<Category>> ListAsync();
         //Task<List<Category>> ListAsync(int id);
+        Task<MemoryStream> ReportAsync(string title);
+
     }
 }

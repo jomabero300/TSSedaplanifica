@@ -4,11 +4,16 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Unidades de medida</h1>
+<div class="row mt-2" style="width:100%">
+    <div class="col-md-6">
+        <h1>Unidades de medida</h1>
+    </div>
+    <div class="col-md-6" style="text-align:right;align-items: center; padding:10px">
+        <a asp-action="Create" class="btn btn-sm btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>|
+        <a asp-action="ReportList" class="btn btn-sm btn-primary" Target="_blank"><i class="bi bi-printer-fill"></i> Reporte</a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
-</p>
 
 @if(TempData["AlertMessage"] != null)
 {
@@ -42,9 +47,9 @@
                 @Html.DisplayFor(modelItem => item.NameShort)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn bn-sm btn-info"><i class="bi bi-eye-fill"></i> Ver</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn bn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-eye-fill"></i> Ver</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
             </td>
         </tr>
 }

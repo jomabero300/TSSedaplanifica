@@ -4,6 +4,7 @@ using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 
 namespace TSSedaplanifica.Controllers
 {
@@ -13,9 +14,12 @@ namespace TSSedaplanifica.Controllers
     {
         private readonly IMeasureUnitHelper _measureUnitHelper;
 
-        public MeasureUnitsController(IMeasureUnitHelper measureUnitHelper)
+        private readonly IPdfDocumentHelper _pdfDocument;
+
+        public MeasureUnitsController(IMeasureUnitHelper measureUnitHelper, IPdfDocumentHelper pdfDocument)
         {
             _measureUnitHelper = measureUnitHelper;
+            _pdfDocument = pdfDocument;
         }
 
         public async Task<IActionResult> Index()
@@ -153,5 +157,13 @@ namespace TSSedaplanifica.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> ReportList()
+        {
+            MemoryStream ms = await _pdfDocument.ReportAsync("Unidades de medida");
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
     }
 }

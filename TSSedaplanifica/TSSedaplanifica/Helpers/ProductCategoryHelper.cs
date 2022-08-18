@@ -59,7 +59,6 @@ namespace TSSedaplanifica.Helpers
             return model;
         }
 
-//        public async Task<Response> DeleteAsync(int ProductId, int CategoryId)
         public async Task<Response> DeleteAsync(int Id)
         {
             Response response = new Response() { IsSuccess = true };

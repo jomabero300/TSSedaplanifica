@@ -1,20 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Helpers.PDF;
 
 namespace TSSedaplanifica.Helpers
 {
     public class CategoryHelper : ICategoryHelper
     {
         private readonly ApplicationDbContext _context;
-
         private const string _name = "Categoría";
+        private readonly IPdfDocumentHelper _pdfDoc;
 
-        public CategoryHelper(ApplicationDbContext context)
+        public CategoryHelper(ApplicationDbContext context, IPdfDocumentHelper pdfDoc)
         {
             _context = context;
+            _pdfDoc = pdfDoc;
         }
 
         public async Task<Response> AddUpdateAsync(Category model)
@@ -150,27 +151,12 @@ namespace TSSedaplanifica.Helpers
             return model.OrderBy(m => m.Name).ToList();
         }
 
-        //public async Task<List<Category>> ListAsync(int id)
-        //{
-        //    List<ProductCategory> pc=await _context.ProductCategories.Include(P=>P.Category).Where(P=>P.Product.Id==id).ToListAsync();
-        //    //List<Category> filter = new List<Category>();
-        //    //foreach (var item in pc)
-        //    //{
-        //    //    filter.Add(new Category { Id = item.Category.Id, Name = item.Category.Name });
-        //    //}
-        //    List<Category> filter = pc.Select(p => new Category
-        //    {
-        //        Id = p.Category.Id,
-        //        Name = p.Category.Name
-        //    }).ToList();
+        public async Task<MemoryStream> ReportAsync(string title)
+        {
 
-
-        //    List<Category> model = await _context.Categories.Where(c=> !filter.Contains(c)).ToListAsync();
-
-        //    model.Add(new Category { Id = 0, Name = "[Seleccione una Categoría..]" });
-
-        //    return model.OrderBy(m => m.Name).ToList();
-        //}
+            MemoryStream ms =await _pdfDoc.ReportAsync(title);
+            return ms;
+        }
 
     }
 }

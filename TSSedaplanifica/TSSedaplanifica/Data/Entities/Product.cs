@@ -24,6 +24,10 @@ namespace TSSedaplanifica.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public MeasureUnit MeasureUnit { get; set; }
 
+        [Display(Name = "Elemento")]
+        public string FullName => $"{Name} {Description}";
+
+
         public ICollection<ProductCategory> ProductCategories { get; set; }
 
         [Display(Name = "Categorías")]

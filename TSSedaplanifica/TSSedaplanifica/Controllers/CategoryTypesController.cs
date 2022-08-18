@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 
 namespace TSSedaplanifica.Controllers
 {
@@ -12,10 +15,13 @@ namespace TSSedaplanifica.Controllers
     public class CategoryTypesController : Controller
     {
         private readonly ICategoryTypeHelper _categoryType;
+        private readonly IPdfDocumentHelper _pdfDocument;
 
-        public CategoryTypesController(ICategoryTypeHelper categoryType)
+
+        public CategoryTypesController(ICategoryTypeHelper categoryType, IPdfDocumentHelper pdfDocument)
         {
             _categoryType = categoryType;
+            _pdfDocument = pdfDocument;
         }
 
         // GET: CategoryTypes
@@ -153,6 +159,13 @@ namespace TSSedaplanifica.Controllers
 
 
             return View(model);
+        }
+
+        public async Task<IActionResult> ReportList()
+        {
+            MemoryStream ms = await _pdfDocument.ReportAsync("Clases de categorías");
+
+            return File(ms.ToArray(), "application/pdf");
         }
     }
 }

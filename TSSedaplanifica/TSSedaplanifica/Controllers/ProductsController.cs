@@ -5,6 +5,7 @@ using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 using TSSedaplanifica.Models;
 
 namespace TSSedaplanifica.Controllers
@@ -19,18 +20,21 @@ namespace TSSedaplanifica.Controllers
         private readonly ICategoryHelper _categoryHelper;
         private readonly ICategoryTypeHelper _categoryTypeHelper;
         private readonly IProductCategoryHelper _productCategoryHelper;
+        private readonly IPdfDocumentHelper _pdfDocument;
 
-        public ProductsController(IProductHelper prodcutHelper, 
-            IMeasureUnitHelper measureUnitHelper, 
-            ICategoryHelper categoryHelper, 
-            IProductCategoryHelper productCategoryHelper, 
-            ICategoryTypeHelper categoryTypeHelper)
+        public ProductsController(IProductHelper prodcutHelper,
+            IMeasureUnitHelper measureUnitHelper,
+            ICategoryHelper categoryHelper,
+            IProductCategoryHelper productCategoryHelper,
+            ICategoryTypeHelper categoryTypeHelper,
+            IPdfDocumentHelper pdfDocument)
         {
             _prodcutHelper = prodcutHelper;
             _measureUnitHelper = measureUnitHelper;
             _categoryHelper = categoryHelper;
             _productCategoryHelper = productCategoryHelper;
             _categoryTypeHelper = categoryTypeHelper;
+            _pdfDocument = pdfDocument;
         }
 
         public async Task<IActionResult> Index()
@@ -249,5 +253,13 @@ namespace TSSedaplanifica.Controllers
 
             return Json(lista);
         }
+
+        public async Task<IActionResult> ReportList()
+        {
+            MemoryStream ms = await _pdfDocument.ReportAsync("Elementos");
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
     }
 }

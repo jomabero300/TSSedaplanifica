@@ -142,5 +142,101 @@ namespace TSSedaplanifica.Helpers
 
             return model.OrderBy(m => m.Name).ToList();
         }
+
+        //public async Task<MemoryStream> ReportAsync()
+        //{
+            //Document doc = new Document(PageSize.A4, 28f, 25f, 20f, 20f);
+            //MemoryStream ms = new MemoryStream();
+            //PdfWriter write = PdfWriter.GetInstance(doc, ms);
+            //doc.AddAuthor("SedaPlanifica");
+            //doc.AddTitle("Clases de categorías");
+            //doc.Open();
+
+            //BaseFont fontTitle = BaseFont.CreateFont(BaseFont.COURIER, BaseFont.CP1250, true);
+            //BaseFont fontTitleSub = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);
+
+            //iTextSharp.text.Font title35 = new iTextSharp.text.Font(fontTitle, 35f, iTextSharp.text.Font.BOLD, new BaseColor(0, 0, 0));
+
+            //iTextSharp.text.Font titles10 = new iTextSharp.text.Font(fontTitleSub, 10f, iTextSharp.text.Font.BOLD, new BaseColor(0, 0, 0));
+
+            //iTextSharp.text.Font titles12 = new iTextSharp.text.Font(fontTitleSub, 12f, iTextSharp.text.Font.BOLD, new BaseColor(0, 127, 0));
+
+            //iTextSharp.text.Font paragraph = new iTextSharp.text.Font(fontTitleSub, 10f, iTextSharp.text.Font.NORMAL, new BaseColor(0, 0, 0));
+
+            //iTextSharp.text.Font theader = new iTextSharp.text.Font(fontTitle, 12f, iTextSharp.text.Font.BOLD, new BaseColor(140, 40, 74));
+
+            //doc.Add(Chunk.NEWLINE);
+
+
+            //iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(Path.Combine(_env.WebRootPath, "images", "LogoTotSp.png"));
+            //float proporcion = logo.Width / logo.Height;
+            //logo.ScaleAbsoluteWidth(200);
+            //logo.ScaleAbsoluteHeight(40 * proporcion);
+            //logo.SetAbsolutePosition(0, 567f);
+
+            //PdfPTable myTable = new PdfPTable(new float[] { 50f, 50f }) { WidthPercentage = 100f };
+            //myTable.AddCell(new PdfPCell(logo) { Border = 0, Rowspan = 4, VerticalAlignment = Element.ALIGN_MIDDLE });
+            //myTable.AddCell(new PdfPCell(new Phrase("Gobernación de Arauca", paragraph)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
+            //myTable.AddCell(new PdfPCell(new Phrase("Secretaría Departamental de Educación", paragraph)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
+            //myTable.AddCell(new PdfPCell(new Phrase("Calle 20 con carrera 21", paragraph)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
+            //myTable.AddCell(new PdfPCell(new Phrase(DateTime.Now.ToString("dd/MMM/yyyy"), paragraph)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
+
+
+            //doc.Add(myTable);
+
+            //doc.Add(new Phrase(" "));
+
+
+
+
+            //myTable = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+            //myTable.AddCell(new PdfPCell(new Phrase($"Listado clases de categorías", titles12)) { Border = 0, HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE });
+            //doc.Add(myTable);
+
+            //doc.Add(new Phrase("\n"));
+            //myTable = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+
+            //PdfPCell pdfPCell = new PdfPCell(new Phrase("Descripción", theader)) { Border = 0, BorderColorTop = new BaseColor(195, 195, 195), BorderWidthTop = 1.99f, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 8f, PaddingBottom = 8f };
+
+            //myTable.AddCell(pdfPCell);
+            //doc.Add(myTable);
+
+            //myTable = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+
+            //List<CategoryType> model = await _context.CategoryTypes.ToListAsync();
+            //int cont = 1;
+            //foreach (var item in model)
+            //{
+
+            //    pdfPCell.Phrase = new Phrase(item.Name, paragraph);
+            //    pdfPCell.Border = 0;
+            //    pdfPCell.HorizontalAlignment = Element.ALIGN_LEFT;
+            //    if (cont % 2 == 0)
+            //    {
+            //        pdfPCell.BackgroundColor = BaseColor.WHITE;
+            //    }
+            //    else
+            //    {
+            //        pdfPCell.BackgroundColor = new BaseColor(248, 248, 248);
+            //    }
+
+            //    //myTable.AddCell(new PdfPCell(new Phrase(item.Name, paragraph)) { Border = 0, BorderWidthTop = 1.99f, BorderColorTop = new BaseColor(195, 195, 195), PaddingTop = 10f, HorizontalAlignment = Element.ALIGN_LEFT });
+            //    //myTable.AddCell(new PdfPCell(new Phrase(item.Name, paragraph)) { Border = 0, BorderWidthTop = 1.99f, BorderColorTop = new BaseColor(44, 117, 185), PaddingTop = 10f, HorizontalAlignment = Element.ALIGN_LEFT });
+
+            //    myTable.AddCell(pdfPCell);
+
+            //    cont++;
+            //}
+
+
+            //doc.Add(myTable);
+
+            //doc.Close();
+
+            //write.Close();
+        //    MemoryStream ms = await _pdfDocument.ReportAsync("clases de categorías");
+
+        //    return ms;
+        //}
     }
 }

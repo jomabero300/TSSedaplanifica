@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,7 @@ builder.Services.AddScoped<ICityHelper, CityHelper>();
 builder.Services.AddScoped<ISchoolHelper, SchoolHelper>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<ISchoolUserHelper, SchoolUserHelper>();
+builder.Services.AddScoped<IPdfDocumentHelper, PdfDocumentHelper>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IApiService, ApiService>();
 

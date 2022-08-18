@@ -6,6 +6,7 @@ using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 using TSSedaplanifica.Models;
 using static TSSedaplanifica.Helpers.ModalHelper;
 
@@ -20,14 +21,16 @@ namespace TSSedaplanifica.Controllers
         private readonly IZoneHelper _zoneHelper;
         private readonly IUserHelper _userHelper;
         private readonly ISchoolUserHelper _schoolUserHelper;
+        private readonly IPdfDocumentHelper _pdfDocument;
 
-        public SchoolsController(ISchoolHelper schoolHelper, ICityHelper cityHelper, IZoneHelper zoneHelper, IUserHelper userHelper, ISchoolUserHelper schoolUserHelper)
+        public SchoolsController(ISchoolHelper schoolHelper, ICityHelper cityHelper, IZoneHelper zoneHelper, IUserHelper userHelper, ISchoolUserHelper schoolUserHelper, IPdfDocumentHelper pdfDocument)
         {
             _schoolHelper = schoolHelper;
             _cityHelper = cityHelper;
             _zoneHelper = zoneHelper;
             _userHelper = userHelper;
             _schoolUserHelper = schoolUserHelper;
+            _pdfDocument = pdfDocument;
         }
 
         public async Task<IActionResult> Index()
@@ -444,5 +447,13 @@ namespace TSSedaplanifica.Controllers
 
             return RedirectToAction(nameof(Details), new {id=response.Result });
         }
+
+        public async Task<IActionResult> ReportList()
+        {
+            MemoryStream ms = await _pdfDocument.ReportAsync("Schools");
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
     }
 }

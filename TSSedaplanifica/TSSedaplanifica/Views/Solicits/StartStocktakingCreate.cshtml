@@ -18,17 +18,33 @@
                 <label asp-for="SchoolId" class="control-label"></label>
                 <span asp-validation-for="SchoolId" class="text-danger"></span>
             </div>
-            <div class="form-floating mt-2">
-                <input asp-for="DateOfSolicit" type="date" class="form-control" />
-                <label asp-for="DateOfSolicit" class="control-label"></label>
-                <span asp-validation-for="DateOfSolicit" class="text-danger"></span>
+
+
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <div class="form-floating mt-2">
+                        <input asp-for="DateOfSolicit" type="date" class="form-control" />
+                        <label asp-for="DateOfSolicit" class="control-label"></label>
+                        <span asp-validation-for="DateOfSolicit" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mt-2">
+                        <input asp-for="DateOfClosed" type="date" class="form-control" />
+                        <label asp-for="DateOfClosed" class="control-label"></label>
+                        <span asp-validation-for="DateOfClosed" class="text-danger"></span>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="form-floating mt-2">
-                <input asp-for="DateOfClosed" type="date" class="form-control" />
-                <label asp-for="DateOfClosed" class="control-label"></label>
-                <span asp-validation-for="DateOfClosed" class="text-danger"></span>
-            </div>
+
+
+
+
+
+
 
             <div class="form-floating mt-2">
                 <textarea asp-for="Description" class="form-control" rows="4"></textarea>
