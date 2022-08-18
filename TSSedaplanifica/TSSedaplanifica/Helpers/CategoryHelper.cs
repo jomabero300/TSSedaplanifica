@@ -154,7 +154,7 @@ namespace TSSedaplanifica.Helpers
         public async Task<MemoryStream> ReportAsync(string title)
         {
 
-            MemoryStream ms =await _pdfDoc.ReportAsync(title);
+            MemoryStream ms =await _pdfDoc.ReportListAsync(title);
             return ms;
         }
 

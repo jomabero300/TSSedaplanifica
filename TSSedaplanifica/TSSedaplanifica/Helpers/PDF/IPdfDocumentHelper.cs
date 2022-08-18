@@ -2,6 +2,8 @@
 {
     public interface IPdfDocumentHelper
     {
-        Task<MemoryStream> ReportAsync(string title);
+        Task<MemoryStream> ReportListAsync(string title);
+        Task<MemoryStream> ReportSoliAsync(int id);
+        Task<MemoryStream> ReportSchoolAsync(int id);
     }
 }

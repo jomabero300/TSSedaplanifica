@@ -15,7 +15,7 @@
 
             <div class="form-group">
                 <label asp-for="CategoryTypeId" class="control-label"></label>
-                <select id="categoryTypeId"  asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-control"></select>
+                <select id="categoryTypeId" asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-select-sm"></select>
                 <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
             </div>
 
@@ -34,4 +34,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+            $('#categoryTypeId').select2({placeholder:"seleccionar",width:"100%"});
+    </script>
 }

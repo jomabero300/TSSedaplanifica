@@ -6,6 +6,7 @@ using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.PDF;
 using TSSedaplanifica.Models;
 using static TSSedaplanifica.Helpers.ModalHelper;
 
@@ -28,6 +29,7 @@ namespace TSSedaplanifica.Controllers
         
         private readonly ISchoolUserHelper _schoolUserHelper;
 
+        private readonly IPdfDocumentHelper _pdfDocument;
 
         public SolicitsController(
             ISolicitHelper solicitHelper,
@@ -38,7 +40,8 @@ namespace TSSedaplanifica.Controllers
             ICategoryHelper categoryHelper,
             IProductHelper productHelper,
             ISolicitDetailHelper solicitDetailHelper,
-            ISchoolUserHelper schoolUserHelper)
+            ISchoolUserHelper schoolUserHelper,
+            IPdfDocumentHelper pdfDocument)
         {
             _solicitHelper = solicitHelper;
             _userHelper = userHelper;
@@ -49,6 +52,7 @@ namespace TSSedaplanifica.Controllers
             _productHelper = productHelper;
             _solicitDetailHelper = solicitDetailHelper;
             _schoolUserHelper = schoolUserHelper;
+            _pdfDocument = pdfDocument;
         }
 
         public async Task<IActionResult> Index()
@@ -956,5 +960,13 @@ namespace TSSedaplanifica.Controllers
 
             return View(model);
         }
+              
+        public async Task<IActionResult> SolicitPrint(int id)
+        {
+            MemoryStream ms = await _pdfDocument.ReportSoliAsync(id);
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
     }
 }

@@ -43,4 +43,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+            $('#MeasureUnitId').select2({placeholder:"seleccionar",width:"100%"});
+    </script>
 }

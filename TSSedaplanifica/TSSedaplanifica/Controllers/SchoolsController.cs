@@ -450,7 +450,14 @@ namespace TSSedaplanifica.Controllers
 
         public async Task<IActionResult> ReportList()
         {
-            MemoryStream ms = await _pdfDocument.ReportAsync("Schools");
+            MemoryStream ms = await _pdfDocument.ReportListAsync("Schools");
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
+        public async Task<IActionResult> SolicitPrint(int id)
+        {
+            MemoryStream ms = await _pdfDocument.ReportSchoolAsync(id);
 
             return File(ms.ToArray(), "application/pdf");
         }

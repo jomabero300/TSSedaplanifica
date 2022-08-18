@@ -22,7 +22,7 @@
 
             <div class="form-group">
                 <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
+                <select asp-for="RoleId" class="form-control selectpicker" asp-items="ViewBag.RoleId"></select>
                 <span asp-validation-for="RoleId" class="text-danger"></span>
             </div>
 
@@ -39,4 +39,8 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@*        <script>
+            $('#RoleId').select2({placeholder:"seleccionar",width:"100%"});
+    </script>
+*@
 }

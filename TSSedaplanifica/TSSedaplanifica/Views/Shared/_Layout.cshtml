@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TSSedaplanifica.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/datatables/css/jquery.dataTables.min.css">
+    <link href="~/css/select2.min.css" rel="stylesheet" />
+
 </head>
 <body>
     <header>
@@ -45,7 +47,7 @@
 
                                     <div class="dropdown-divider"></div>
                                     <a class="nav-link text-primary dropdown-item" asp-controller="Schools" asp-action="Index"><i class="bi bi-bank2"></i> Instituciones educativas</a>
-                                    <a class="nav-link text-primary dropdown-item" asp-controller="Solicits" asp-action="StartStocktaking"><i class="bi bi-bank2"></i> Inventario Inicial</a>
+                                    <a class="nav-link text-primary dropdown-item" asp-controller="Solicits" asp-action="StartStocktaking"><i class="bi bi-list-ul"></i> Inventario Inicial</a>
 
                                 </div>
                             </li>
@@ -121,6 +123,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/select2.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

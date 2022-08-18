@@ -27,7 +27,7 @@
             <div class="form-group">
                 <span class="required">*</span>
                 <label asp-for="MeasureUnitId" class="control-label"></label>
-                <select asp-for="MeasureUnitId" asp-items="ViewBag.MeasureUnitId" class="form-control"></select>
+                <select asp-for="MeasureUnitId" asp-items="ViewBag.MeasureUnitId" class="form-select-sm"></select>
                 <span asp-validation-for="MeasureUnitId" class="text-danger"></span>
             </div>
 
@@ -41,4 +41,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+            $('#MeasureUnitId').select2({placeholder:"seleccionar",width:"100%"});
+    </script>
 }

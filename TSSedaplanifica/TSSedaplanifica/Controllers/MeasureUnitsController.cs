@@ -160,7 +160,7 @@ namespace TSSedaplanifica.Controllers
 
         public async Task<IActionResult> ReportList()
         {
-            MemoryStream ms = await _pdfDocument.ReportAsync("Unidades de medida");
+            MemoryStream ms = await _pdfDocument.ReportListAsync("Unidades de medida");
 
             return File(ms.ToArray(), "application/pdf");
         }

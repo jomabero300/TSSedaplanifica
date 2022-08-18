@@ -70,6 +70,7 @@
                 <a asp-action="Rector" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-person-fill"></i>
                     @(item.DaneCode.Length>2?"Rector":"Secretario")
                 </a>
+                <a asp-action="SolicitPrint" asp-route-id="@item.Id" class="btn btn-sm btn-info" target="_blank"><i class="bi bi-printer-fill"></i> Imprimir</a>
             </td>
         </tr>
 }
