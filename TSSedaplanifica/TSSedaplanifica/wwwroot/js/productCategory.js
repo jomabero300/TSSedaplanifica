@@ -1,6 +1,5 @@
 ﻿$(document).ready(function () {
     $("#categoryTypeId").change(function () {
-        console.log("Entro por Typo de categorya");
         $("#categoryId").empty();
         $.ajax({
             type: 'GET',
@@ -23,7 +22,6 @@
     })
 
     $("#categoryId").change(function () {
-        console.log("Entro por categorya");
         $("#productId").empty();
         $.ajax({
             type: 'GET',

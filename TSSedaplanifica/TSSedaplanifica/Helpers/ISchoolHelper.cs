@@ -10,8 +10,19 @@ namespace TSSedaplanifica.Helpers
         Task<School> ByIdAsync(int id);
 
         Task<SchoolUser> ByUserSchoolAsync(string email);
-
+        /// <summary>
+        /// Listas las sedes de una institución
+        /// </summary>
+        /// <param name="id">codigo de la institucion para busqueda de sus sedes</param>
+        /// <returns></returns>
         Task<List<School>> ComboAsync(int id);
+        /// <summary>
+        /// Lista las instituciones por municipio
+        /// </summary>
+        /// <param name="id">Municipio para busqueda de las instituciones</param>
+        /// <returns></returns>
+        Task<List<School>> ComboCityAsync(int id,bool sede=false);
+
         Task<List<School>> ComboStartStocktakingAsync();
 
         Task<Response> DeleteAsync(int id);

@@ -4,43 +4,53 @@
     ViewData["Title"] = "Ver";
 }
 
-<h1>Ver</h1>
-
-<div>
-    <h4>Categoría</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> | 
-    <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
-</div>
-
-<hr />
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="container-fluid">
-            <div class="card mt-2">
-                <div class="card-header text-danger">
-                    <i class="fa fa-object-group"></i>  <strong>Clases de categoría</strong>
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Detalle categoría</h5>
+            </div>
+            <div class="card-body">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class = "col-sm-2">
+                            @Html.DisplayNameFor(model => model.Name)
+                        </dt>
+                        <dd class = "col-sm-10">
+                            @Html.DisplayFor(model => model.Name)
+                        </dd>
+                    </dl>
                 </div>
-                <div class="card-body">
-                    <div id="view-all">
-                        @await Html.PartialAsync("_CategoriesViewAll", Model)
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> | 
+                <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+
+
+                <hr />
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="container-fluid">
+                            <div class="card mt-2">
+                                <div class="card-header text-danger">
+                                    <i class="fa fa-object-group"></i>  <strong>Clases de categoría</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div id="view-all">
+                                        @await Html.PartialAsync("_CategoriesViewAll", Model)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
             </div>
         </div>
     </div>
 </div>
+
+
 <partial name="_DeleteDialog" />
 
 @section Scripts {

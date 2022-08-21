@@ -94,6 +94,19 @@ namespace TSSedaplanifica.Helpers
             return model.OrderBy(m => m.Name).ToList();
         }
 
+        public async Task<List<School>> ComboCityAsync(int id, bool sede = false)
+        {
+            List<School> model = sede==true? await _context.Schools.Where(s => s.City.Id == id && s.SchoolCampus==null).ToListAsync():
+                                             await _context.Schools.Where(s => s.SchoolCampus.Id == id).ToListAsync();
+
+            string lsName = sede == true ? "institución" : "sede";
+
+            model.Add(new School { Id = 0, Name = $"[Seleccione una {lsName}..]" });
+
+            return model.OrderBy(m => m.Name).ToList();
+
+        }
+
         public async Task<List<School>> ComboStartStocktakingAsync()
         {
             List<School> modelSchols = await _context.Solicits.Include(s=>s.School)

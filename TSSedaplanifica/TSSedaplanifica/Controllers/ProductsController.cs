@@ -250,7 +250,6 @@ namespace TSSedaplanifica.Controllers
         {
             List<Category> lista = await _categoryHelper.ComboAsync(categoryTypeId);
 
-
             return Json(lista);
         }
 

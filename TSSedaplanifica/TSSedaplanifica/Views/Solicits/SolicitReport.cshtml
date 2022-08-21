@@ -1,0 +1,92 @@
+﻿@model TSSedaplanifica.Models.SolicitReportViewModel
+@{
+    ViewData["Title"] = "Reporte";
+}
+
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Reporte</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="SolicitReport" target="_blank">
+                    <div class="col-md-4">
+
+                        <div class="form-group">
+                            <label asp-for="CityId" class="control-label"></label>
+                            <select id="cityId" asp-for="CityId" asp-items="ViewBag.CityId" class="form-select-lg"></select>
+                            <span asp-validation-for="CityId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SchoolId" class="control-label"></label>
+                            <select id="schoolId" asp-for="SchoolId" asp-items="ViewBag.SchoolId" class="form-select-sm"></select>
+                            <span asp-validation-for="SchoolId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CampusId" class="control-label"></label>
+                            <select id="campusId" asp-for="CampusId" asp-items="ViewBag.CampusId" class="form-select-sm"></select>
+                            <span asp-validation-for="CampusId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CategoryTypeId" class="control-label"></label>
+                            <select id="categoryTypeId" asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-select-sm"></select>
+                            <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label"></label>
+                            <select id="categoryId" asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-select-sm"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ProductId" class="control-label"></label>
+                            <select id="productId" asp-for="ProductId" asp-items="ViewBag.ProductId" class="form-select-sm"></select>
+                            <span asp-validation-for="ProductId" class="text-danger"></span>
+                        </div>
+                        <div class="row g-2">
+
+                            <div class="col-md-6">
+                                <div class="form-floating mt-2">
+                                    <input id="dateOfFrom" asp-for="DateOfFrom" type="date" class="form-control" />
+                                    <label asp-for="DateOfFrom" class="control-label"></label>
+                                    <span asp-validation-for="DateOfFrom" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mt-2">
+                                    <input id="dateOfTo" asp-for="DateOfTo" type="date" class="form-control" />
+                                    <label asp-for="DateOfTo" class="control-label"></label>
+                                    <span asp-validation-for="DateOfTo" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-2">
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Imprimier</button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/productCategory.js"></script>
+    <script src="~/js/CitySchoolCampus.js"></script>
+
+    <script>
+        $('#cityId').select2({ placeholder: "seleccionar", width: "100%" });
+        $('#schoolId').select2({ placeholder: "seleccionar", width: "100%" });
+        $('#campusId').select2({ placeholder: "seleccionar", width: "100%" });
+        $('#categoryTypeId').select2({ placeholder: "seleccionar", width: "100%" });
+        $('#categoryId').select2({ placeholder: "seleccionar", width: "100%" });
+        $('#productId').select2({ placeholder: "seleccionar", width: "100%" });
+    </script>
+
+}

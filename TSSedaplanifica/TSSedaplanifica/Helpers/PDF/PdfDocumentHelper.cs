@@ -3,6 +3,7 @@ using iTextSharp.text.pdf;
 using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Models;
 using TSSedaplanifica.Models.ApplicationUser;
 
 namespace TSSedaplanifica.Helpers.PDF
@@ -125,16 +126,17 @@ namespace TSSedaplanifica.Helpers.PDF
             doc.Add(new Phrase(" "));
 
             Solicit model = await _context.Solicits
-                                                .Include(s=>s.School)
+                                                .Include(s=>s.School).ThenInclude(s=>s.SchoolCampus)
                                                 .Include(s=>s.SolicitStates)
                                                 .Include(s=>s.SolicitDetails).ThenInclude(d=>d.Product)
                                                 .Where(s=>s.Id==id)
                                                 .FirstOrDefaultAsync();
 
+            string schoolName = model.School.SchoolCampus == null ? "Institución educativa" : "Sede uducativa";
 
             myTable = new PdfPTable(new float[] { 30f,70F }) { WidthPercentage = 100f };
 
-            PdfPCell pdfPCell1 = new PdfPCell(new Phrase($"Institución educativa:", titlesBlackBold12)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 5f, PaddingBottom = 5f };
+            PdfPCell pdfPCell1 = new PdfPCell(new Phrase($"{schoolName}:", titlesBlackBold12)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 5f, PaddingBottom = 5f };
             PdfPCell pdfPCell2 = new PdfPCell(new Phrase(model.School.Name, theader)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 5f, PaddingBottom = 5f };
             myTable.AddCell(pdfPCell1);
             myTable.AddCell(pdfPCell2);
@@ -759,5 +761,137 @@ namespace TSSedaplanifica.Helpers.PDF
             }
         }
 
+        public async Task<MemoryStream> ReportProductConsolidatedAsync(SolicitReportViewModel model)
+        {
+            doc.AddTitle("Institución educativa");
+
+            write.PageEvent = new PageEventHelper();
+
+            doc.Open();
+
+            doc.Add(myTable);
+
+            doc.Add(new Phrase(" "));
+            string cityName = "Todos";
+            string schoolName = "Todas";
+            string campusName = "Todas";
+            string categoryTypeName = "Todas";
+            string categoryName = "Todas";
+            string productName = "Todos";
+
+
+            School school;
+
+            if (model.CampusId != 0)
+            {
+                school = await _context.Schools
+                                            .Include(s => s.SchoolCampus)
+                                            .Include(c => c.City)
+                                            .Include(z => z.Zone)
+                                            .Include(u => u.SchoolUsers).ThenInclude(u => u.ApplicationUser)
+                                            .Where(s => s.Id == model.CampusId)
+                                            .FirstOrDefaultAsync();
+                cityName = school.City.Name;
+                schoolName = school.Name;
+                campusName = school.SchoolCampus.Name;
+            }
+            else if (model.SchoolId != 0)
+            {
+                school = await _context.Schools
+                                            .Include(s => s.SchoolCampus)
+                                            .Include(c => c.City)
+                                            .Include(z => z.Zone)
+                                            .Include(u => u.SchoolUsers).ThenInclude(u => u.ApplicationUser)
+                                            .Where(s => s.Id == model.SchoolId)
+                                            .FirstOrDefaultAsync();
+                cityName = school.City.Name;
+                schoolName = school.Name;
+
+            }
+            else if (model.CityId!=0)
+            {
+                City city = await _context.Cities.FindAsync(model.CityId);
+                cityName = city.Name;
+            }
+
+            if (model.ProductId != 0)
+            {
+                Product product = await _context.Products
+                                                .Include(p => p.ProductCategories)
+                                                .ThenInclude(p => p.Category)
+                                                .ThenInclude(p => p.CategoryTypeDers)
+                                                .ThenInclude(p => p.CategoryType)
+                                                .Where(p => p.Id == model.ProductId)
+                                                .FirstOrDefaultAsync();
+
+                categoryTypeName = product.ProductCategories.FirstOrDefault().Category.CategoryTypeDers.FirstOrDefault().CategoryType.Name;
+                categoryName = product.ProductCategories.FirstOrDefault().Category.Name; 
+                productName = product.Name;
+            }
+            else if(model.CategoryId != 0)
+            {
+                Category category = await _context.Categories
+                                      .Include(c => c.CategoryTypeDers).ThenInclude(c => c.CategoryType)
+                                      .Where(c => c.Id == model.CategoryId &&
+                                                  c.CategoryTypeDers.FirstOrDefault().CategoryType.Id == model.CategoryTypeId
+                                            )
+                                      .FirstOrDefaultAsync();
+
+                categoryTypeName = category.CategoryTypeDers.FirstOrDefault().CategoryType.Name;
+                categoryName = category.Name;
+            }
+            else if(model.CategoryTypeId != 0)
+            {
+                CategoryType categoryType = await _context.CategoryTypes
+                                      .Where(c => c.Id == model.CategoryTypeId )
+                                      .FirstOrDefaultAsync();
+
+                categoryTypeName = categoryType.Name;
+            }
+
+
+
+            myTable = new PdfPTable(new float[] { 30f, 70F }) { WidthPercentage = 100f };
+
+            PdfPCell pdfPCell1 = new PdfPCell(new Phrase("Municipio:", titlesBlackBold12)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 5f, PaddingBottom = 5f };
+            PdfPCell pdfPCell2 = new PdfPCell(new Phrase(cityName, theader)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 5f, PaddingBottom = 5f };
+            myTable.AddCell(pdfPCell1);
+            myTable.AddCell(pdfPCell2);
+
+            pdfPCell1.Phrase = new Phrase("Institución educativa:", titlesBlackBold12);
+            pdfPCell2.Phrase =new Phrase(schoolName, theader);
+            myTable.AddCell(pdfPCell1);
+            myTable.AddCell(pdfPCell2);
+
+            pdfPCell1.Phrase = new Phrase("Sede educativa:", titlesBlackBold12);
+            pdfPCell2.Phrase =new Phrase(campusName, theader);
+            myTable.AddCell(pdfPCell1);
+            myTable.AddCell(pdfPCell2);
+
+            pdfPCell1.Phrase = new Phrase("Clase categoría:", titlesBlackBold12);
+            pdfPCell2.Phrase =new Phrase(categoryTypeName, theader);
+            myTable.AddCell(pdfPCell1);
+            myTable.AddCell(pdfPCell2);
+
+            pdfPCell1.Phrase = new Phrase("Categoría:", titlesBlackBold12);
+            pdfPCell2.Phrase =new Phrase(categoryName, theader);
+            myTable.AddCell(pdfPCell1);
+            myTable.AddCell(pdfPCell2);
+
+            pdfPCell1.Phrase = new Phrase("Elemento:", titlesBlackBold12);
+            pdfPCell2.Phrase =new Phrase(productName, theader);
+            myTable.AddCell(pdfPCell1);
+            myTable.AddCell(pdfPCell2);
+
+
+
+            doc.Add(myTable);
+
+            doc.Close();
+
+            write.Close();
+
+            return ms;
+        }
     }
 }

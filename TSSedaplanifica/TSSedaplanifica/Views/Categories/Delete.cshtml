@@ -4,28 +4,20 @@
     ViewData["Title"] = "Borrar";
 }
 
-<h1>Borrar</h1>
-
-<h3>¿Está seguro de querer borrar la categoría?</h3>
-<div>
-    <h4>Categoría</h4>
-
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-            <button class="btn btn-danger" type="submit"><i class="bi bi-save2-fill"></i> Borrar</button>
-            <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
-    </form>
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Nueva categorías</h5>
+            </div>
+            <div class="card-body">
+                ¿desea borrar la categoría <strong> @Html.DisplayFor(model => model.Name)</strong> ?
+                <form asp-action="Delete" class="mt-2">
+                    <input type="hidden" asp-for="Id" />
+                        <button class="btn btn-danger" type="submit"><i class="bi bi-save2-fill"></i> Borrar</button>
+                        <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

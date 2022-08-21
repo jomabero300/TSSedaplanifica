@@ -24,11 +24,11 @@ namespace TSSedaplanifica.Controllers
         private readonly ICategoryTypeHelper _categoryTypeHelper;
         private readonly ICategoryHelper _categoryHelper;
         private readonly IProductHelper _productHelper;
+        private readonly ICityHelper _cityHelper;
 
-        private readonly ISolicitDetailHelper _solicitDetailHelper;
-        
+
+        private readonly ISolicitDetailHelper _solicitDetailHelper;        
         private readonly ISchoolUserHelper _schoolUserHelper;
-
         private readonly IPdfDocumentHelper _pdfDocument;
 
         public SolicitsController(
@@ -41,7 +41,8 @@ namespace TSSedaplanifica.Controllers
             IProductHelper productHelper,
             ISolicitDetailHelper solicitDetailHelper,
             ISchoolUserHelper schoolUserHelper,
-            IPdfDocumentHelper pdfDocument)
+            IPdfDocumentHelper pdfDocument,
+            ICityHelper cityHelper)
         {
             _solicitHelper = solicitHelper;
             _userHelper = userHelper;
@@ -53,6 +54,7 @@ namespace TSSedaplanifica.Controllers
             _solicitDetailHelper = solicitDetailHelper;
             _schoolUserHelper = schoolUserHelper;
             _pdfDocument = pdfDocument;
+            _cityHelper = cityHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -966,6 +968,36 @@ namespace TSSedaplanifica.Controllers
             MemoryStream ms = await _pdfDocument.ReportSoliAsync(id);
 
             return File(ms.ToArray(), "application/pdf");
+        }
+
+        public async Task<IActionResult> SolicitReport()
+        {
+            ViewData["CityId"] = new SelectList(await _cityHelper.ComboAsync(1), "Id", "Name");
+            ViewData["SchoolId"] = new SelectList(await _schoolHelper.ComboCityAsync(0,true), "Id", "Name");
+            ViewData["CampusId"] = new SelectList(await _schoolHelper.ComboCityAsync(0), "Id", "Name");
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0), "Id", "Name");
+            ViewData["ProductId"] = new SelectList(await _productHelper.ComboAsync(0), "Id", "Name");
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SolicitReport(SolicitReportViewModel model)
+        {
+            MemoryStream ms = await _pdfDocument.ReportProductConsolidatedAsync(model);
+
+            return File(ms.ToArray(), "application/pdf");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GeneListSchools(int Id,bool IsEsta=false)
+        {
+            List<School> lista = await _schoolHelper.ComboCityAsync(Id, IsEsta);
+
+            return Json(lista);
         }
 
     }
