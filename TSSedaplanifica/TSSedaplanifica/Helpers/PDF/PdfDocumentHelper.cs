@@ -1,5 +1,6 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
@@ -13,6 +14,9 @@ namespace TSSedaplanifica.Helpers.PDF
         private readonly ApplicationDbContext _context;
 
         private readonly IWebHostEnvironment _env;
+
+        private readonly IConfiguration _configuration;
+
 
         private Document doc = new Document(PageSize.A4, 28f, 25f, 20f, 40f);
         private MemoryStream ms = new MemoryStream();
@@ -28,7 +32,7 @@ namespace TSSedaplanifica.Helpers.PDF
         private iTextSharp.text.Image logo;
         private PdfPTable myTable;
 
-        public PdfDocumentHelper(ApplicationDbContext context, IWebHostEnvironment env)
+        public PdfDocumentHelper(ApplicationDbContext context, IWebHostEnvironment env, IConfiguration configuration)
         {
             _context = context;
             _env = env;
@@ -54,7 +58,7 @@ namespace TSSedaplanifica.Helpers.PDF
             myTable.AddCell(new PdfPCell(new Phrase("Secretaría Departamental de Educación", paragraph)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
             myTable.AddCell(new PdfPCell(new Phrase("Calle 20 con carrera 21", paragraph)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
             myTable.AddCell(new PdfPCell(new Phrase(DateTime.Now.ToString("dd/MMM/yyyy"), paragraph)) { Border = 0, HorizontalAlignment = Element.ALIGN_RIGHT });
-
+            _configuration = configuration;
         }
 
         public async Task<MemoryStream> ReportListAsync(string title)
@@ -878,11 +882,65 @@ namespace TSSedaplanifica.Helpers.PDF
             myTable.AddCell(pdfPCell1);
             myTable.AddCell(pdfPCell2);
 
-            pdfPCell1.Phrase = new Phrase("Elemento:", titlesBlackBold12);
-            pdfPCell2.Phrase =new Phrase(productName, theader);
-            myTable.AddCell(pdfPCell1);
-            myTable.AddCell(pdfPCell2);
+            PdfPCell pdfPCellE = new PdfPCell(new Phrase("Elemento:", titlesBlackBold12)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 5f, PaddingBottom = 20f };
+            PdfPCell pdfPCellEE = new PdfPCell(new Phrase(productName, theader)) { Border = 0, HorizontalAlignment = Element.ALIGN_LEFT, PaddingTop = 5f, PaddingBottom = 20f };
 
+
+            //pdfPCell1.Phrase = new Phrase("Elemento:", titlesBlackBold12);
+            //pdfPCell2.Phrase =new Phrase(productName, theader);
+            myTable.AddCell(pdfPCellE);
+            myTable.AddCell(pdfPCellEE);
+
+            doc.Add(myTable);
+
+            List<ProductReport> result = ProductsList(model);
+
+            myTable = new PdfPTable(new float[] { 70f, 15f, 15f }) { WidthPercentage = 100f };
+
+            PdfPCell pdfPCell4 = new PdfPCell(new Phrase("Elemento", theader)) { Border = 0, PaddingTop = 8f, PaddingBottom = 8f, BorderColorTop = new BaseColor(195, 195, 195), BorderWidthTop = 1.99f, HorizontalAlignment = Element.ALIGN_LEFT };
+            PdfPCell pdfPCell5 = new PdfPCell(new Phrase("Cantidad", theader)) { Border = 0, PaddingTop = 8f, PaddingBottom = 8f, BorderColorTop = new BaseColor(195, 195, 195), BorderWidthTop = 1.99f, HorizontalAlignment = Element.ALIGN_LEFT };
+            PdfPCell pdfPCell6 = new PdfPCell(new Phrase("Aprobada", theader)) { Border = 0, PaddingTop = 8f, PaddingBottom = 8f, BorderColorTop = new BaseColor(195, 195, 195), BorderWidthTop = 1.99f, HorizontalAlignment = Element.ALIGN_LEFT };
+
+            myTable.AddCell(pdfPCell4);
+            myTable.AddCell(pdfPCell5);
+            myTable.AddCell(pdfPCell6);
+
+            int cont = 1;
+            foreach (var item in result)
+            {
+
+                pdfPCell4.Phrase = new Phrase(item.ProductName, paragraph);
+                pdfPCell4.Border = 0;
+                pdfPCell4.HorizontalAlignment = Element.ALIGN_LEFT;
+
+                pdfPCell5.Phrase = new Phrase(item.Quantity.ToString(), paragraph);
+                pdfPCell5.Border = 0;
+                pdfPCell5.HorizontalAlignment = Element.ALIGN_LEFT;
+
+                pdfPCell6.Phrase = new Phrase(item.Delivere.ToString(), paragraph);
+                pdfPCell6.Border = 0;
+                pdfPCell6.HorizontalAlignment = Element.ALIGN_LEFT;
+
+
+                if (cont % 2 == 0)
+                {
+                    pdfPCell4.BackgroundColor = BaseColor.WHITE;
+                    pdfPCell5.BackgroundColor = BaseColor.WHITE;
+                    pdfPCell6.BackgroundColor = BaseColor.WHITE;
+                }
+                else
+                {
+                    pdfPCell4.BackgroundColor = new BaseColor(248, 248, 248);
+                    pdfPCell5.BackgroundColor = new BaseColor(248, 248, 248);
+                    pdfPCell6.BackgroundColor = new BaseColor(248, 248, 248);
+                }
+
+                myTable.AddCell(pdfPCell4);
+                myTable.AddCell(pdfPCell5);
+                myTable.AddCell(pdfPCell6);
+
+                cont++;
+            }
 
 
             doc.Add(myTable);
@@ -893,5 +951,85 @@ namespace TSSedaplanifica.Helpers.PDF
 
             return ms;
         }
+
+        private List<ProductReport> ProductsList(SolicitReportViewModel model)
+        {
+            List<ProductReport> result = new List<ProductReport>();
+
+            string cadena = _configuration.GetConnectionString("DefaultConnection");
+
+            string SqlParametre = "";
+
+            if(model.CampusId != 0)
+            {
+                SqlParametre += $" AND SC.Id = {model.CampusId}";
+            }
+            else if(model.SchoolId != 0)
+            {
+                SqlParametre += $" AND SC.Id = {model.SchoolId}";
+            }
+            else if(model.CityId != 0)
+            {
+                SqlParametre += $" AND SC.CityId = {model.CityId}";
+            }
+
+            if(model.ProductId != 0)
+            {
+                SqlParametre += $" AND P.Id = {model.ProductId}";
+
+            }
+            else if(model.CategoryId != 0)
+            {
+                SqlParametre += $" AND C.Id = {model.CategoryId}";
+
+            }
+            else if(model.CategoryTypeId != 0)
+            {
+                SqlParametre += $" AND CD.CategoryTypeId = {model.CategoryTypeId}";
+
+            }
+
+            if(model.DateOfFrom != null && model.DateOfTo != null)
+            {
+                SqlParametre += $" AND S.DateOfSolicit Between {model.DateOfFrom} and {model.DateOfTo}";
+
+            }
+
+            using (SqlConnection connection = new SqlConnection(cadena))
+            {
+                connection.Open();
+                string sql = $"SELECT P.Name as ProductName,SUM(D.Quantity) as Quantity,SUM(D.DeliveredQuantity) as Delivere FROM Seda.Schools SC,Seda.Solicits S,Seda.SolicitDetails D,Seda.Products P,Seda.ProductCategories PC,Seda.Categories C,Seda.CategoryTypeDers CD WHERE SC.Id=S.SchoolId AND S.Id=D.SolicitId AND D.ProductId=P.Id AND P.Id=PC.ProductId AND PC.CategoryId=C.Id AND C.Id=CD.CategoryId{SqlParametre} GROUP BY  P.Name";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+              
+                            string nombre = reader["ProductName"].ToString();
+                            float quantity = float.Parse(reader["Quantity"].ToString());
+                            float delivere = float.Parse(reader["Delivere"].ToString());
+
+                            result.Add(new ProductReport()
+                            {
+                                ProductName = nombre,
+                                Quantity = quantity,
+                                Delivere = delivere
+                            });
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
+
+    public class ProductReport
+    {
+        public string ProductName { get; set; }
+        public float Quantity { get; set; }
+        public float Delivere { get; set; }
     }
 }

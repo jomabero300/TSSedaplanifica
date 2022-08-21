@@ -982,6 +982,49 @@ namespace TSSedaplanifica.Controllers
             return View();
         }
 
+        public async Task<IActionResult> SolicitReportRector()
+        {
+            ApplicationUser lnaem = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            SchoolUser su = await _schoolUserHelper.ByIdAsync(lnaem.Id);
+
+            SolicitReportViewModel model = new SolicitReportViewModel()
+            {
+                CityId=su.School.City.Id,
+                SchoolId=su.School.Id
+            };
+
+            //ViewData["CityId"] = new SelectList(await _cityHelper.ComboAsync(1), "Id", "Name");
+            //ViewData["SchoolId"] = new SelectList(await _schoolHelper.ComboCityAsync(0,true), "Id", "Name");
+
+            ViewData["CampusId"] = new SelectList(await _schoolHelper.ComboCityAsync(su.School.Id), "Id", "Name");
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0), "Id", "Name");
+            ViewData["ProductId"] = new SelectList(await _productHelper.ComboAsync(0), "Id", "Name");
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> SolicitReportCoordinador()
+        {
+            ApplicationUser lnaem = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            SchoolUser su = await _schoolUserHelper.ByIdAsync(lnaem.Id);
+
+            SolicitReportViewModel model = new SolicitReportViewModel()
+            {
+                CityId=su.School.City.Id,
+                SchoolId=su.School.SchoolCampus.Id,
+                CampusId=su.School.Id
+            };
+
+            ViewData["CategoryTypeId"] = new SelectList(await _categoryTypeHelper.ComboAsync(), "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(await _categoryHelper.ComboAsync(0), "Id", "Name");
+            ViewData["ProductId"] = new SelectList(await _productHelper.ComboAsync(0), "Id", "Name");
+
+            return View(model);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SolicitReport(SolicitReportViewModel model)
@@ -990,7 +1033,6 @@ namespace TSSedaplanifica.Controllers
 
             return File(ms.ToArray(), "application/pdf");
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GeneListSchools(int Id,bool IsEsta=false)

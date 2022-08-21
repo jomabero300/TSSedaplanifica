@@ -11,23 +11,12 @@
             </div>
             <div class="card-body">
                 <form asp-action="SolicitReport" target="_blank">
+                    <input type="hidden" asp-for="CityId" />
+                    <input type="hidden" asp-for="SchoolId" />
+                    <input type="hidden" asp-for="CampusId" />
+
                     <div class="col-md-4">
 
-                        <div class="form-group">
-                            <label asp-for="CityId" class="control-label"></label>
-                            <select id="cityId" asp-for="CityId" asp-items="ViewBag.CityId" class="form-select-lg"></select>
-                            <span asp-validation-for="CityId" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="SchoolId" class="control-label"></label>
-                            <select id="schoolId" asp-for="SchoolId" asp-items="ViewBag.SchoolId" class="form-select-sm"></select>
-                            <span asp-validation-for="SchoolId" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="CampusId" class="control-label"></label>
-                            <select id="campusId" asp-for="CampusId" asp-items="ViewBag.CampusId" class="form-select-sm"></select>
-                            <span asp-validation-for="CampusId" class="text-danger"></span>
-                        </div>
                         <div class="form-group">
                             <label asp-for="CategoryTypeId" class="control-label"></label>
                             <select id="categoryTypeId" asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-select-sm"></select>
@@ -64,7 +53,6 @@
                         </div>
                         <div class="form-group mt-2">
                             <button class="btn btn-primary" type="submit"><i class="bi bi-file-pdf-fill"></i> Generar Pdf</button>
-
                         </div>
                     </div>
                 </form>
@@ -81,9 +69,6 @@
     <script src="~/js/CitySchoolCampus.js"></script>
 
     <script>
-        $('#cityId').select2({ placeholder: "seleccionar", width: "100%" });
-        $('#schoolId').select2({ placeholder: "seleccionar", width: "100%" });
-        $('#campusId').select2({ placeholder: "seleccionar", width: "100%" });
         $('#categoryTypeId').select2({ placeholder: "seleccionar", width: "100%" });
         $('#categoryId').select2({ placeholder: "seleccionar", width: "100%" });
         $('#productId').select2({ placeholder: "seleccionar", width: "100%" });

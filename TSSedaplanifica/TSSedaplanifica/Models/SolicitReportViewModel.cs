@@ -24,9 +24,9 @@ namespace TSSedaplanifica.Models
         public int ProductId { get; set; }
 
         [Display(Name = "Desde")]
-        public DateTime DateOfFrom { get; set; }
+        public DateTime? DateOfFrom { get; set; }
 
         [Display(Name = "Hasta")]
-        public DateTime DateOfTo { get; set; }
+        public DateTime? DateOfTo { get; set; }
     }
 }
