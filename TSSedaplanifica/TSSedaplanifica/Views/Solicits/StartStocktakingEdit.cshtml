@@ -4,54 +4,74 @@
     ViewData["Title"] = "Editar";
 }
 
-<h1>Editar</h1>
 
-<h4>Inventario Inicial</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="StartStocktakingEdit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="SchoolId" />
-            <input type="hidden" asp-for="SolicitStatesId" />
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 
-            <div class="row g-2">
-                <div class="col-md-6">
-                    <div class="form-floating mt-2">
-                        <input asp-for="DateOfSolicit" type="date" class="form-control" />
-                        <label asp-for="DateOfSolicit" class="control-label"></label>
-                        <span asp-validation-for="DateOfSolicit" class="text-danger"></span>
-                    </div>
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Editar inventario inicial</h5>
+            </div>
+            <div class="card-body">
+                <div class="col-md-4">
+                    <form asp-action="StartStocktakingEdit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="SchoolId" />
+                        <input type="hidden" asp-for="SolicitStatesId" />
+
+
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="form-floating mt-2">
+                                    <input asp-for="DateOfSolicit" type="date" class="form-control" />
+                                    <label asp-for="DateOfSolicit" class="control-label"></label>
+                                    <span asp-validation-for="DateOfSolicit" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mt-2">
+                                    <input asp-for="DateOfClosed" type="date" class="form-control" />
+                                    <label asp-for="DateOfClosed" class="control-label"></label>
+                                    <span asp-validation-for="DateOfClosed" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-floating mt-2">
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <label asp-for="Description" class="control-label"></label>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
+                            <a asp-action="StartStocktaking" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+                        </div>
+                    </form>
+
 
                 </div>
-                <div class="col-md-6">
-                    <div class="form-floating mt-2">
-                        <input asp-for="DateOfClosed" type="date" class="form-control" />
-                        <label asp-for="DateOfClosed" class="control-label"></label>
-                        <span asp-validation-for="DateOfClosed" class="text-danger"></span>
-                    </div>
-
-                </div>
             </div>
-
-
-
-            <div class="form-floating mt-2">
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                <label asp-for="Description" class="control-label"></label>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-2">
-                <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
-                <a asp-action="StartStocktaking" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

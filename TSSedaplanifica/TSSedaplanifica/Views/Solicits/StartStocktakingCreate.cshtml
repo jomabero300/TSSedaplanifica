@@ -3,13 +3,23 @@
 @{
     ViewData["Title"] = "Inicio";
 }
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
-<h1>Nuevo</h1>
-
-<h4>Inventario Inicial</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Nuevo inventario Inicial</h5>
+            </div>
+            <div class="card-body">
+                <div class="col-md-4">
         <form asp-action="StartStocktakingCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -56,8 +66,14 @@
                 <a asp-action="StartStocktaking" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
             </div>
         </form>
+
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

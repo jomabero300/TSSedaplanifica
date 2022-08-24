@@ -3,13 +3,21 @@
 @{
     ViewData["Title"] = "Edit";
 }
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 
 <div class="row mt-2">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header text-danger">
-                <h5>Editar categorí</h5>
+                <h5>Editar categoría</h5>
             </div>
             <div class="card-body">
                 <div class="col-md-4">

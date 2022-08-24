@@ -12,6 +12,7 @@ namespace TSSedaplanifica.Data.Entities
         [Required]
         public School School { get; set; }
         [Required]
+
         public ApplicationUser ApplicationUser { get; set; }
 
         [Column(TypeName = "nvarchar(450)")]

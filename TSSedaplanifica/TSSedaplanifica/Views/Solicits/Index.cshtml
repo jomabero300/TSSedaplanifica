@@ -2,6 +2,26 @@
 @{
     ViewData["Title"] = "Index";
 }
+@if (TempData["AlertMessage"] != null)
+{
+    if(!TempData["AlertMessage"].ToString().Contains("borrado"))
+    {
+        <div class="alert alert-info alert-dismissible fade show mt-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>        
+    }
+    else
+    {
+        <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+}
 
 <h1>Solicitudes</h1>
 

@@ -4,60 +4,70 @@
     ViewData["Title"] = "Elemento";
 }
 
-<h1>Adicionar elemento inicial</h1>
-
-@if(TempData["AlertMessage"] != null)
+@if (TempData["AlertMessage"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-exclamation-triangle-fill"></i>
         <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+    </div>
 
 }
-
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="StartStocktakingProductAdd">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id"/>
-
-
-            <div class="form-group">
-                <label asp-for="CategoryTypeId" class="control-label"></label>
-                <select id="categoryTypeId"  asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-control"></select>
-                <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Adicionar elemento inicial</h5>
             </div>
+            <div class="card-body">
+                <div class="col-md-4">
+                    <form asp-action="StartStocktakingProductAdd">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
 
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select id="categoryId"  asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+
+                        <div class="form-group">
+                            <label asp-for="CategoryTypeId" class="control-label"></label>
+                            <select id="categoryTypeId" asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-control"></select>
+                            <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label"></label>
+                            <select id="categoryId" asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="ProductId" class="control-label"></label>
+                            <select id="productId" asp-for="ProductId" asp-items="ViewBag.ProductId" class="form-control"></select>
+                            <span asp-validation-for="ProductId" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="Quantity" class="control-label"></label>
+                            <input asp-for="Quantity" class="form-control" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
+                            <a asp-action="StartStocktakingDetails" asp-route-id="@Model.Id" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+                        </div>
+                    </form>
+
+                </div>
             </div>
-
-
-            <div class="form-group">
-                <label asp-for="ProductId" class="control-label"></label>
-                <select id="productId"  asp-for="ProductId" asp-items="ViewBag.ProductId" class="form-control"></select>
-                <span asp-validation-for="ProductId" class="text-danger"></span>
-            </div>
-
-
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mt-2">
-                <button class="btn btn-primary" type="submit"><i class="bi bi-save2-fill"></i> Guardar</button>
-                <a asp-action="StartStocktakingDetails" asp-route-id="@Model.Id" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        <script src="~/js/productCategory.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/productCategory.js"></script>
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TSSedaplanifica.Data;
 using TSSedaplanifica.Data.Entities;
 using TSSedaplanifica.Helpers;
+using TSSedaplanifica.Helpers.Gene;
 using TSSedaplanifica.Helpers.PDF;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,19 +15,24 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(cfg =>
 {
-    cfg.User.RequireUniqueEmail = true;
-    cfg.Password.RequireDigit = false;
-    cfg.Password.RequiredUniqueChars = 0;
-    cfg.Password.RequireLowercase = false;
-    cfg.Password.RequireNonAlphanumeric = false;
-    cfg.Password.RequireUppercase = false;
+    cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+    cfg.SignIn.RequireConfirmedEmail = true;
+    cfg.Password.RequireDigit = true;
+    cfg.Password.RequireLowercase = true;
+    cfg.Password.RequireNonAlphanumeric = true;
+    cfg.Password.RequireUppercase = true;
+    cfg.Password.RequiredLength = 6;
+    cfg.Password.RequiredUniqueChars = 1;
+
+    cfg.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(60);
+    cfg.Lockout.MaxFailedAccessAttempts = 3;
+    cfg.Lockout.AllowedForNewUsers = true;
+
+    cfg.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABDCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    cfg.User.RequireUniqueEmail = false;
+
 })
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -55,6 +61,7 @@ builder.Services.AddScoped<ISchoolUserHelper, SchoolUserHelper>();
 builder.Services.AddScoped<IPdfDocumentHelper, PdfDocumentHelper>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IApiService, ApiService>();
+builder.Services.AddScoped<IMailHelper, MailHelper>();
 
 builder.Services.AddRazorPages();
 

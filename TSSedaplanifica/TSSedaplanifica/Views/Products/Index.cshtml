@@ -4,74 +4,106 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="row mt-2" style="width:100%">
-    <div class="col-md-6">
-        <h1>Elementos</h1>
-    </div>
-    <div class="col-md-6" style="text-align:right;align-items: center; padding:10px">
-        <a asp-action="Create" class="btn btn-sm btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>|
-        <a asp-action="ReportList" class="btn btn-sm btn-primary" Target="_blank"><i class="bi bi-printer-fill"></i> Reporte</a>
-    </div>
-</div>
 
 @if (TempData["AlertMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
+    if(!TempData["AlertMessage"].ToString().Contains("borrado"))
+    {
+        <div class="alert alert-info alert-dismissible fade show mt-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>        
+    }
+    else
+    {
+        <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 }
 
-<table class="table" id="myTable">
-    <thead>
-        <tr>
-            <th style="width:32%">
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th style="width:30%">
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th style="width:10%">
-                @Html.DisplayNameFor(model => model.MeasureUnit.Name)
-            </th>
-            <th style="width:10%">
-                @Html.DisplayNameFor(model => model.CategoriesNumber)
-            </th>
-            <th style="width:18%"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MeasureUnit.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CategoriesNumber)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col">
+                            <h5>Elementos</h5>
+                        </div>
+                        <div class="col" style="text-align: right;">
+                            <a asp-action="Create" class="btn btn-sm btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>|
+                            <a asp-action="ReportList" class="btn btn-sm btn-primary" Target="_blank"><i class="bi bi-printer-fill"></i> Reporte</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table" id="myTable">
+                    <thead>
+                        <tr>
+                            <th style="width:32%">
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th style="width:30%">
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th style="width:10%">
+                                @Html.DisplayNameFor(model => model.MeasureUnit.Name)
+                            </th>
+                            <th style="width:10%">
+                                @Html.DisplayNameFor(model => model.CategoriesNumber)
+                            </th>
+                            <th style="width:18%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Details" asp-route-Id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MeasureUnit.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CategoriesNumber)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
+
+                                    <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="bi bi-trash-fill"></i> Borrar</button>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_DeleteDialog" />
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script src="~/js/showmodal.js"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#myTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
@@ -83,4 +115,9 @@
             });
         });
     </script>
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Products/Delete/', false);
+    </script>
+
 }

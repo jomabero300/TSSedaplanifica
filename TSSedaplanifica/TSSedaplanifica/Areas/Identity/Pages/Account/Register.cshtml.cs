@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Helpers.Gene;
 
 namespace TSSedaplanifica.Areas.Identity.Pages.Account
 {
@@ -22,21 +24,21 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IMailHelper _mailHelper;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IMailHelper mailHelper)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _mailHelper = mailHelper;
         }
 
         [BindProperty]
@@ -104,9 +106,9 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
 
                 user.Document = Input.Document;
 
-                user.FirstName = Input.FirstName;
+                user.FirstName = lLowr(Input.FirstName);
 
-                user.LastName = Input.LastName;
+                user.LastName = lLowr(Input.LastName);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -123,23 +125,58 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    Response response = _mailHelper.SendMail(
+                                        user.Email,
+                                        "Araucactiva - Confirmación de cuenta",
+                                        $"<h1>Araucactiva - Confirmación de cuenta</h1>" +
+                                        $"Para habilitar el usuario, " +
+                                        $"por favor hacer clic en el siguiente enlace: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Confirmar Email</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+
+                    //await _mailHelper.SendMail(Input.Email, "Confirm your email",
+                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    //{
+                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    //}
+                    //else
+                    //{
+                    //    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //    return LocalRedirect(returnUrl);
+                    //}
+                }
+                //foreach (var error in result.Errors)
+                //{
+                //    ModelState.AddModelError(string.Empty, error.Description);
+                //}
+
+                foreach (var error in result.Errors)
+                {
+                    string lMensaje = string.Empty;
+
+                    if (error.Description.Contains("alphanumeric character"))
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        lMensaje = "Las contraseñas deben contener al menos un caracter numérico.";
+                    }
+                    else if (error.Description.Contains("lowercase ('a'-'z')"))
+                    {
+                        lMensaje = "Las contraseñas deben contener al menos una letra minúscula ('a'-'z').";
+                    }
+                    else if (error.Description.Contains("uppercase ('A'-'Z')"))
+                    {
+                        lMensaje = "Las contraseñas deben contener al menos una letra mayúsculas ('A'-'Z').";
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        lMensaje = "revise la conformación de las contraseñas";
                     }
+
+                    ModelState.AddModelError(string.Empty, lMensaje);
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+
             }
 
             // If we got this far, something failed, redisplay form
@@ -168,5 +205,18 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
+
+        private string lLowr(string cadena)
+        {
+            if (cadena.Length > 0)
+            {
+                var letra = cadena.Substring(0, 1).ToUpper();
+
+                cadena = letra + cadena.Substring(1, cadena.Length - 1);
+            }
+
+            return cadena;
+        }
+
     }
 }

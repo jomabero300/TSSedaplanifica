@@ -17,6 +17,9 @@
                 @Html.DisplayNameFor(model => model.Schools.FirstOrDefault().Address)
             </th>
             <th>
+                Coordinador
+            </th>
+            <th>
                 <a asp-action="AddSchool" asp-route-id="@Model.Id" class="btn btn-sm btn-primary"><i class="bi bi-plus-circle-fill"></i> Nuevo</a>
             </th>
         </tr>
@@ -37,12 +40,15 @@
                     @Html.DisplayFor(modelItem => item.Address)
                 </td>
                 <td>
-                    <a asp-action="DeleteSchool" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a> |
-                    <a asp-action="Coordinator" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-person"></i> Coordinador</a> |
-                    @*<a asp-action="CoordinatorDelete" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-person-x"></i> Quitar Coordinador</a>*@
-
-
-                <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="bi bi-person-x"></i> Quitar Coordinador</button>
+                    @Html.DisplayFor(modelItem => item.SchoolUsers.FirstOrDefault().ApplicationUser.FullName)
+                </td>
+                <td>
+                    <a asp-action="DeleteSchool" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a> 
+                    <a asp-action="Coordinator" asp-route-id="@item.Id" class="btn btn-sm btn-info"><i class="bi bi-person"></i> Coordinador</a> 
+                    @if(item.SchoolUsers.Count>0 && item.SchoolUsers.FirstOrDefault().isEnable==true )
+                    {
+                        <button data-id="@item.Id" class="btn btn-sm btn-danger deleteItem" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="bi bi-person-x"></i> Quitar Coordinador</button>       
+                    }
                 </td>
             </tr>
             }

@@ -4,27 +4,32 @@
     ViewData["Title"] = "Ver";
 }
 
-<h1>Ver</h1>
-
-<div>
-    <h4>Unidad de medida</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NameShort)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NameShort)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> | 
-    <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Detalle unidad de medida</h5>
+            </div>
+            <div class="card-body">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-3">
+                            @Html.DisplayNameFor(model => model.Name)
+                        </dt>
+                        <dd class="col-sm-9">
+                            @Html.DisplayFor(model => model.Name)
+                        </dd>
+                        <dt class="col-sm-3">
+                            @Html.DisplayNameFor(model => model.NameShort)
+                        </dt>
+                        <dd class="col-sm-9">
+                            @Html.DisplayFor(model => model.NameShort)
+                        </dd>
+                    </dl>
+                </div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn bn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
+                <a asp-action="Index" class="btn btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+            </div>
+        </div>
+    </div>
 </div>

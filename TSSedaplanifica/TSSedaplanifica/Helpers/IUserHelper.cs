@@ -41,7 +41,13 @@ namespace TSSedaplanifica.Helpers
 
         Task<IdentityUserRole<string>> ByIdUserRolAsync(string id);
 
-        //Task<List<SolicitState>> SolicitudStateAsync(string stateId, bool lbEsta);
+        Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
+
+        Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string token);
+
+        Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
+
+        Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string password);
 
     }
 }

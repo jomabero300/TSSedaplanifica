@@ -25,8 +25,7 @@
                     @Html.DisplayFor(modelItem => item.Category.Name)
                 </td>
                 <td>
-                    @*<a asp-action="DeleteProductCategory" asp-route-id="@item.Category.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>*@
-                    @Html.ActionLink("Borrar", "DeleteProductCategory",new { ProductId=item.Product.Id, CategoryId=item.Category.Id },new { @class = "btn btn-sm btn-danger bi bi-trash-fill" })
+                    <a asp-action="DeleteProductCategory" asp-route-ProductId="@item.Product.Id" asp-route-CategoryId="@item.Id" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i> Borrar</a>
 
                 </td>
             </tr>
@@ -34,3 +33,9 @@
         }
     </tbody>
 </table>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+}

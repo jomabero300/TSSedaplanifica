@@ -5,20 +5,92 @@
 }
 @if(TempData["AlertMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-
+    if(!TempData["AlertMessage"].ToString().Contains("borrado"))
+    {
+        <div class="alert alert-info alert-dismissible fade show mt-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>        
+    }
+    else
+    {
+        <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 }
 
-<body>
+
+<div class="row mt-2">
+    <div class="col-sm-12">        
+        <div class="card">
+            <div class="card-header">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col">
+                            <h5>Usuarios y roles</h5>
+                        </div>
+                        <div class="col" style="text-align: right;">
+        <a asp-action="ReportList" class="btn btn-sm btn-primary" Target="_blank"><i class="bi bi-printer-fill"></i> Reporte</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+        <table id="MyTable" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FullName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.RoleId)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleId)
+                        </td>
+                        <td align="center">
+                            <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
+                            <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-sm btn-danger"><i class="bi bi-trash2-fill"></i> Elimnar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<body>
     <section>
-@*        <h1>Usuarios y roles</h1>
-*@<div class="row mt-2" style="width:100%">
+<div class="row mt-2" style="width:100%">
     <div class="col-md-6">
-        <h1>Usuarios y roles</h1>
+        <h1></h1>
     </div>
     <div class="col-md-6" style="text-align:right;align-items: center; padding:10px">
         <a asp-action="ReportList" class="btn btn-sm btn-primary" Target="_blank"><i class="bi bi-printer-fill"></i> Reporte</a>
@@ -57,8 +129,7 @@
                         </td>
                         <td align="center">
                             <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i> Editar</a> |
-@*                            <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-sm btn-info"><i class="bi bi-eye-fill"></i> Detalles</a> |
-*@                            <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-sm btn-danger"><i class="bi bi-trash2-fill"></i> Elimnar</a>
+                            <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-sm btn-danger"><i class="bi bi-trash2-fill"></i> Elimnar</a>
                         </td>
                     </tr>
                 }
@@ -70,7 +141,7 @@
         <a href="#">Política de cookies</a>
     </footer>
 
-</body>
+</body>*@
 
 @section scripts{
     <script>

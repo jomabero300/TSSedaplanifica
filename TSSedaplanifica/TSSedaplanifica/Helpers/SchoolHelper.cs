@@ -160,6 +160,8 @@ namespace TSSedaplanifica.Helpers
             List<School> model = await _context.Schools
                                                 .Include(s => s.City)
                                                 .Include(s => s.Zone)
+                                                .Include(s =>s.SchoolUsers)
+                                                .ThenInclude(s=>s.ApplicationUser)
                                                 .Where(s => s.SchoolCampus == null)
                                                 .ToListAsync();
 
@@ -171,6 +173,8 @@ namespace TSSedaplanifica.Helpers
             List<School> model = await _context.Schools
                                                 .Include(s => s.City)
                                                 .Include(s => s.Zone)
+                                                .Include(s=>s.SchoolUsers)
+                                                .ThenInclude(s=>s.ApplicationUser)
                                                 .Where(s => s.SchoolCampus.Id == id)
                                                 .ToListAsync();
 

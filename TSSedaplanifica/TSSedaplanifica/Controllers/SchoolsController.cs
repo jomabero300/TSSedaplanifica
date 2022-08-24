@@ -69,6 +69,7 @@ namespace TSSedaplanifica.Controllers
             return View(vm);
         }
 
+
         // GET: CategoryTypes/Create
         public async Task<IActionResult> Create()
         {
@@ -196,6 +197,7 @@ namespace TSSedaplanifica.Controllers
         }
 
         // GET: CategoryTypes/Delete/5
+        [NoDirectAccess]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -203,32 +205,44 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            School model = await _schoolHelper.ByIdAsync((int)id);
-
-            return View(model);
-        }
-
-        // POST: CategoryTypes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
             Response response = await _schoolHelper.DeleteAsync((int)id);
 
-
-            if (response.IsSuccess)
-            {
-                TempData["AlertMessage"] = response.Message;
-                return RedirectToAction(nameof(Index));
-            }
-
-            School model = await _schoolHelper.ByIdAsync((int)id);
-
-            ModelState.AddModelError(string.Empty, response.Message);
-
-
-            return View(model);
+            TempData["AlertMessage"] = response.Message;
+            return RedirectToAction(nameof(Index));
         }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    School model = await _schoolHelper.ByIdAsync((int)id);
+
+        //    return View(model);
+        //}
+
+        //// POST: CategoryTypes/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    Response response = await _schoolHelper.DeleteAsync((int)id);
+
+
+        //    if (response.IsSuccess)
+        //    {
+        //        TempData["AlertMessage"] = response.Message;
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    School model = await _schoolHelper.ByIdAsync((int)id);
+
+        //    ModelState.AddModelError(string.Empty, response.Message);
+
+
+        //    return View(model);
+        //}
 
         public async Task< IActionResult> AddSchool(int id)
         {

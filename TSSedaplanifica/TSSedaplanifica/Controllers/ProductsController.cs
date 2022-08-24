@@ -7,6 +7,7 @@ using TSSedaplanifica.Enum;
 using TSSedaplanifica.Helpers;
 using TSSedaplanifica.Helpers.PDF;
 using TSSedaplanifica.Models;
+using static TSSedaplanifica.Helpers.ModalHelper;
 
 namespace TSSedaplanifica.Controllers
 {
@@ -159,6 +160,7 @@ namespace TSSedaplanifica.Controllers
             return View(model);
         }
 
+        [NoDirectAccess]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -166,31 +168,14 @@ namespace TSSedaplanifica.Controllers
                 return NotFound();
             }
 
-            Product model = await _prodcutHelper.ByIdAsync((int)id);
-
-            return View(model);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
             Response response = await _prodcutHelper.DeleteAsync((int)id);
 
+            TempData["AlertMessage"] = response.Message;
 
-            if (response.IsSuccess)
-            {
-                TempData["AlertMessage"] = response.Message;
-                return RedirectToAction(nameof(Index));
-            }
+            return RedirectToAction(nameof(Index));
 
-            Product model = await _prodcutHelper.ByIdAsync((int)id);
-
-            ModelState.AddModelError(string.Empty, response.Message);
-
-
-            return View(model);
         }
+
 
         public async Task<IActionResult> AddProductCategory(int id)
         {
@@ -237,6 +222,8 @@ namespace TSSedaplanifica.Controllers
             return View(model);
 
         }
+
+        [NoDirectAccess]
 
         public async Task<IActionResult> DeleteProductCategory(int ProductId, int CategoryId)
         {

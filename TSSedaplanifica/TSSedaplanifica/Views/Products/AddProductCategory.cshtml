@@ -3,37 +3,55 @@
     ViewData["Title"] = "Categoría";
 }
 
-<h1>Clase y Categoría</h1>
+@if (TempData["AlertMessage"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong> Éxito ! - </strong>  @TempData["AlertMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
-<div class="container smfont">
-    <form asp-action="AddProductCategory" autocomplete="off" asp-route-id="@Model.ProductId">
-        <div class="box-body">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <input id="productId" type="hidden" asp-for="ProductId" />
-
-            <input type="hidden" asp-for="Categories" />
-
-            <div class="form-group">
-                <label asp-for="CategoryTypeId" class="control-label"></label>
-                <select id="categoryTypeId"  asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-control"></select>
-                <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+<div class="row mt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header text-danger">
+                <h5>Clase y Categoría</h5>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select id="categoryId" asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            <div class="card-body">
+                <div class="col-md-4">
+                    <form asp-action="AddProductCategory" autocomplete="off" asp-route-id="@Model.ProductId">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input id="productId" type="hidden" asp-for="ProductId" />
+
+                        <input type="hidden" asp-for="Categories" />
+
+                        <div class="form-group">
+                            <label asp-for="CategoryTypeId" class="control-label"></label>
+                            <select id="categoryTypeId" asp-for="CategoryTypeId" asp-items="ViewBag.CategoryTypeId" class="form-control"></select>
+                            <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label"></label>
+                            <select id="categoryId" asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-save2-fill"></i> Guardar</button>
+                            <a asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-         </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Guardar</button>
-            <a asp-action="Details" asp-route-id="@Model.ProductId"class="btn btn-sm btn-success"><i class="bi bi-arrow-left-circle-fill"></i> Regresar al listado</a>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        <script src="~/js/productCategory.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/productCategory.js"></script>
 }
