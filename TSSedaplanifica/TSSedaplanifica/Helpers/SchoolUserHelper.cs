@@ -26,17 +26,6 @@ namespace TSSedaplanifica.Helpers
 
             SchoolUser schoolUser = await _context.SchoolUsers.Include(u=>u.ApplicationUser).Where(s=>s.School.Id==model.SchoolId && s.isEnable==true).FirstOrDefaultAsync();
 
-            //if(model.assignSeat==false)
-            //{
-            //    SchoolUser userNew = await _context.SchoolUsers.Where(s => s.ApplicationUser.Id == model.UserId).FirstOrDefaultAsync();
-
-            //    if(userNew != null)
-            //    {
-            //        response = await ByIdEnableAsync(model.UserId);
-            //    }
-            //}
-            
-            //TODO: Inavilitar al usuario si aparece en otras instituciones o sedes
 
             if (schoolUser != null)
             {
@@ -51,8 +40,7 @@ namespace TSSedaplanifica.Helpers
                 schoolUserExiste.isEnable=false;
                 _context.SchoolUsers.Update(schoolUserExiste);
             }
-            //if (schoolUserExiste == null)
-            //{
+
             ApplicationUser user = await _context.Users.FindAsync(model.UserId);
 
             SchoolUser su = new SchoolUser()
@@ -70,19 +58,6 @@ namespace TSSedaplanifica.Helpers
             response.Message = $"{_name} guardado satisfactoriamente.!!!";
             response.Result = su;
 
-            //}
-            //else
-            //{
-            //    schoolUserExiste.ApplicationRole = model.rol;
-            //    schoolUserExiste.EndOfDate = model.EndOfDate;
-            //    schoolUserExiste.HireOfDate = model.HireOfDate;
-            //    schoolUserExiste.isEnable = true;
-
-            //    _context.SchoolUsers.Update(schoolUserExiste);
-
-            //    response.Message = $"{_name} actualizado satisfactoriamente.!!!";
-
-            //}
 
             try
             {

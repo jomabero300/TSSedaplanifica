@@ -26,8 +26,8 @@ namespace TSSedaplanifica.Data.Entities
         //TODO: Pending to put the correct paths
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://localhost:7261/images/noimage.png"
-            : $"https://localhost:7261/images/users/{ImageId}.png";
+            ? $"http://sedaplanifica.com/images/noimage.png"
+            : $"http://sedaplanifica.com/images/users/{ImageId}.png";
 
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";

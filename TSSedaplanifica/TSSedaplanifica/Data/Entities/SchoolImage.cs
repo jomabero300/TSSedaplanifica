@@ -17,8 +17,8 @@ namespace TSSedaplanifica.Data.Entities
         //TODO: Pending to change to the correct path
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://localhost:7266/images/noimage.png"
-            : $"https://localhost:7266/images/Schools/{ImageId}.png";
+            ? $"http://sedaplanifica.com/images/noimage.png"
+            : $"http://sedaplanifica.com/images/Schools/{ImageId}.png";
 
     }
 }
