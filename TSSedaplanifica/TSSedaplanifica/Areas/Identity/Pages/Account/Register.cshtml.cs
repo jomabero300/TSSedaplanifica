@@ -127,8 +127,8 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
 
                     Response response = _mailHelper.SendMail(
                                         user.Email,
-                                        "Araucactiva - Confirmación de cuenta",
-                                        $"<h1>Araucactiva - Confirmación de cuenta</h1>" +
+                                        "Sedaplanifica - Confirmación de cuenta",
+                                        $"<h1>Sedaplanifica - Confirmación de cuenta</h1>" +
                                         $"Para habilitar el usuario, " +
                                         $"por favor hacer clic en el siguiente enlace: <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Confirmar Email</a>.");
 

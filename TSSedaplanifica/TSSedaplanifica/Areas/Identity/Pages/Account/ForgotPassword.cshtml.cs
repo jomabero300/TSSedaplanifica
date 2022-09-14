@@ -10,19 +10,22 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Helpers.Gene;
 
 namespace TSSedaplanifica.Areas.Identity.Pages.Account
 {
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        //private readonly IEmailSender _emailSender;
+        private readonly IMailHelper _mailHelper;
 
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IMailHelper mailHelper)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _mailHelper = mailHelper;
         }
 
         /// <summary>
@@ -42,8 +45,11 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+
+            [Display(Name = "Correo electrónico")]
+            [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+            [EmailAddress(ErrorMessage = "El campo de correo electrónico no es una dirección válida")]
+
             public string Email { get; set; }
         }
 
@@ -68,10 +74,12 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
+                Response response = _mailHelper.SendMail(
                     Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    "Sedaplanifica - Restablecer la contraseña",
+                    $"<h1>Sedaplanifica - Restablecer la contraseña</h1>" +
+                    $"Para ingresar a su cuenta, " +
+                    $"Por favor restablezca su contraseña <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>haciendo clic aquí</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

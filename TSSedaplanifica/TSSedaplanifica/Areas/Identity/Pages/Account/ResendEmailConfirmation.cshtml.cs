@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using TSSedaplanifica.Common;
 using TSSedaplanifica.Data.Entities;
+using TSSedaplanifica.Helpers.Gene;
 
 namespace TSSedaplanifica.Areas.Identity.Pages.Account
 {
@@ -19,12 +21,12 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
     public class ResendEmailConfirmationModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IMailHelper _mailHelper;
 
-        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IMailHelper mailHelper)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _mailHelper = mailHelper;
         }
 
         /// <summary>
@@ -44,8 +46,11 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+
+            [Display(Name = "Correo electrónico")]
+            [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+            [EmailAddress(ErrorMessage = "El campo de correo electrónico no es una dirección válida")]
+
             public string Email { get; set; }
         }
 
@@ -63,7 +68,7 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                ModelState.AddModelError(string.Empty, "Verifique el correo electronico a enviar. Por favor revise su correo electrónico.");
                 return Page();
             }
 
@@ -75,12 +80,14 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            Response response= _mailHelper.SendMail(
+                    Input.Email,
+                    "Sedaplanifica - confirme su email",
+                    $"<h1>Sedaplanifica - Confirmación de cuenta</h1>" +
+                    $"Para habilitar el usuario, " +
+                    $"Por favor confirme su cuenta por <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>haciendo clic aquí</a>.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            ModelState.AddModelError(string.Empty, "El mensaje de verificación ha sido enviado. Por favor revise su correo electrónico. Tambien la carpeta de Span o correo no deseado (Hacer click en este sitio parece seguro)");
             return Page();
         }
     }
