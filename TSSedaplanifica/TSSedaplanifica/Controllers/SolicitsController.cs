@@ -12,7 +12,7 @@ using static TSSedaplanifica.Helpers.ModalHelper;
 
 namespace TSSedaplanifica.Controllers
 {
-    [Authorize(Roles = $"{nameof(TypeUser.Coordinador)},{nameof(TypeUser.Rector)}, {nameof(TypeUser.Secretario_municipal)}, {nameof(TypeUser.Planificador)}, {nameof(TypeUser.Administrador)}")]
+    [Authorize(Roles = $"{nameof(TypeUser.Coordinador)},{nameof(TypeUser.Rector)},{ nameof(TypeUser.Secretario_municipal)}, {nameof(TypeUser.Planificador)}, {nameof(TypeUser.Administrador)}")]
 
     public class SolicitsController : Controller
     {
@@ -60,14 +60,15 @@ namespace TSSedaplanifica.Controllers
         public async Task<IActionResult> Index()
         {
 
-            ApplicationUser lnaem = await _userHelper.GetUserAsync(User.Identity.Name);
+            ApplicationUser lnaem = await _userHelper.GetUserSchoolAsync(User.Identity.Name);
 
-            SchoolUser su = await _schoolUserHelper.ByIdAsync(lnaem.Id);
-
-            if(su == null)
+            if(lnaem == null)
             {
                 return RedirectToAction("NotAuthorized", "Home");
             }
+
+            SchoolUser su = await _schoolUserHelper.ByIdAsync(lnaem.Id);
+
 
             List<SolicitViewModel> model = await _solicitHelper.ListAsync(lnaem.Id);
             
@@ -984,7 +985,12 @@ namespace TSSedaplanifica.Controllers
 
         public async Task<IActionResult> SolicitReportRector()
         {
-            ApplicationUser lnaem = await _userHelper.GetUserAsync(User.Identity.Name);
+            ApplicationUser lnaem = await _userHelper.GetUserSchoolAsync(User.Identity.Name);
+
+            if (lnaem == null)
+            {
+                return RedirectToAction("NotAuthorized", "Home");
+            }
 
             SchoolUser su = await _schoolUserHelper.ByIdAsync(lnaem.Id);
 

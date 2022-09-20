@@ -17,6 +17,8 @@ namespace TSSedaplanifica.Helpers
 
         Task<ApplicationUser> GetUserAsync(string email);
 
+        Task<ApplicationUser> GetUserSchoolAsync(string email);
+
         Task<bool> IsUserInRoleAsync(ApplicationUser user, string roleName);
 
         Task<List<RoleUserModelView>> ListRoleUserAsync();

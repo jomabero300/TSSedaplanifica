@@ -153,6 +153,10 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
                     {
                         lMensaje = "Las contraseñas deben contener al menos una letra mayúsculas ('A'-'Z').";
                     }
+                    else if (error.Description.Contains("is already taken"))
+                    {
+                        lMensaje = "Este correro electrónico ya se encuentra en nuestro sistema.";
+                    }
                     else
                     {
                         lMensaje = "revise la conformación de las contraseñas";

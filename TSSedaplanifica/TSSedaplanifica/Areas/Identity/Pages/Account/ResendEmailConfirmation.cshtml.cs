@@ -87,7 +87,7 @@ namespace TSSedaplanifica.Areas.Identity.Pages.Account
                     $"Para habilitar el usuario, " +
                     $"Por favor confirme su cuenta por <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>haciendo clic aquí</a>.");
 
-            ModelState.AddModelError(string.Empty, "El mensaje de verificación ha sido enviado. Por favor revise su correo electrónico. Tambien la carpeta de Span o correo no deseado (Hacer click en este sitio parece seguro)");
+            ModelState.AddModelError(string.Empty, "El mensaje de verificación se envió. Por favor revise su correo electrónico. También la carpeta de Spam o Correo no deseado (Haga clic en este sitio Parece seguro)");
             return Page();
         }
     }

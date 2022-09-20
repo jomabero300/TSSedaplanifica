@@ -19,9 +19,9 @@
                 <h5>Borrar rol</h5>
             </div>
             <div class="card-body">
-                ¿desea borrar a <strong> @Html.DisplayFor(model => model.FullName)</strong>  el rol <strong> @Html.DisplayFor(model => model.FullName)</strong>?
+                ¿desea borrar el rol a <strong> <em> @Html.DisplayFor(model => model.FullName)</em></strong>?
 
-                <form asp-action="Delete">
+                <form asp-action="Delete" class="mt-4">
                     <input type="hidden" asp-for="UserId" />
                     <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash2-fill"></i> Eliminar</button>
                     <a asp-action="Index" class="btn btn-sm btn-success"><i class="bi bi-chevron-left"></i> Retornar</a>
